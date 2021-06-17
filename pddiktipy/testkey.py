@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-import requests
 import base64
-import json
 import time
 import sys
 import os
@@ -41,7 +39,7 @@ class key(object):
 
     def post(self, endpoint, data):
         payloads = "{\"nama\":\""+data+"\",\"nipd\":\"\",\"pt\":\"Universitas Katolik Soegijapranata\",\"prodi\":\"Sistem Informasi\"}"
-        return H.post(str(endpoint)+'/'+self.api_version+'/search_mhs', payloads)
+        return H.post(str(endpoint)+'/'+self.api_version+'/search_mhs')
 
     def validate(self):
         r = self.post(self.ini(), 'ilham riski wibowo')

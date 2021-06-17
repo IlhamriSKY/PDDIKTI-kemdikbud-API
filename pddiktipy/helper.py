@@ -32,8 +32,7 @@ class helper(object):
 		return (response.json())
 
 	def get_text(self, endpoint):
-		payload= {}
-		headers = {}
+		payload = {}
 		response = requests.get(endpoint, data = payload)
 		return (response.text)
 
