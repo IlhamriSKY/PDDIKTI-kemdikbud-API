@@ -24,11 +24,28 @@ Installation
 Synopsis
 --------
 Usage:
-code:: python
+```python
+from pddiktipy import api
 
-    from pddiktipy import api
+a = api()
 
-    a = api()
+print(a.search_all('ilham riski'))
+```
 
-    print(a.search_all('ilham riski'))
+API
+---
 
+Get all data
+~~~~~~~~~~~~
+Example:
+```python
+a.search_all('ilham riski')
+```
+
+Get University only
+~~~~~~~~~~~~~~~~~~~
+Data [text, Nama PT, NPSN, Singkatan, Alamat, website-link]
+Example:
+```python
+a.search_pt('University Name')
+```
