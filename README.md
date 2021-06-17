@@ -1,2 +1,1 @@
-# PDDIKTI-kemdikbud-API
-An unofficial Python API for get data in PDDIKTI Kemdikbud 
+<h2 align="center">Unofficial Python API wrapper to get data at [PDDIKTI](https://pddikti.kemdikbud.go.id/) Kemdikbud</h2>
