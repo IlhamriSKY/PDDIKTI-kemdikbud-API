@@ -1,6 +1,7 @@
 Unofficial Python 3 API wrapper to get data at [PDDIKTI](https://pddikti.kemdikbud.go.id/) Kemdikbud
 ====================================================================================================
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/836a363adc504eec93590e6e0aef5e2d)](https://app.codacy.com/gh/IlhamriSKY/PDDIKTI-kemdikbud-API?utm_source=github.com&utm_medium=referral&utm_content=IlhamriSKY/PDDIKTI-kemdikbud-API&utm_campaign=Badge_Grade_Settings)
 [![License](https://img.shields.io/github/license/IlhamriSKY/PDDIKTI-kemdikbud-API.svg)](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/blob/master/LICENSE)
 [![BuildStatus](https://travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API.svg?branch=main)](https://travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API)
 [![Version 0.0.1](https://img.shields.io/badge/stable-1.0.0-brightgreen.svg "Version 1.0.0")](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API)
