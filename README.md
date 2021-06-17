@@ -13,23 +13,22 @@ Python API wrapper makes it easy for you to get data from the web [pddikti.kemdi
 
 Requirements
 ------------
-Python 3.*
-requests
+- Python 3.*
+- requests
 
 Installation
 ------------
-::
 
     $ pip install pddiktipy
 
 Synopsis
 --------
 Usage:
-.. code:: python
+code:: python
+
     from pddiktipy import api
 
     a = api()
 
     print(a.search_all('ilham riski'))
 
-    
