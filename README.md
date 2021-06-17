@@ -13,7 +13,7 @@ Python API wrapper makes it easy for you to get data from the web [pddikti.kemdi
 
 Change Log
 ------------
-- V 0.0.1 "First Release"
+- V 1.0.0 "First Release"
 
 Requirements
 ------------
