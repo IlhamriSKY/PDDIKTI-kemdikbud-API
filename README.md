@@ -39,31 +39,31 @@ print(a.search_all('ilham riski'))
 a.search_all('ilham riski')
 ```
 
-# Get University only
-## Data [text, Nama PT, NPSN, Singkatan, Alamat, website-link]
+## Get University only
+### Data [text, Nama PT, NPSN, Singkatan, Alamat, website-link]
 ```python
 a.search_pt('University Name')
 ```
 
-# Get Lecturer only 
-## Data [text, NIDN, PT, Prodi, website-link]
+## Get Lecturer only 
+### Data [text, NIDN, PT, Prodi, website-link]
 ```python
 a.search_dosen('Lecturer Name')
 ```
 
-# Get study program only
-## Data [text, Nama Prodi, Jenjang Prodi, Nama Lembaga, website-link]
+## Get study program only
+### Data [text, Nama Prodi, Jenjang Prodi, Nama Lembaga, website-link]
 ```python
 a.search_prodi('Sistem Informasi')
 ```
 
-# Get student only
-## Data [text(NIM), PT, Prodi, website-link]
+## Get student only
+### Data [text(NIM), PT, Prodi, website-link]
 ```python
 a.search_mahasiswa('Ilham Riski Wibowo')
 ```
 
-# Get Data By Category
+## Get Data By Category
 ```python
 # mahasiswa, pt, dosen, prodi
 a.search_by_category('mahasiswa', 'Ilham Riski Wibowo')
