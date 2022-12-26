@@ -185,9 +185,9 @@ a.detail_univ_logo_by_name('University Name')
 TODO
 ------------
 - [x] Detail Page Program Study
-- [] Detail Page Student
-- [] Statistik chart
-- [] News
-- [] Data Pages
-- [] Report
-- [] Etc.
+- [x] Detail Page Student
+- [x] Statistik chart
+- [x] News
+- [x] Data Pages
+- [x] Report
+- [x] Etc.
