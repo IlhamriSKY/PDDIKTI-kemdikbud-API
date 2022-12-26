@@ -10,7 +10,7 @@ Python 3 API wrapper to get data at [PDDIKTI](https://pddikti.kemdikbud.go.id/) 
 
 Introduction
 ------------
-Python API wrapper makes it easy for you to get data from the web [pddikti.kemdikbud.go.id](https://pddikti.kemdikbud.go.id/)
+Python API wrapper makes it easy for you to get data from [pddikti.kemdikbud.go.id](https://pddikti.kemdikbud.go.id/)
 
 Change Log
 ------------
