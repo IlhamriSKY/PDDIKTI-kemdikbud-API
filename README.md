@@ -31,10 +31,11 @@ Synopsis
 Usage:
 ```python
 from pddiktipy import api
+from pprint import pprint as p
 
 a = api()
 
-print(a.search_all('ilham riski'))
+p(a.search_all('ilham riski'))
 ```
 
 # API
