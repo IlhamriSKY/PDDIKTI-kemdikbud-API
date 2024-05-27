@@ -1,4 +1,4 @@
-Python 3 API wrapper to get data at [PDDIKTI](https://pddikti.kemdikbud.go.id/) Kemdikbud
+Python 3 API wrapper to retrieve data from [PDDIKTI](https://pddikti.kemdikbud.go.id/) Kemdikbud.
 ====================================================================================================
 
 [![License](https://img.shields.io/github/license/IlhamriSKY/PDDIKTI-kemdikbud-API.svg)](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/blob/master/LICENSE)
