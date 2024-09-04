@@ -869,7 +869,7 @@ class api:
 
         Data:
             ['status_keaktifan', 'jumlah_dosen']
-        
+
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
         """
@@ -877,17 +877,171 @@ class api:
         return self.H.response(endpoint)
 
     @handle_errors
-    def get_data_mahasiswa(self) -> Optional[Dict[str, Any]]:
+    def get_data_dosen_bidang(self) -> Optional[Dict[str, Any]]:
         """
-        Get data visualization of students based on their level of education.
+        Get data visualization of lecturers' fields of study.
+
+        Data:
+            ['bidang', 'jumlah_dosen']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/dosen-bidang"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_dosen_jenis_kelamin(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of lecturer's gender distribution.
+
+        Data:
+            ['jenis_kelamin', 'jumlah']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/dosen-jenis-kelamin"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_dosen_jenjang(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of lecturers' academic levels.
+
+        Data:
+            ['jenjang_dosen', 'jumlah_dosen']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/dosen-jenjang"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_dosen_ikatan(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of lecturers' employment binding.
+
+        Data:
+            ['ikatan_dosen', 'jumlah']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/dosen-ikatan"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_mahasiswa_bidang(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of students based on their fields of study.
+
+        Data:
+            ['bidang', 'jumlah_mhs']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/mahasiswa-bidang"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_mahasiswa_jenis_kelamin(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of student gender distribution.
+
+        Data:
+            ['jenis_kelamin', 'jumlah_mhs']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/mahasiswa-jenis-kelamin"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_mahasiswa_jenjang(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of students by educational level.
 
         Data:
             ['nama_jenjang', 'jumlah_mhs']
-        
+
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
         """
         endpoint = f"{self.api_link}/visualisasi/mahasiswa-jenjang"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_mahasiswa_kelompok_lembaga(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of students based on institutional groups.
+
+        Data:
+            ['kelompok_lembaga', 'jumlah_mhs']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/mahasiswa-kelompok-lembaga"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_mahasiswa_status(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of students by their status (active, inactive).
+
+        Data:
+            ['status_mahasiswa', 'jumlah']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/mahasiswa-status"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_pt_bentuk(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of the types of higher education institutions.
+
+        Data:
+            ['bentuk_pt', 'jumlah_pt']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/pt-bentuk"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_pt_akreditasi(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of university accreditation levels.
+
+        Data:
+            ['akreditasi', 'jumlah_pt']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/pt-akreditasi"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_pt_kelompok_pembina(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of universities grouped by administrative overseer.
+
+        Data:
+            ['kelompok_pembina', 'jumlah_pt']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/pt-kelompok-pembina"
         return self.H.response(endpoint)
 
     @handle_errors
@@ -896,12 +1050,68 @@ class api:
         Get data visualization of universities based on their province.
 
         Data:
-            ['jumlah_pt', 'provinsi_pt']
-        
+            ['provinsi', 'jumlah_pt']
+
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
         """
         endpoint = f"{self.api_link}/visualisasi/pt-provinsi"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_prodi_jenjang(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of academic programs by level.
+
+        Data:
+            ['jenjang_prodi', 'jumlah_prodi']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/prodi-jenjang"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_prodi_akreditasi(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of academic programs by accreditation.
+
+        Data:
+            ['akreditasi_prodi', 'jumlah_prodi']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/prodi-akreditasi"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_prodi_bidang_ilmu(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of academic programs by field of study.
+
+        Data:
+            ['bidang_ilmu', 'jumlah_prodi']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/prodi-bidang-ilmu"
+        return self.H.response(endpoint)
+
+    @handle_errors
+    def get_data_prodi_kelompok_pembina(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data visualization of academic programs grouped by administrative overseer.
+
+        Data:
+            ['kelompok_pembina', 'jumlah_prodi']
+
+        Returns:
+            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+        """
+        endpoint = f"{self.api_link}/visualisasi/prodi-kelompok-pembina"
         return self.H.response(endpoint)
 
     # Contributor Information
