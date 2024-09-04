@@ -1,19 +1,19 @@
 <h1>Python 3 API wrapper to retrieve data from <a href="https://pddikti.kemdikbud.go.id/">PDDIKTI</a> Kemdikbud.</h1>
 
-<p>
+<p align="center">
     <a href="https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/blob/master/LICENSE">
         <img src="https://img.shields.io/github/license/IlhamriSKY/PDDIKTI-kemdikbud-API.svg" alt="License">
     </a>
     <a href="https://app.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API">
-        <img src="https://app.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API.svg?token=3ssapyanyNraGyM8m5yz&amp;branch=main" alt="BuildStatus">
+        <img src="https://app.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API.svg?token=3ssapyanyNraGyM8m5yz&branch=main" alt="BuildStatus">
     </a>
     <a href="https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API">
         <img src="https://img.shields.io/badge/stable-2.0.0-brightgreen.svg" alt="Version 2.0.0">
     </a>
     <a href="https://www.python.org/downloads/release/python-3.12.1/">
-        <img src="https://img.shields.io/badge/3.12-blue.svg?&logo=python&label=Python" alt="python3.x">
+        <img src="https://img.shields.io/badge/3.12-blue.svg?logo=python&label=Python" alt="python3.x">
     </a>
-    <a href="https://www.codacy.com/gh/IlhamriSKY/PDDIKTI-kemdikbud-API/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=IlhamriSKY/PDDIKTI-kemdikbud-API&amp;utm_campaign=Badge_Grade">
+    <a href="https://www.codacy.com/gh/IlhamriSKY/PDDIKTI-kemdikbud-API/dashboard?utm_source=github.com&utm_medium=referral&utm_content=IlhamriSKY/PDDIKTI-kemdikbud-API&utm_campaign=Badge_Grade">
         <img src="https://app.codacy.com/project/badge/Grade/39e00a8c8c1c4007a68d1ae3f53c03e7" alt="Codacy Badge">
     </a>
     <a href="https://github.com/IlhamriSKY">
