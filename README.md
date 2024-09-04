@@ -13,7 +13,7 @@
     <a href="https://www.python.org/downloads/release/python-3.12.1/">
         <img src="https://img.shields.io/badge/3.12-blue.svg?logo=python&label=Python" alt="python3.x">
     </a>
-    <a href="https://www.codacy.com/gh/IlhamriSKY/PDDIKTI-kemdikbud-API/dashboard?utm_source=github.com&utm_medium=referral&utm_content=IlhamriSKY/PDDIKTI-kemdikbud-API&utm_campaign=Badge_Grade">
+    <a href="https://app.codacy.com/gh/IlhamriSKY/PDDIKTI-kemdikbud-API/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade">
         <img src="https://app.codacy.com/project/badge/Grade/39e00a8c8c1c4007a68d1ae3f53c03e7" alt="Codacy Badge">
     </a>
     <a href="https://github.com/IlhamriSKY">
