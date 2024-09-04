@@ -34,7 +34,7 @@
 </ul>
 
 <h2>Installation</h2>
-```python $ pip install pddiktipy ```
+$ pip install pddiktipy
 
 <h2>Pengenalan</h2>
 <p>Kelas <code>api</code> dari modul <code>pddiktipy</code> adalah sebuah antarmuka yang dirancang untuk mengakses berbagai data melalui API. Kelas ini menyediakan berbagai metode untuk melakukan pencarian dan pengambilan informasi terkait mahasiswa, dosen, program studi, universitas, dan berbagai data pendidikan lainnya.</p>
@@ -42,17 +42,19 @@
 <h2>Cara Menggunakan</h2>
 
 <h3>1. Mengimpor Kelas dan Membuat Instance</h3>
-```python from pddiktipy import api
+```python
+from pddiktipy import api
 from pprint import pprint as p
 a = api()
 
 p(a.search_all('ilham riski'))
- ```
+```
 <p>Kode di atas mengimpor kelas <code>api</code> dari modul <code>pddiktipy</code> dan membuat sebuah instance dari kelas tersebut. Objek <code>a</code> sekarang dapat digunakan untuk memanggil berbagai metode yang tersedia dalam kelas <code>api</code>.</p>
 
 <h3>2. Menggunakan Metode <code>search_all</code></h3>
-```python p(a.search_all('ilham riski'))
- ```
+```python
+p(a.search_all('ilham riski'))
+```
 <p>Kode ini menggunakan metode <code>search_all</code> untuk melakukan pencarian dengan kata kunci <code>'ilham riski'</code>. Hasil pencarian akan dicetak dengan rapi menggunakan fungsi <code>pprint</code>.</p>
 
 <h2>Penjelasan Setiap Fungsi</h2>
@@ -65,7 +67,9 @@ Metode ini digunakan untuk melakukan pencarian di semua kategori berdasarkan kat
 <code>keyword (str)</code>: Kata kunci untuk pencarian.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.search_all('ilham riski') ```</p>
+```python
+result = a.search_all('ilham riski')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan hasil pencarian dalam bentuk JSON yang mencakup data dari berbagai kategori seperti mahasiswa, dosen, universitas, dan program studi.</p>
@@ -78,7 +82,9 @@ Metode ini digunakan untuk mencari mahasiswa berdasarkan kata kunci yang diberik
 <code>keyword (str)</code>: Nama mahasiswa untuk pencarian.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.search_mahasiswa('Ilham') ```</p>
+```python
+result = a.search_mahasiswa('Ilham')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data mahasiswa yang sesuai dengan kata kunci yang diberikan.</p>
@@ -91,7 +97,9 @@ Metode ini digunakan untuk mencari dosen berdasarkan kata kunci yang diberikan.<
 <code>keyword (str)</code>: Nama dosen untuk pencarian.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.search_dosen('Ilham') ```</p>
+```python
+result = a.search_dosen('Ilham')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data dosen yang sesuai dengan kata kunci yang diberikan.</p>
@@ -104,7 +112,9 @@ Metode ini digunakan untuk mencari universitas berdasarkan kata kunci yang diber
 <code>keyword (str)</code>: Nama universitas untuk pencarian.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.search_pt('Unika') ```</p>
+```python
+result = a.search_pt('Unika')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data universitas yang sesuai dengan kata kunci yang diberikan.</p>
@@ -117,7 +127,9 @@ Metode ini digunakan untuk mencari program studi berdasarkan kata kunci yang dib
 <code>keyword (str)</code>: Nama program studi untuk pencarian.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.search_prodi('Sistem Informasi') ```</p>
+```python
+result = a.search_prodi('Sistem Informasi')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data program studi yang sesuai dengan kata kunci yang diberikan.</p>
@@ -130,7 +142,9 @@ Metode ini digunakan untuk mendapatkan detail mahasiswa berdasarkan ID.</p>
 <code>mahasiswa_id (str)</code>: ID mahasiswa.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_detail_mhs('D0vgDgXXWzsaQdswAEPqHinsUH_5DUERcHgYt2c5eVXcKoWovccnVqzuxA_lRhZ-L8VPiA==') ```</p>
+```python
+result = a.get_detail_mhs('D0vgDgXXWzsaQdswAEPqHinsUH_5DUERcHgYt2c5eVXcKoWovccnVqzuxA_lRhZ-L8VPiA==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan detail mahasiswa yang sesuai dengan ID yang diberikan.</p>
@@ -143,7 +157,9 @@ Metode ini digunakan untuk mendapatkan profil dosen berdasarkan ID.</p>
 <code>dosen_id (str)</code>: ID dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_dosen_profile('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_dosen_profile('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan profil dosen yang sesuai dengan ID yang diberikan.</p>
@@ -156,7 +172,9 @@ Metode ini digunakan untuk mendapatkan data penelitian dosen berdasarkan ID.</p>
 <code>dosen_id (str)</code>: ID dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_dosen_penelitian('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_dosen_penelitian('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data penelitian dosen yang sesuai dengan ID yang diberikan.</p>
@@ -169,7 +187,9 @@ Metode ini digunakan untuk mendapatkan data pengabdian dosen berdasarkan ID.</p>
 <code>dosen_id (str)</code>: ID dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_dosen_pengabdian('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_dosen_pengabdian('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data pengabdian dosen yang sesuai dengan ID yang diberikan.</p>
@@ -182,7 +202,9 @@ Metode ini digunakan untuk mendapatkan data karya dosen berdasarkan ID.</p>
 <code>dosen_id (str)</code>: ID dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_dosen_karya('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_dosen_karya('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data karya dosen yang sesuai dengan ID yang diberikan.</p>
@@ -195,7 +217,9 @@ Metode ini digunakan untuk mendapatkan data paten dosen berdasarkan ID.</p>
 <code>dosen_id (str)</code>: ID dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_dosen_paten('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_dosen_paten('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data paten dosen yang sesuai dengan ID yang diberikan.</p>
@@ -208,7 +232,9 @@ Metode ini digunakan untuk mendapatkan data riwayat studi dosen berdasarkan ID.<
 <code>dosen_id (str)</code>: ID dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_dosen_study_history('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_dosen_study_history('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data riwayat studi dosen yang sesuai dengan ID yang diberikan.</p>
@@ -221,7 +247,9 @@ Metode ini digunakan untuk mendapatkan data riwayat mengajar dosen berdasarkan I
 <code>dosen_id (str)</code>: ID dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_dosen_teaching_history('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_dosen_teaching_history('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data riwayat mengajar dosen yang sesuai dengan ID yang diberikan.</p>
@@ -234,7 +262,9 @@ Metode ini digunakan untuk mendapatkan detail universitas berdasarkan ID.</p>
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_detail_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_detail_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan detail universitas yang sesuai dengan ID yang diberikan.</p>
@@ -248,7 +278,9 @@ Metode ini digunakan untuk mendapatkan data program studi di universitas tertent
 <code>tahun (int)</code>: Tahun akademik.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_prodi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==', 20241) ```</p>
+```python
+result = a.get_prodi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==', 20241)
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data program studi yang sesuai dengan ID universitas dan tahun akademik yang diberikan.</p>
@@ -261,7 +293,9 @@ Metode ini digunakan untuk mendapatkan logo universitas berdasarkan ID dan menge
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python logo_base64 = a.get_logo_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+logo_base64 = a.get_logo_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan logo universitas dalam format base64.</p>
@@ -274,7 +308,9 @@ Metode ini digunakan untuk mendapatkan rasio mahasiswa terhadap dosen di univers
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_rasio_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_rasio_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan rasio mahasiswa terhadap dosen di universitas yang sesuai dengan ID yang diberikan.</p>
@@ -287,7 +323,9 @@ Metode ini digunakan untuk mendapatkan data mahasiswa di universitas tertentu be
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_mahasiswa_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_mahasiswa_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data mahasiswa di universitas yang sesuai dengan ID yang diberikan.</p>
@@ -300,7 +338,9 @@ Metode ini digunakan untuk mendapatkan data waktu studi rata-rata mahasiswa di u
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_waktu_studi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_waktu_studi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data waktu studi rata-rata mahasiswa di universitas yang sesuai dengan ID yang diberikan.</p>
@@ -313,7 +353,9 @@ Metode ini digunakan untuk mendapatkan sejarah nama universitas berdasarkan ID.<
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_name_histories_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_name_histories_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan sejarah nama universitas yang sesuai dengan ID yang diberikan.</p>
@@ -326,7 +368,9 @@ Metode ini digunakan untuk mendapatkan kisaran biaya kuliah di universitas terte
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_cost_range_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_cost_range_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan kisaran biaya kuliah di universitas yang sesuai dengan ID yang diberikan.</p>
@@ -339,7 +383,9 @@ Metode ini digunakan untuk mendapatkan tingkat kelulusan di universitas tertentu
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_graduation_rate_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_graduation_rate_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan tingkat kelulusan di universitas yang sesuai dengan ID yang diberikan.</p>
@@ -352,7 +398,9 @@ Metode ini digunakan untuk mendapatkan jumlah program studi di universitas terte
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_jumlah_prodi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_jumlah_prodi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan jumlah program studi di universitas yang sesuai dengan ID yang diberikan.</p>
@@ -365,7 +413,9 @@ Metode ini digunakan untuk mendapatkan jumlah mahasiswa di universitas tertentu 
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_jumlah_mahasiswa_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_jumlah_mahasiswa_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan jumlah mahasiswa di universitas yang sesuai dengan ID yang diberikan.</p>
@@ -378,7 +428,9 @@ Metode ini digunakan untuk mendapatkan jumlah dosen di universitas tertentu berd
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_jumlah_dosen_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_jumlah_dosen_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan jumlah dosen di universitas yang sesuai dengan ID yang diberikan.</p>
@@ -391,7 +443,9 @@ Metode ini digunakan untuk mendapatkan nama file sarana dan prasarana di univers
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_sarpras_file_name_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_sarpras_file_name_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan nama file sarana dan prasarana di universitas yang sesuai dengan ID yang diberikan.</p>
@@ -404,7 +458,9 @@ Metode ini digunakan untuk mendapatkan data blob sarana dan prasarana di univers
 <code>pt_id (str)</code>: ID universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_sarpras_blob_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==') ```</p>
+```python
+result = a.get_sarpras_blob_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data blob sarana dan prasarana di universitas yang sesuai dengan ID yang diberikan.</p>
@@ -417,7 +473,9 @@ Metode ini digunakan untuk mendapatkan detail program studi berdasarkan ID.</p>
 <code>prodi_id (str)</code>: ID program studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_detail_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==') ```</p>
+```python
+result = a.get_detail_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan detail program studi yang sesuai dengan ID yang diberikan.</p>
@@ -430,7 +488,9 @@ Metode ini digunakan untuk mendapatkan deskripsi program studi berdasarkan ID.</
 <code>prodi_id (str)</code>: ID program studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_desc_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==') ```</p>
+```python
+result = a.get_desc_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan deskripsi program studi yang sesuai dengan ID yang diberikan.</p>
@@ -443,7 +503,9 @@ Metode ini digunakan untuk mendapatkan sejarah nama program studi berdasarkan ID
 <code>prodi_id (str)</code>: ID program studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_name_histories_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==') ```</p>
+```python
+result = a.get_name_histories_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan sejarah nama program studi yang sesuai dengan ID yang diberikan.</p>
@@ -456,7 +518,9 @@ Metode ini digunakan untuk mendapatkan jumlah mahasiswa dan dosen di program stu
 <code>prodi_id (str)</code>: ID program studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_num_students_lecturers_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==') ```</p>
+```python
+result = a.get_num_students_lecturers_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan jumlah mahasiswa dan dosen di program studi yang sesuai dengan ID yang diberikan.</p>
@@ -469,7 +533,9 @@ Metode ini digunakan untuk mendapatkan kisaran biaya kuliah di program studi ter
 <code>prodi_id (str)</code>: ID program studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_cost_range_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==') ```</p>
+```python
+result = a.get_cost_range_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan kisaran biaya kuliah di program studi yang sesuai dengan ID yang diberikan.</p>
@@ -482,7 +548,9 @@ Metode ini digunakan untuk mendapatkan kapasitas (daya tampung) program studi be
 <code>prodi_id (str)</code>: ID program studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_daya_tampung_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==') ```</p>
+```python
+result = a.get_daya_tampung_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan data kapasitas program studi yang sesuai dengan ID yang diberikan.</p>
@@ -495,7 +563,9 @@ Metode ini digunakan untuk mendapatkan rasio dosen terhadap mahasiswa di program
 <code>prodi_id (str)</code>: ID program studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_rasio_dosen_mahasiswa_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==') ```</p>
+```python
+result = a.get_rasio_dosen_mahasiswa_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan rasio dosen terhadap mahasiswa di program studi yang sesuai dengan ID yang diberikan.</p>
@@ -508,7 +578,9 @@ Metode ini digunakan untuk mendapatkan tingkat kelulusan di program studi terten
 <code>prodi_id (str)</code>: ID program studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_graduation_rate_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==') ```</p>
+```python
+result = a.get_graduation_rate_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan tingkat kelulusan di program studi yang sesuai dengan ID yang diberikan.</p>
@@ -521,7 +593,9 @@ Metode ini digunakan untuk mendapatkan logo program studi berdasarkan ID dan men
 <code>prodi_id (str)</code>: ID program studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python logo_base64 = a.get_logo_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==') ```</p>
+```python
+logo_base64 = a.get_logo_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan logo program studi dalam format base64.</p>
@@ -535,7 +609,9 @@ Metode ini digunakan untuk mendapatkan rasio homebase program studi berdasarkan 
 <code>tahun (int)</code>: Tahun akademik.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_homebase_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==', 20241) ```</p>
+```python
+result = a.get_homebase_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==', 20241)
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan rasio homebase program studi yang sesuai dengan ID dan tahun akademik yang diberikan.</p>
@@ -549,7 +625,9 @@ Metode ini digunakan untuk mendapatkan penghitung rasio program studi berdasarka
 <code>tahun (int)</code>: Tahun akademik.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_penghitung_ratio_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==', 20241) ```</p>
+```python
+result = a.get_penghitung_ratio_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==', 20241)
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan penghitung rasio program studi yang sesuai dengan ID dan tahun akademik yang diberikan.</p>
@@ -559,7 +637,9 @@ Mengembalikan penghitung rasio program studi yang sesuai dengan ID dan tahun aka
 Metode ini digunakan untuk mendapatkan jumlah dosen aktif.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_dosen_count_active() ```</p>
+```python
+result = a.get_dosen_count_active()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan jumlah dosen aktif.</p>
@@ -569,7 +649,9 @@ Mengembalikan jumlah dosen aktif.</p>
 Metode ini digunakan untuk mendapatkan jumlah mahasiswa aktif.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_mahasiswa_count_active() ```</p>
+```python
+result = a.get_mahasiswa_count_active()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan jumlah mahasiswa aktif.</p>
@@ -579,7 +661,9 @@ Mengembalikan jumlah mahasiswa aktif.</p>
 Metode ini digunakan untuk mendapatkan jumlah program studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_prodi_count() ```</p>
+```python
+result = a.get_prodi_count()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan jumlah program studi.</p>
@@ -589,7 +673,9 @@ Mengembalikan jumlah program studi.</p>
 Metode ini digunakan untuk mendapatkan jumlah universitas.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_pt_count() ```</p>
+```python
+result = a.get_pt_count()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan jumlah universitas.</p>
@@ -599,7 +685,9 @@ Mengembalikan jumlah universitas.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data keaktifan dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_dosen_keaktifan() ```</p>
+```python
+result = a.get_data_dosen_keaktifan()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data keaktifan dosen.</p>
@@ -609,7 +697,9 @@ Mengembalikan visualisasi data keaktifan dosen.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data bidang studi dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_dosen_bidang() ```</p>
+```python
+result = a.get_data_dosen_bidang()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data bidang studi dosen.</p>
@@ -619,7 +709,9 @@ Mengembalikan visualisasi data bidang studi dosen.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data distribusi jenis kelamin dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_dosen_jenis_kelamin() ```</p>
+```python
+result = a.get_data_dosen_jenis_kelamin()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data distribusi jenis kelamin dosen.</p>
@@ -629,7 +721,9 @@ Mengembalikan visualisasi data distribusi jenis kelamin dosen.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data jenjang akademik dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_dosen_jenjang() ```</p>
+```python
+result = a.get_data_dosen_jenjang()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data jenjang akademik dosen.</p>
@@ -639,7 +733,9 @@ Mengembalikan visualisasi data jenjang akademik dosen.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data ikatan kerja dosen.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_dosen_ikatan() ```</p>
+```python
+result = a.get_data_dosen_ikatan()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data ikatan kerja dosen.</p>
@@ -649,7 +745,9 @@ Mengembalikan visualisasi data ikatan kerja dosen.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data mahasiswa berdasarkan bidang studi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_mahasiswa_bidang() ```</p>
+```python
+result = a.get_data_mahasiswa_bidang()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data mahasiswa berdasarkan bidang studi.</p>
@@ -659,7 +757,9 @@ Mengembalikan visualisasi data mahasiswa berdasarkan bidang studi.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data distribusi jenis kelamin mahasiswa.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_mahasiswa_jenis_kelamin() ```</p>
+```python
+result = a.get_data_mahasiswa_jenis_kelamin()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data distribusi jenis kelamin mahasiswa.</p>
@@ -669,7 +769,9 @@ Mengembalikan visualisasi data distribusi jenis kelamin mahasiswa.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data mahasiswa berdasarkan jenjang pendidikan.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_mahasiswa_jenjang() ```</p>
+```python
+result = a.get_data_mahasiswa_jenjang()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data mahasiswa berdasarkan jenjang pendidikan.</p>
@@ -679,7 +781,9 @@ Mengembalikan visualisasi data mahasiswa berdasarkan jenjang pendidikan.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data mahasiswa berdasarkan kelompok lembaga.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_mahasiswa_kelompok_lembaga() ```</p>
+```python
+result = a.get_data_mahasiswa_kelompok_lembaga()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data mahasiswa berdasarkan kelompok lembaga.</p>
@@ -689,7 +793,9 @@ Mengembalikan visualisasi data mahasiswa berdasarkan kelompok lembaga.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data mahasiswa berdasarkan status (aktif, tidak aktif).</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_mahasiswa_status() ```</p>
+```python
+result = a.get_data_mahasiswa_status()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data mahasiswa berdasarkan status.</p>
@@ -699,7 +805,9 @@ Mengembalikan visualisasi data mahasiswa berdasarkan status.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data bentuk perguruan tinggi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_pt_bentuk() ```</p>
+```python
+result = a.get_data_pt_bentuk()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data bentuk perguruan tinggi.</p>
@@ -709,7 +817,9 @@ Mengembalikan visualisasi data bentuk perguruan tinggi.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data akreditasi perguruan tinggi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_pt_akreditasi() ```</p>
+```python
+result = a.get_data_pt_akreditasi()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data akreditasi perguruan tinggi.</p>
@@ -719,7 +829,9 @@ Mengembalikan visualisasi data akreditasi perguruan tinggi.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data perguruan tinggi berdasarkan kelompok pembina.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_pt_kelompok_pembina() ```</p>
+```python
+result = a.get_data_pt_kelompok_pembina()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data perguruan tinggi berdasarkan kelompok pembina.</p>
@@ -729,7 +841,9 @@ Mengembalikan visualisasi data perguruan tinggi berdasarkan kelompok pembina.</p
 Metode ini digunakan untuk mendapatkan visualisasi data perguruan tinggi berdasarkan provinsi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_pt_provinsi() ```</p>
+```python
+result = a.get_data_pt_provinsi()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data perguruan tinggi berdasarkan provinsi.</p>
@@ -739,7 +853,9 @@ Mengembalikan visualisasi data perguruan tinggi berdasarkan provinsi.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data program studi berdasarkan jenjang pendidikan.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_prodi_jenjang() ```</p>
+```python
+result = a.get_data_prodi_jenjang()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data program studi berdasarkan jenjang pendidikan.</p>
@@ -749,7 +865,9 @@ Mengembalikan visualisasi data program studi berdasarkan jenjang pendidikan.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data program studi berdasarkan akreditasi.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_prodi_akreditasi() ```</p>
+```python
+result = a.get_data_prodi_akreditasi()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data program studi berdasarkan akreditasi.</p>
@@ -759,7 +877,9 @@ Mengembalikan visualisasi data program studi berdasarkan akreditasi.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data program studi berdasarkan bidang ilmu.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_prodi_bidang_ilmu() ```</p>
+```python
+result = a.get_data_prodi_bidang_ilmu()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data program studi berdasarkan bidang ilmu.</p>
@@ -769,7 +889,9 @@ Mengembalikan visualisasi data program studi berdasarkan bidang ilmu.</p>
 Metode ini digunakan untuk mendapatkan visualisasi data program studi berdasarkan kelompok pembina.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_data_prodi_kelompok_pembina() ```</p>
+```python
+result = a.get_data_prodi_kelompok_pembina()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan visualisasi data program studi berdasarkan kelompok pembina.</p>
@@ -779,7 +901,9 @@ Mengembalikan visualisasi data program studi berdasarkan kelompok pembina.</p>
 Metode ini digunakan untuk mendapatkan daftar kontributor.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_contributor() ```</p>
+```python
+result = a.get_contributor()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan daftar kontributor.</p>
@@ -789,7 +913,9 @@ Mengembalikan daftar kontributor.</p>
 Metode ini digunakan untuk mendapatkan daftar berita.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_news() ```</p>
+```python
+result = a.get_news()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan daftar berita.</p>
@@ -799,7 +925,9 @@ Mengembalikan daftar berita.</p>
 Metode ini digunakan untuk mendapatkan bidang ilmu.</p>
 
 <p><strong>Contoh Penggunaan</strong>:<br>
-```python result = a.get_bidang_ilmu_prodi() ```</p>
+```python
+result = a.get_bidang_ilmu_prodi()
+```</p>
 
 <p><strong>Pengembalian</strong>:<br>
 Mengembalikan bidang ilmu.</p>
