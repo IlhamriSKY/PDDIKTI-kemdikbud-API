@@ -1,57 +1,77 @@
 import urllib.request as urllib
-import json
 import requests
 import base64
-
-# Encode
 from requests.utils import requote_uri
-# from urllib.parse import quote
 
-class helper(object):
-	def __init__(self):
-		self.url = "aHR0cHM6Ly9hcGktZnJvbnRlbmQua2VtZGlrYnVkLmdvLmlkLw=="
-		self.version = "v2"
+class helper:
+    def __init__(self):
+        self.url = "aHR0cHM6Ly9wZGRpa3RpLmtlbWRpa2J1ZC5nby5pZC9hcGk="
+        self.key = "3ed297db-db1c-4266-8bf4-a89f21c01317"
+        self.version = ""
 
-	def response(self, endpoint):
-		response = urllib.urlopen(endpoint)
-		data = json.loads(response.read())
-		return data
+    def response(self, endpoint):
+        """
+        Sends a GET request and returns the JSON response.
+        """
+        headers = {
+            'Content-Type': 'application/json',
+            'x-api-key': self.key
+        }
+        try:
+            response = requests.get(endpoint, headers=headers)
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            print(f"Error fetching data: {e}")
+            return None
 
-	def post(self, endpoint, payload):
-		headers = {
-			'Content-Type': 'text/plain'
-		}
-		response = requests.post(endpoint, data = payload)
-		return (response.json())
+    def base64_encode_image(self, image_content: bytes) -> str:
+        """
+        Encodes binary image content to a base64 string.
 
-	def get(self, endpoint, payload):
-		headers = {
-			'Content-Type': 'text/plain'
-		}
-		response = requests.get(endpoint, data = payload)
-		return (response.json())
+        Args:
+            image_content (bytes): The binary content of the image.
 
-	def get_text(self, endpoint):
-		payload = {}
-		response = requests.get(endpoint, data = payload)
-		return (response.text)
+        Returns:
+            str: Base64-encoded string of the image.
+        """
+        return base64.b64encode(image_content).decode('utf-8')
 
-	def parse(self, string):
-		url = requote_uri(string)
-		return url
+    def fetch_image_as_base64(self, url: str) -> str:
+        """
+        Fetches an image from the given URL and returns it as a base64-encoded string.
 
-	def base64_decode(self, string):
-		response = base64.b64decode(string)
-		return response.decode('utf-8')
+        Args:
+            url (str): URL of the image.
 
-	def base64_encode(self, string):
-		response = base64.b64encode(string)
-		return response.decode('utf-8')
+        Returns:
+            Optional[str]: Base64-encoded image string or None if an error occurs.
+        """
+        headers = {
+            'x-api-key': self.key
+        }
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()  # Raise an error for bad responses
+            return self.base64_encode_image(response.content)
+        except requests.RequestException as e:
+            print(f"Error fetching image: {e}")
+            return None
 
-	def endpoint(self):
-		endpoint = base64.b64decode(self.url).decode()
-		return endpoint
+    def parse(self, string):
+        """
+        Encodes a string into a valid URL format.
+        """
+        return requote_uri(string)
 
-	def withversion(self):
-		endpoint = base64.b64decode(self.url).decode()
-		return endpoint+self.version
+    def endpoint(self):
+        """
+        Decodes the base64-encoded URL stored in the class.
+        """
+        return base64.b64decode(self.url).decode('utf-8')
+
+    def with_version(self):
+        """
+        Appends a version to the decoded URL.
+        """
+        return self.endpoint() + self.version
