@@ -42,7 +42,8 @@
 <h2>Cara Menggunakan</h2>
 
 <h3>1. Mengimpor Kelas dan Membuat Instance</h3>
-<pre><code>from pddiktipy import api
+<pre><code>
+from pddiktipy import api
 from pprint import pprint as p
 a = api()
 
