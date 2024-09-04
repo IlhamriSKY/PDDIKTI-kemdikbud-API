@@ -21,11 +21,9 @@
     </a>
 </p>
 
-<h2>Introduction</h2>
-<p>Python API wrapper makes it easy for you to get data from <a href="https://pddikti.kemdikbud.go.id/">pddikti.kemdikbud.go.id</a>.</p>
-
 <h2>Change Log</h2>
 <ul>
+    <li>V 1.0.0 "First Release"</li>
     <li>V 2.0.0 "Latest Stable Version"</li>
 </ul>
 
@@ -38,16 +36,6 @@
 <h2>Installation</h2>
 <pre><code>$ pip install pddiktipy</code></pre>
 
-<h2>Synopsis</h2>
-<p>Usage:</p>
-<pre><code>from pddiktipy import api
-from pprint import pprint as p
-
-a = api()
-
-p(a.search_all('ilham riski'))
-</code></pre>
-
 <h2>Pengenalan</h2>
 <p>Kelas <code>api</code> dari modul <code>pddiktipy</code> adalah sebuah antarmuka yang dirancang untuk mengakses berbagai data melalui API. Kelas ini menyediakan berbagai metode untuk melakukan pencarian dan pengambilan informasi terkait mahasiswa, dosen, program studi, universitas, dan berbagai data pendidikan lainnya.</p>
 
@@ -56,8 +44,9 @@ p(a.search_all('ilham riski'))
 <h3>1. Mengimpor Kelas dan Membuat Instance</h3>
 <pre><code>from pddiktipy import api
 from pprint import pprint as p
-
 a = api()
+
+p(a.search_all('ilham riski'))
 </code></pre>
 <p>Kode di atas mengimpor kelas <code>api</code> dari modul <code>pddiktipy</code> dan membuat sebuah instance dari kelas tersebut. Objek <code>a</code> sekarang dapat digunakan untuk memanggil berbagai metode yang tersedia dalam kelas <code>api</code>.</p>
 
