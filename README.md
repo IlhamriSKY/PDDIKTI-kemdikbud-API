@@ -1,15 +1,18 @@
 # Python 3 API wrapper to retrieve data from [PDDIKTI](https://pddikti.kemdikbud.go.id/) Kemdikbud.
 
-[![License](https://img.shields.io/github/license/IlhamriSKY/PDDIKTI-kemdikbud-API.svg)](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/blob/master/LICENSE)
-[![BuildStatus](https://api.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API.svg?branch=main)](https://app.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API)
-[![Version 2.0.0](https://img.shields.io/badge/stable-2.0.0-brightgreen.svg "Version 2.0.0")](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API)
-[![python3.x](https://img.shields.io/badge/3.8%20%7C%203.9-blue.svg?&logo=python&label=Python)](https://www.python.org/downloads/release/python-391/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/39e00a8c8c1c4007a68d1ae3f53c03e7)](https://app.codacy.com/gh/IlhamriSKY/PDDIKTI-kemdikbud-API/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![BuildStatus](https://api.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API.svg?branch=main)](https://app.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API)
+[![python3.x](https://img.shields.io/badge/3.12.1-blue.svg?&logo=python&label=Python)](https://www.python.org/downloads/release/python-3121/)
+[![Version 2.0.1](https://img.shields.io/pypi/v/pddiktipy?logo=Python&logoColor=white&label=PyPI&color=c125ff)](https://pypi.org/project/pddiktipy/2.0.1/)
+[![Donwload](https://img.shields.io/pepy/dt/pddiktipy?logo=PyPI&logoColor=white&label=Downloads&color=c125ff)](https://www.pepy.tech/projects/pddiktipy)
+[![Author](https://img.shields.io/badge/Author-Ilham%20Riski-blue.svg?style=flat)](https://github.com/IlhamriSKY)
+[![License](https://img.shields.io/github/license/IlhamriSKY/PDDIKTI-kemdikbud-API.svg)](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/blob/master/LICENSE)
 
 ## Change Log
 
 *   V 1.0.0 "First Release"
-*   V 2.0.0 "Latest Stable Version"
+*   V 2.0.0 "Refactor codebase to align with the updated API"
+*   V 2.0.1 "Latest Stable Version"
 
 ## Requirements
 
@@ -65,7 +68,7 @@ result = a.search_all('ilham riski')
 ```
 
 **Return**:  
-Mengembalikan hasil pencarian dalam bentuk JSON yang mencakup data dari berbagai kategori seperti mahasiswa, dosen, universitas, dan program studi.
+Return hasil pencarian dalam bentuk JSON yang mencakup data dari berbagai kategori seperti mahasiswa, dosen, universitas, dan program studi.
 
 ### 2\. `search_mahasiswa(keyword: str) -> Optional[Dict[str, Any]]`
 
@@ -82,7 +85,7 @@ result = a.search_mahasiswa('Ilham')
 ```
 
 **Return**:  
-Mengembalikan data mahasiswa yang sesuai dengan kata kunci yang diberikan.
+Return data mahasiswa yang sesuai dengan kata kunci yang diberikan.
 
 ### 3\. `search_dosen(keyword: str) -> Optional[Dict[str, Any]]`
 
@@ -99,7 +102,7 @@ result = a.search_dosen('Ilham')
 ```
 
 **Return**:  
-Mengembalikan data dosen yang sesuai dengan kata kunci yang diberikan.
+Return data dosen yang sesuai dengan kata kunci yang diberikan.
 
 ### 4\. `search_pt(keyword: str) -> Optional[Dict[str, Any]]`
 
@@ -116,7 +119,7 @@ result = a.search_pt('Unika')
 ```
 
 **Return**:  
-Mengembalikan data universitas yang sesuai dengan kata kunci yang diberikan.
+Return data universitas yang sesuai dengan kata kunci yang diberikan.
 
 ### 5\. `search_prodi(keyword: str) -> Optional[Dict[str, Any]]`
 
@@ -133,7 +136,7 @@ result = a.search_prodi('Sistem Informasi')
 ```
 
 **Return**:  
-Mengembalikan data program studi yang sesuai dengan kata kunci yang diberikan.
+Return data program studi yang sesuai dengan kata kunci yang diberikan.
 
 ### 6\. `get_detail_mhs(mahasiswa_id: str) -> Optional[Dict[str, Any]]`
 
@@ -150,7 +153,7 @@ result = a.get_detail_mhs('D0vgDgXXWzsaQdswAEPqHinsUH_5DUERcHgYt2c5eVXcKoWovccnV
 ```
 
 **Return**:  
-Mengembalikan detail mahasiswa yang sesuai dengan ID yang diberikan.
+Return detail mahasiswa yang sesuai dengan ID yang diberikan.
 
 ### 7\. `get_dosen_profile(dosen_id: str) -> Optional[Dict[str, Any]]`
 
@@ -167,7 +170,7 @@ result = a.get_dosen_profile('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iS
 ```
 
 **Return**:  
-Mengembalikan profil dosen yang sesuai dengan ID yang diberikan.
+Return profil dosen yang sesuai dengan ID yang diberikan.
 
 ### 8\. `get_dosen_penelitian(dosen_id: str) -> Optional[Dict[str, Any]]`
 
@@ -184,7 +187,7 @@ result = a.get_dosen_penelitian('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X
 ```
 
 **Return**:  
-Mengembalikan data penelitian dosen yang sesuai dengan ID yang diberikan.
+Return data penelitian dosen yang sesuai dengan ID yang diberikan.
 
 ### 9\. `get_dosen_pengabdian(dosen_id: str) -> Optional[Dict[str, Any]]`
 
@@ -201,7 +204,7 @@ result = a.get_dosen_pengabdian('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X
 ```
 
 **Return**:  
-Mengembalikan data pengabdian dosen yang sesuai dengan ID yang diberikan.
+Return data pengabdian dosen yang sesuai dengan ID yang diberikan.
 
 ### 10\. `get_dosen_karya(dosen_id: str) -> Optional[Dict[str, Any]]`
 
@@ -218,7 +221,7 @@ result = a.get_dosen_karya('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaP
 ```
 
 **Return**:  
-Mengembalikan data karya dosen yang sesuai dengan ID yang diberikan.
+Return data karya dosen yang sesuai dengan ID yang diberikan.
 
 ### 11\. `get_dosen_paten(dosen_id: str) -> Optional[Dict[str, Any]]`
 
@@ -235,7 +238,7 @@ result = a.get_dosen_paten('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaP
 ```
 
 **Return**:  
-Mengembalikan data paten dosen yang sesuai dengan ID yang diberikan.
+Return data paten dosen yang sesuai dengan ID yang diberikan.
 
 ### 12\. `get_dosen_study_history(dosen_id: str) -> Optional[Dict[str, Any]]`
 
@@ -252,7 +255,7 @@ result = a.get_dosen_study_history('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6
 ```
 
 **Return**:  
-Mengembalikan data riwayat studi dosen yang sesuai dengan ID yang diberikan.
+Return data riwayat studi dosen yang sesuai dengan ID yang diberikan.
 
 ### 13\. `get_dosen_teaching_history(dosen_id: str) -> Optional[Dict[str, Any]]`
 
@@ -269,7 +272,7 @@ result = a.get_dosen_teaching_history('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUD
 ```
 
 **Return**:  
-Mengembalikan data riwayat mengajar dosen yang sesuai dengan ID yang diberikan.
+Return data riwayat mengajar dosen yang sesuai dengan ID yang diberikan.
 
 ### 14\. `get_detail_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -286,7 +289,7 @@ result = a.get_detail_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHx
 ```
 
 **Return**:  
-Mengembalikan detail universitas yang sesuai dengan ID yang diberikan.
+Return detail universitas yang sesuai dengan ID yang diberikan.
 
 ### 15\. `get_prodi_pt(pt_id: str, tahun: int) -> Optional[Dict[str, Any]]`
 
@@ -304,12 +307,12 @@ result = a.get_prodi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxb
 ```
 
 **Return**:  
-Mengembalikan data program studi yang sesuai dengan ID universitas dan tahun akademik yang diberikan.
+Return data program studi yang sesuai dengan ID universitas dan tahun akademik yang diberikan.
 
 ### 16\. `get_logo_pt(pt_id: str) -> Optional[str]`
 
 **Deskripsi**:  
-Metode ini digunakan untuk mendapatkan logo universitas berdasarkan ID dan mengembalikannya sebagai string yang telah di-encode dengan base64.
+Metode ini digunakan untuk mendapatkan logo universitas berdasarkan ID dan Returnnya sebagai string yang telah di-encode dengan base64.
 
 **Parameter**:  
 `pt_id (str)`: ID universitas.
@@ -321,7 +324,7 @@ logo_base64 = a.get_logo_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSa
 ```
 
 **Return**:  
-Mengembalikan logo universitas dalam format base64.
+Return logo universitas dalam format base64.
 
 ### 17\. `get_rasio_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -338,7 +341,7 @@ result = a.get_rasio_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxb
 ```
 
 **Return**:  
-Mengembalikan rasio mahasiswa terhadap dosen di universitas yang sesuai dengan ID yang diberikan.
+Return rasio mahasiswa terhadap dosen di universitas yang sesuai dengan ID yang diberikan.
 
 ### 18\. `get_mahasiswa_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -355,7 +358,7 @@ result = a.get_mahasiswa_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSa
 ```
 
 **Return**:  
-Mengembalikan data mahasiswa di universitas yang sesuai dengan ID yang diberikan.
+Return data mahasiswa di universitas yang sesuai dengan ID yang diberikan.
 
 ### 19\. `get_waktu_studi_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -372,7 +375,7 @@ result = a.get_waktu_studi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6i
 ```
 
 **Return**:  
-Mengembalikan data waktu studi rata-rata mahasiswa di universitas yang sesuai dengan ID yang diberikan.
+Return data waktu studi rata-rata mahasiswa di universitas yang sesuai dengan ID yang diberikan.
 
 ### 20\. `get_name_histories_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -389,7 +392,7 @@ result = a.get_name_histories_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0
 ```
 
 **Return**:  
-Mengembalikan sejarah nama universitas yang sesuai dengan ID yang diberikan.
+Return sejarah nama universitas yang sesuai dengan ID yang diberikan.
 
 ### 21\. `get_cost_range_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -406,7 +409,7 @@ result = a.get_cost_range_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iS
 ```
 
 **Return**:  
-Mengembalikan kisaran biaya kuliah di universitas yang sesuai dengan ID yang diberikan.
+Return kisaran biaya kuliah di universitas yang sesuai dengan ID yang diberikan.
 
 ### 22\. `get_graduation_rate_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -423,7 +426,7 @@ result = a.get_graduation_rate_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L
 ```
 
 **Return**:  
-Mengembalikan tingkat kelulusan di universitas yang sesuai dengan ID yang diberikan.
+Return tingkat kelulusan di universitas yang sesuai dengan ID yang diberikan.
 
 ### 23\. `get_jumlah_prodi_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -440,7 +443,7 @@ result = a.get_jumlah_prodi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6
 ```
 
 **Return**:  
-Mengembalikan jumlah program studi di universitas yang sesuai dengan ID yang diberikan.
+Return jumlah program studi di universitas yang sesuai dengan ID yang diberikan.
 
 ### 24\. `get_jumlah_mahasiswa_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -457,7 +460,7 @@ result = a.get_jumlah_mahasiswa_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6
 ```
 
 **Return**:  
-Mengembalikan jumlah mahasiswa di universitas yang sesuai dengan ID yang diberikan.
+Return jumlah mahasiswa di universitas yang sesuai dengan ID yang diberikan.
 
 ### 25\. `get_jumlah_dosen_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -474,7 +477,7 @@ result = a.get_jumlah_dosen_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6
 ```
 
 **Return**:  
-Mengembalikan jumlah dosen di universitas yang sesuai dengan ID yang diberikan.
+Return jumlah dosen di universitas yang sesuai dengan ID yang diberikan.
 
 ### 26\. `get_sarpras_file_name_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -491,7 +494,7 @@ result = a.get_sarpras_file_name_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj
 ```
 
 **Return**:  
-Mengembalikan nama file sarana dan prasarana di universitas yang sesuai dengan ID yang diberikan.
+Return nama file sarana dan prasarana di universitas yang sesuai dengan ID yang diberikan.
 
 ### 27\. `get_sarpras_blob_pt(pt_id: str) -> Optional[Dict[str, Any]]`
 
@@ -508,7 +511,7 @@ result = a.get_sarpras_blob_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6
 ```
 
 **Return**:  
-Mengembalikan data blob sarana dan prasarana di universitas yang sesuai dengan ID yang diberikan.
+Return data blob sarana dan prasarana di universitas yang sesuai dengan ID yang diberikan.
 
 ### 28\. `get_detail_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
 
@@ -525,7 +528,7 @@ result = a.get_detail_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9Ok
 ```
 
 **Return**:  
-Mengembalikan detail program studi yang sesuai dengan ID yang diberikan.
+Return detail program studi yang sesuai dengan ID yang diberikan.
 
 ### 29\. `get_desc_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
 
@@ -542,7 +545,7 @@ result = a.get_desc_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBw
 ```
 
 **Return**:  
-Mengembalikan deskripsi program studi yang sesuai dengan ID yang diberikan.
+Return deskripsi program studi yang sesuai dengan ID yang diberikan.
 
 ### 30\. `get_name_histories_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
 
@@ -559,7 +562,7 @@ result = a.get_name_histories_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu
 ```
 
 **Return**:  
-Mengembalikan sejarah nama program studi yang sesuai dengan ID yang diberikan.
+Return sejarah nama program studi yang sesuai dengan ID yang diberikan.
 
 ### 31\. `get_num_students_lecturers_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
 
@@ -576,7 +579,7 @@ result = a.get_num_students_lecturers_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJ
 ```
 
 **Return**:  
-Mengembalikan jumlah mahasiswa dan dosen di program studi yang sesuai dengan ID yang diberikan.
+Return jumlah mahasiswa dan dosen di program studi yang sesuai dengan ID yang diberikan.
 
 ### 32\. `get_cost_range_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
 
@@ -593,7 +596,7 @@ result = a.get_cost_range_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPe
 ```
 
 **Return**:  
-Mengembalikan kisaran biaya kuliah di program studi yang sesuai dengan ID yang diberikan.
+Return kisaran biaya kuliah di program studi yang sesuai dengan ID yang diberikan.
 
 ### 33\. `get_daya_tampung_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
 
@@ -610,7 +613,7 @@ result = a.get_daya_tampung_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6Z
 ```
 
 **Return**:  
-Mengembalikan data kapasitas program studi yang sesuai dengan ID yang diberikan.
+Return data kapasitas program studi yang sesuai dengan ID yang diberikan.
 
 ### 34\. `get_rasio_dosen_mahasiswa_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
 
@@ -627,7 +630,7 @@ result = a.get_rasio_dosen_mahasiswa_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJx
 ```
 
 **Return**:  
-Mengembalikan rasio dosen terhadap mahasiswa di program studi yang sesuai dengan ID yang diberikan.
+Return rasio dosen terhadap mahasiswa di program studi yang sesuai dengan ID yang diberikan.
 
 ### 35\. `get_graduation_rate_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
 
@@ -644,12 +647,12 @@ result = a.get_graduation_rate_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblU
 ```
 
 **Return**:  
-Mengembalikan tingkat kelulusan di program studi yang sesuai dengan ID yang diberikan.
+Return tingkat kelulusan di program studi yang sesuai dengan ID yang diberikan.
 
 ### 36\. `get_logo_prodi(prodi_id: str) -> Optional[str]`
 
 **Deskripsi**:  
-Metode ini digunakan untuk mendapatkan logo program studi berdasarkan ID dan mengembalikannya sebagai string yang telah di-encode dengan base64.
+Metode ini digunakan untuk mendapatkan logo program studi berdasarkan ID dan Returnnya sebagai string yang telah di-encode dengan base64.
 
 **Parameter**:  
 `prodi_id (str)`: ID program studi.
@@ -661,7 +664,7 @@ logo_base64 = a.get_logo_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ
 ```
 
 **Return**:  
-Mengembalikan logo program studi dalam format base64.
+Return logo program studi dalam format base64.
 
 ### 37\. `get_homebase_prodi(prodi_id: str, tahun: int) -> Optional[Dict[str, Any]]`
 
@@ -679,7 +682,7 @@ result = a.get_homebase_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9
 ```
 
 **Return**:  
-Mengembalikan rasio homebase program studi yang sesuai dengan ID dan tahun akademik yang diberikan.
+Return rasio homebase program studi yang sesuai dengan ID dan tahun akademik yang diberikan.
 
 ### 38\. `get_penghitung_ratio_prodi(prodi_id: str, tahun: int) -> Optional[Dict[str, Any]]`
 
@@ -697,7 +700,7 @@ result = a.get_penghitung_ratio_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqibl
 ```
 
 **Return**:  
-Mengembalikan penghitung rasio program studi yang sesuai dengan ID dan tahun akademik yang diberikan.
+Return penghitung rasio program studi yang sesuai dengan ID dan tahun akademik yang diberikan.
 
 ### 39\. `get_dosen_count_active() -> Optional[Dict[str, Any]]`
 
@@ -711,7 +714,7 @@ result = a.get_dosen_count_active()
 ```
 
 **Return**:  
-Mengembalikan jumlah dosen aktif.
+Return jumlah dosen aktif.
 
 ### 40\. `get_mahasiswa_count_active() -> Optional[Dict[str, Any]]`
 
@@ -725,7 +728,7 @@ result = a.get_mahasiswa_count_active()
 ```
 
 **Return**:  
-Mengembalikan jumlah mahasiswa aktif.
+Return jumlah mahasiswa aktif.
 
 ### 41\. `get_prodi_count() -> Optional[Dict[str, Any]]`
 
@@ -739,7 +742,7 @@ result = a.get_prodi_count()
 ```
 
 **Return**:  
-Mengembalikan jumlah program studi.
+Return jumlah program studi.
 
 ### 42\. `get_pt_count() -> Optional[Dict[str, Any]]`
 
@@ -753,7 +756,7 @@ result = a.get_pt_count()
 ```
 
 **Return**:  
-Mengembalikan jumlah universitas.
+Return jumlah universitas.
 
 ### 43\. `get_data_dosen_keaktifan() -> Optional[Dict[str, Any]]`
 
@@ -767,7 +770,7 @@ result = a.get_data_dosen_keaktifan()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data keaktifan dosen.
+Return visualisasi data keaktifan dosen.
 
 ### 44\. `get_data_dosen_bidang() -> Optional[Dict[str, Any]]`
 
@@ -781,7 +784,7 @@ result = a.get_data_dosen_bidang()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data bidang studi dosen.
+Return visualisasi data bidang studi dosen.
 
 ### 45\. `get_data_dosen_jenis_kelamin() -> Optional[Dict[str, Any]]`
 
@@ -795,7 +798,7 @@ result = a.get_data_dosen_jenis_kelamin()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data distribusi jenis kelamin dosen.
+Return visualisasi data distribusi jenis kelamin dosen.
 
 ### 46\. `get_data_dosen_jenjang() -> Optional[Dict[str, Any]]`
 
@@ -809,7 +812,7 @@ result = a.get_data_dosen_jenjang()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data jenjang akademik dosen.
+Return visualisasi data jenjang akademik dosen.
 
 ### 47\. `get_data_dosen_ikatan() -> Optional[Dict[str, Any]]`
 
@@ -823,7 +826,7 @@ result = a.get_data_dosen_ikatan()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data ikatan kerja dosen.
+Return visualisasi data ikatan kerja dosen.
 
 ### 48\. `get_data_mahasiswa_bidang() -> Optional[Dict[str, Any]]`
 
@@ -837,7 +840,7 @@ result = a.get_data_mahasiswa_bidang()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data mahasiswa berdasarkan bidang studi.
+Return visualisasi data mahasiswa berdasarkan bidang studi.
 
 ### 49\. `get_data_mahasiswa_jenis_kelamin() -> Optional[Dict[str, Any]]`
 
@@ -851,7 +854,7 @@ result = a.get_data_mahasiswa_jenis_kelamin()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data distribusi jenis kelamin mahasiswa.
+Return visualisasi data distribusi jenis kelamin mahasiswa.
 
 ### 50\. `get_data_mahasiswa_jenjang() -> Optional[Dict[str, Any]]`
 
@@ -865,7 +868,7 @@ result = a.get_data_mahasiswa_jenjang()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data mahasiswa berdasarkan jenjang pendidikan.
+Return visualisasi data mahasiswa berdasarkan jenjang pendidikan.
 
 ### 51\. `get_data_mahasiswa_kelompok_lembaga() -> Optional[Dict[str, Any]]`
 
@@ -879,7 +882,7 @@ result = a.get_data_mahasiswa_kelompok_lembaga()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data mahasiswa berdasarkan kelompok lembaga.
+Return visualisasi data mahasiswa berdasarkan kelompok lembaga.
 
 ### 52\. `get_data_mahasiswa_status() -> Optional[Dict[str, Any]]`
 
@@ -893,7 +896,7 @@ result = a.get_data_mahasiswa_status()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data mahasiswa berdasarkan status.
+Return visualisasi data mahasiswa berdasarkan status.
 
 ### 53\. `get_data_pt_bentuk() -> Optional[Dict[str, Any]]`
 
@@ -907,7 +910,7 @@ result = a.get_data_pt_bentuk()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data bentuk perguruan tinggi.
+Return visualisasi data bentuk perguruan tinggi.
 
 ### 54\. `get_data_pt_akreditasi() -> Optional[Dict[str, Any]]`
 
@@ -921,7 +924,7 @@ result = a.get_data_pt_akreditasi()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data akreditasi perguruan tinggi.
+Return visualisasi data akreditasi perguruan tinggi.
 
 ### 55\. `get_data_pt_kelompok_pembina() -> Optional[Dict[str, Any]]`
 
@@ -935,7 +938,7 @@ result = a.get_data_pt_kelompok_pembina()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data perguruan tinggi berdasarkan kelompok pembina.
+Return visualisasi data perguruan tinggi berdasarkan kelompok pembina.
 
 ### 56\. `get_data_pt_provinsi() -> Optional[Dict[str, Any]]`
 
@@ -949,7 +952,7 @@ result = a.get_data_pt_provinsi()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data perguruan tinggi berdasarkan provinsi.
+Return visualisasi data perguruan tinggi berdasarkan provinsi.
 
 ### 57\. `get_data_prodi_jenjang() -> Optional[Dict[str, Any]]`
 
@@ -963,7 +966,7 @@ result = a.get_data_prodi_jenjang()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data program studi berdasarkan jenjang pendidikan.
+Return visualisasi data program studi berdasarkan jenjang pendidikan.
 
 ### 58\. `get_data_prodi_akreditasi() -> Optional[Dict[str, Any]]`
 
@@ -977,7 +980,7 @@ result = a.get_data_prodi_akreditasi()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data program studi berdasarkan akreditasi.
+Return visualisasi data program studi berdasarkan akreditasi.
 
 ### 59\. `get_data_prodi_bidang_ilmu() -> Optional[Dict[str, Any]]`
 
@@ -991,7 +994,7 @@ result = a.get_data_prodi_bidang_ilmu()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data program studi berdasarkan bidang ilmu.
+Return visualisasi data program studi berdasarkan bidang ilmu.
 
 ### 60\. `get_data_prodi_kelompok_pembina() -> Optional[Dict[str, Any]]`
 
@@ -1005,7 +1008,7 @@ result = a.get_data_prodi_kelompok_pembina()
 ```
 
 **Return**:  
-Mengembalikan visualisasi data program studi berdasarkan kelompok pembina.
+Return visualisasi data program studi berdasarkan kelompok pembina.
 
 ### 61\. `get_contributor() -> Optional[Dict[str, Any]]`
 
@@ -1019,7 +1022,7 @@ result = a.get_contributor()
 ```
 
 **Return**:  
-Mengembalikan daftar kontributor.
+Return daftar kontributor.
 
 ### 62\. `get_news() -> Optional[Dict[str, Any]]`
 
@@ -1033,7 +1036,7 @@ result = a.get_news()
 ```
 
 **Return**:  
-Mengembalikan daftar berita.
+Return daftar berita.
 
 ### 63\. `get_bidang_ilmu_prodi() -> Optional[Dict[str, Any]]`
 
@@ -1047,11 +1050,11 @@ result = a.get_bidang_ilmu_prodi()
 ```
 
 **Return**:  
-Mengembalikan bidang ilmu.
+Return bidang ilmu.
 
 ## Catatan Tambahan
 
-*   Semua metode yang ada di dalam kelas `api` menggunakan decorator `@handle_errors` yang menangani kesalahan yang terjadi selama pemanggilan API. Jika ada kesalahan, maka akan dicatat ke log dan metode tersebut akan mengembalikan `None`.
-*   Beberapa metode mengembalikan data dalam format JSON, dan untuk memudahkan pemahaman dan analisis data tersebut, Anda dapat menggunakan modul `pprint` seperti yang telah dicontohkan.
+*   Semua metode yang ada di dalam kelas `api` menggunakan decorator `@handle_errors` yang menangani kesalahan yang terjadi selama pemanggilan API. Jika ada kesalahan, maka akan dicatat ke log dan metode tersebut akan Return `None`.
+*   Beberapa metode Return data dalam format JSON, dan untuk memudahkan pemahaman dan analisis data tersebut, Anda dapat menggunakan modul `pprint` seperti yang telah dicontohkan.
 
 Dokumentasi ini bertujuan untuk mempermudah Anda dalam menggunakan kelas `api` dan memanfaatkan berbagai fungsi yang disediakannya. Jangan ragu untuk mencoba dan menyesuaikan contoh penggunaan sesuai dengan kebutuhan Anda.
