@@ -7,7 +7,6 @@ class helper:
     def __init__(self):
         self.url = "aHR0cHM6Ly9wZGRpa3RpLmtlbWRpa2J1ZC5nby5pZC9hcGk="
         self.key = "3ed297db-db1c-4266-8bf4-a89f21c01317"
-        self.version = ""
 
     def response(self, endpoint):
         """

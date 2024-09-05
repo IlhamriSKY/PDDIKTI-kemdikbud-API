@@ -2,7 +2,6 @@ import logging
 from typing import Any, Dict, Optional, Callable
 from .helper import helper
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -302,7 +301,7 @@ class api:
         endpoint = f"{self.api_link}/dosen/teaching-history/{self.H.parse(dosen_id)}"
         return self.H.response(endpoint)
 
-    #Data Universities
+    # Data Universities
     @handle_errors
     def get_detail_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
         """
@@ -582,7 +581,7 @@ class api:
         endpoint = f"{self.api_link}/pt/sarpras-blob/{self.H.parse(pt_id)}"
         return self.H.response(endpoint)
     
-    #Data Study Programs
+    # Data Study Programs
     @handle_errors
     def get_detail_prodi(self, prodi_id: str) -> Optional[Dict[str, Any]]:
         """
