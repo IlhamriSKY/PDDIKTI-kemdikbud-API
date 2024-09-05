@@ -1,10 +1,12 @@
 # Python 3 API wrapper to retrieve data from [PDDIKTI](https://pddikti.kemdikbud.go.id/) Kemdikbud.
 
-[![License](https://img.shields.io/github/license/IlhamriSKY/PDDIKTI-kemdikbud-API.svg)](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/blob/master/LICENSE)
-[![BuildStatus](https://api.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API.svg?branch=main)](https://app.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API)
-[![Version 2.0.0](https://img.shields.io/badge/stable-2.0.0-brightgreen.svg "Version 2.0.0")](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API)
-[![python3.x](https://img.shields.io/badge/3.8%20%7C%203.9-blue.svg?&logo=python&label=Python)](https://www.python.org/downloads/release/python-391/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/39e00a8c8c1c4007a68d1ae3f53c03e7)](https://app.codacy.com/gh/IlhamriSKY/PDDIKTI-kemdikbud-API/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![BuildStatus](https://api.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API.svg?branch=main)](https://app.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API)
+[![python3.x](https://img.shields.io/badge/3.12.1-blue.svg?&logo=python&label=Python)](https://www.python.org/downloads/release/python-3121/)
+[![Version 2.0.0](https://img.shields.io/pypi/v/pddiktipy?logo=Python&logoColor=white&label=PyPI&color=c125ff)](https://pypi.org/project/pddiktipy/2.0.0/)
+[![Donwload](https://img.shields.io/pepy/dt/pddiktipy?logo=PyPI&logoColor=white&label=Downloads&color=c125ff)](https://www.pepy.tech/projects/pddiktipy)
+[![Author](https://img.shields.io/badge/Author-Ilham%20Riski-blue.svg?style=flat)](https://github.com/IlhamriSKY)
+[![License](https://img.shields.io/github/license/IlhamriSKY/PDDIKTI-kemdikbud-API.svg)](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/blob/master/LICENSE)
 
 ## Change Log
 
