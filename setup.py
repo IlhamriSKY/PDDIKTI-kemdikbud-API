@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='pddiktipy',  
-    version='2.0.3',
+    version='2.0.4',
     packages=['pddiktipy'],
 	install_requires=['requests'],
     author="Ilham Riski",

@@ -12,7 +12,8 @@
 
 *   V 1.0.0 "First Release"
 *   V 2.0.0 "Refactor codebase to align with the updated API"
-*   V 2.0.3 "Latest Stable Version"
+*   V 2.0.3 "Fix code bug"
+*   V 2.0.4 "Fix new endpoint and headers" Latest Stable Version
 
 ## Requirements
 
