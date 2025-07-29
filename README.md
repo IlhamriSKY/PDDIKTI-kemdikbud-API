@@ -261,6 +261,11 @@ Dokumentasi ini mencakup:
 - ✅ **Context Manager Support**: Resource management yang aman
 - ✅ **Performance Improvements**: Connection pooling dan retry strategy
 - ✅ **Bug Fixes**: Integer parsing di `get_prodi_pt()` dan validasi parameter
+- 🚨 **Breaking Changes**: 
+  - **Parameter Type Handling**: `get_prodi_pt()` sekarang secara otomatis mengkonversi integer ke string
+  - **Enhanced Validation**: Validasi parameter yang lebih ketat untuk semua methods
+  - **Exception Types**: Beberapa error sekarang menggunakan custom exceptions (`ValidationError`, `APIResponseError`)
+  - **Year Range Validation**: Parameter tahun dibatasi range 1900-2100 untuk konsistensi data
 
 ### Versi Sebelumnya
 - **V 2.0.4**: Enhanced error handling dan documentation improvements
