@@ -1,0 +1,30 @@
+# Testing Requirements untuk PDDIKTI API
+
+# Core testing framework
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# Enhanced testing capabilities  
+pytest-html>=3.0.0
+pytest-xdist>=3.0.0
+pytest-mock>=3.0.0
+pytest-timeout>=2.0.0
+
+# Code quality
+flake8>=5.0.0
+black>=22.0.0
+isort>=5.0.0
+
+# Type checking
+mypy>=1.0.0
+
+# Documentation testing
+doctest
+
+# Performance testing
+pytest-benchmark>=4.0.0
+
+# Additional utilities
+freezegun>=1.2.0  # For time-based testing
+responses>=0.22.0  # HTTP mocking
+factory-boy>=3.2.0  # Test data factories

@@ -4,3 +4,23 @@
 __version__ = "1.0.0"
 
 from .api import api
+from .exceptions import (
+    PDDIKTIError,
+    APIConnectionError,
+    APITimeoutError,
+    APIRateLimitError,
+    APIResponseError,
+    ValidationError,
+    AuthenticationError
+)
+
+__all__ = [
+    'api',
+    'PDDIKTIError',
+    'APIConnectionError', 
+    'APITimeoutError',
+    'APIRateLimitError',
+    'APIResponseError',
+    'ValidationError',
+    'AuthenticationError'
+]
