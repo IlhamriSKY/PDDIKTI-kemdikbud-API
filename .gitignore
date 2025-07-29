@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Test files (not to be committed)
+test_comprehensive.py
+test_issue_*.py
+test_yoga_issue.py
+verify_fix.py
+ISSUE_*.md
+*_test.py
+*_testing.py
