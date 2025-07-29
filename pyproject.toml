@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pddiktipy"
+version = "2.0.5"
+description = "Unofficial Python API wrapper to get data at PDDIKTI Kemdikbud"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Ilham Riski", email = "ilhamrisky21@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "requests>=2.25.0",
+]
+requires-python = ">=3.7"
+
+[project.urls]
+Homepage = "https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API"
+Repository = "https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API"
+Issues = "https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/issues"
+
+[tool.setuptools.packages.find]
+include = ["pddiktipy*"]
+exclude = ["tests*", "tests.*"]
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.package-data]
+pddiktipy = []

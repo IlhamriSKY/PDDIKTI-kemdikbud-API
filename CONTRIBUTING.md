@@ -118,7 +118,7 @@ Penjelasan singkat tentang bug.
 - pddiktipy: 2.0.4
 ```
 
-## � Feature Request Template
+## ➡️ Feature Request Template
 
 ```markdown
 **Problem**
