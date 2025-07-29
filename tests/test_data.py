@@ -4,7 +4,7 @@ This file contains all test data variables used by the test suite.
 """
 
 # =============================================================================
-# CORE TEST DATA - Universitas Unika Soegijapranata
+# CORE TEST DATA - Edit this file to update test data
 # =============================================================================
 
 # Institutional data

@@ -28,6 +28,11 @@ ATTRIBUTION REQUIREMENT:
 When using this software, please include proper attribution to the original source
 and acknowledge that this is an unofficial wrapper for PDDIKTI API.
 
+DATA DISCLAIMER:
+All data accessed through this API wrapper belongs to PDDIKTI. This project only
+provides a convenient interface to access publicly available data. Users are
+responsible for complying with PDDIKTI's terms of service and data usage policies.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,8 +40,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-DATA DISCLAIMER:
-All data accessed through this API wrapper belongs to PDDIKTI. This project only
-provides a convenient interface to access publicly available data. Users are
-responsible for complying with PDDIKTI's terms of service and data usage policies.
