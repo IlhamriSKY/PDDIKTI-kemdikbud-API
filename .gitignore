@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 # Test files (not to be committed)
+app.py
 test_comprehensive.py
 test_issue_*.py
 test_yoga_issue.py

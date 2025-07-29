@@ -31,7 +31,7 @@ Dokumentasi lengkap untuk semua method dan endpoint yang tersedia dalam library 
 from pddiktipy import api
 
 with api() as client:
-    hasil = client.search_all('Universitas Indonesia')
+    hasil = client.search_all('Unika Soegijapranata')
     print(hasil)
 ```
 
@@ -63,7 +63,7 @@ with api() as client:
 **Contoh Penggunaan**:
 ```python
 with api() as client:
-    mahasiswa = client.search_mahasiswa('Ahmad Rizki')
+    mahasiswa = client.search_mahasiswa('Ilham Riski')
     if mahasiswa and mahasiswa.get('data'):
         for mhs in mahasiswa['data']:
             print(f"Nama: {mhs['nama']}")
@@ -93,7 +93,7 @@ with api() as client:
 **Contoh Penggunaan**:
 ```python
 with api() as client:
-    dosen = client.search_dosen('Prof. Dr. Ahmad')
+    dosen = client.search_dosen('Prof. Dr. Ilham')
     if dosen and dosen.get('data'):
         for dsn in dosen['data']:
             print(f"Nama: {dsn['nama']}")
@@ -122,7 +122,7 @@ with api() as client:
 **Contoh Penggunaan**:
 ```python
 with api() as client:
-    pt = client.search_pt('Institut Teknologi')
+    pt = client.search_pt('Unika Soegijapranata')
     if pt and pt.get('data'):
         for universitas in pt['data']:
             print(f"Nama: {universitas['nama']}")
@@ -180,7 +180,7 @@ with api() as client:
 ```python
 with api() as client:
     # Dapatkan ID dari pencarian terlebih dahulu
-    search_result = client.search_mahasiswa('Ahmad')
+    search_result = client.search_mahasiswa('Ilham')
     if search_result and search_result.get('data'):
         student_id = search_result['data'][0]['id']
         detail = client.get_detail_mhs(student_id)
@@ -898,7 +898,7 @@ except Exception as e:
 ### 3. Batch Processing untuk Multiple Queries
 ```python
 with api() as client:
-    keywords = ['UI', 'ITB', 'UGM']
+    keywords = ['Unika Soegijapranata', 'ITB', 'UGM']
     results = {}
     
     for keyword in keywords:
@@ -913,7 +913,7 @@ with api() as client:
 ### 4. Validasi Data Response
 ```python
 with api() as client:
-    result = client.search_mahasiswa('Ahmad')
+    result = client.search_mahasiswa('Ilham')
     
     if result and isinstance(result, dict) and result.get('data'):
         for student in result['data']:
@@ -925,18 +925,3 @@ with api() as client:
 ```
 
 ---
-
-## 🔗 Navigation
-
-- [⬅️ Kembali ke README](README.md)
-- [📋 Daftar Isi](#-daftar-isi)
-- [🔍 Method Pencarian](#-method-pencarian)
-- [👨‍🎓 Data Mahasiswa](#-data-mahasiswa)
-- [👨‍🏫 Data Dosen](#-data-dosen)
-- [🏛️ Data Perguruan Tinggi](#️-data-perguruan-tinggi)
-- [📚 Data Program Studi](#-data-program-studi)
-- [📊 Data Statistik & Visualisasi](#-data-statistik--visualisasi)
-
----
-
-**📝 Catatan**: Dokumentasi ini mencakup semua method yang tersedia dalam library `pddiktipy`. Untuk contoh penggunaan yang lebih detail dan tutorial step-by-step, silakan merujuk ke [README.md](README.md).

@@ -2,23 +2,13 @@
 
 Semua perubahan penting pada proyek ini akan didokumentasikan di file ini.
 
-## [2.0.5] - 2025-07-29 (Versi Terbaru Stabil) 🔥
-
-### 🚨 Perubahan Besar (Breaking Changes)
-- **Struktur Dokumentasi**: Perombakan besar-besaran dokumentasi
-- **Panduan Kontribusi**: Proses kontribusi yang disederhanakan
-- **Organisasi File**: Struktur proyek yang ditingkatkan
+## [2.0.5] - 2025-07-29 (Versi Terbaru Stabil) 🔥 [🚨 Breaking Changes]
 
 ### ✅ Ditambahkan
 - **Dokumentasi API Lengkap**: `API_DOCUMENTATION.md` yang komprehensif
   - 📖 **63 Method API** terdokumentasi lengkap dengan contoh
   - 🔍 **Method Pencarian**: `search_all`, `search_mahasiswa`, `search_dosen`, `search_pt`, `search_prodi`
   - 👨‍🎓 **Data Mahasiswa**: `get_detail_mhs` dengan informasi profil lengkap
-  - 👨‍🏫 **Data Dosen**: 7 method dosen termasuk penelitian dan riwayat mengajar
-  - 🏛️ **Data Perguruan Tinggi**: 13 method PT dengan statistik dan analitik
-  - 📚 **Program Studi**: 12 method prodi dengan metrik detail
-  - 📊 **Statistik & Visualisasi**: 22 method visualisasi data
-  - 📰 **Data Umum**: Berita, kontributor, dan method utilitas
 
 - **Sistem Dokumentasi yang Ditingkatkan**:
   - 🏠 **README.md**: Penulisan ulang lengkap dalam bahasa Indonesia
@@ -34,13 +24,11 @@ Semua perubahan penting pada proyek ini akan didokumentasikan di file ini.
 
 ### 🔄 Diubah
 - **Bahasa Dokumentasi**: Lokalisasi penuh bahasa Indonesia
-- **Contoh Kode**: Skenario penggunaan dunia nyata
 - **Struktur Proyek**: Organisasi dan aksesibilitas yang lebih baik
 - **Pengalaman Pengguna**: Setup dan proses kontribusi yang disederhanakan
 
 ### 📚 Cakupan Dokumentasi
 - **100% Cakupan API**: Semua 63 method dari `api.py` terdokumentasi
-- **Contoh Multi-Platform**: Contoh command Windows/Linux
 - **Mobile-Friendly**: Format dokumentasi responsif
 - **Siap IDE**: Dukungan IntelliSense yang ditingkatkan
 
@@ -49,15 +37,6 @@ Semua perubahan penting pada proyek ini akan didokumentasikan di file ini.
 - **Penanganan Error**: Hierarki exception kustom terdokumentasi
 - **Performa**: Connection pooling dan strategi retry
 - **Kualitas Kode**: Keterbacaan dan maintainability yang ditingkatkan
-
-### 📊 Statistik
-- **Method API**: 63 terdokumentasi lengkap
-- **Ukuran Dokumentasi**: 
-  - `API_DOCUMENTATION.md`: 943 baris
-  - `README.md`: Ditingkatkan dengan contoh
-  - `CONTRIBUTING.md`: Disederhanakan menjadi 120 baris
-- **Bahasa**: 100% lokalisasi Indonesia
-- **Contoh**: 50+ contoh kode disediakan
 
 ## [2.0.4] - 2024-Rilis Sebelumnya
 
@@ -202,29 +181,5 @@ Semua perubahan penting pada proyek ini akan didokumentasikan di file ini.
 | 2.0.3 | 2024          | 58     | 12    | 5             | Dasar       |
 | 2.0.0 | 2024          | 55     | 10    | -             | Minimal     |
 | 1.0.0 | 2023          | 30     | 5     | -             | Tidak Ada   |
-
----
-
-## 🤝 Berkontribusi
-
-Untuk berkontribusi pada proyek ini:
-
-1. Fork repository
-2. Buat feature branch (`git checkout -b feature/fitur-hebat`)
-3. Commit perubahan (`git commit -m 'Tambah fitur hebat'`)
-4. Push branch (`git push origin feature/fitur-hebat`)
-5. Buka Pull Request
-
-### Panduan Kontribusi
-- Ikuti gaya kode dan formatting yang ada
-- Tambah test untuk fitur baru
-- Perbarui dokumentasi untuk perubahan
-- Pastikan semua test lolos sebelum submit PR
-
----
-
-## 📄 Lisensi
-
-Didistribusikan di bawah Lisensi MIT. Lihat file [LICENSE](LICENSE) untuk informasi lebih lanjut.
 
 ---
