@@ -1,1061 +1,347 @@
-# Python 3 API wrapper to retrieve data from [PDDIKTI](https://pddikti.kemdikbud.go.id/) Kemdikbud.
+# 🎓 PDDIKTI API Python Wrapper
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/39e00a8c8c1c4007a68d1ae3f53c03e7)](https://app.codacy.com/gh/IlhamriSKY/PDDIKTI-kemdikbud-API/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![BuildStatus](https://api.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API.svg?branch=main)](https://app.travis-ci.com/IlhamriSKY/PDDIKTI-kemdikbud-API)
 [![python3.x](https://img.shields.io/badge/3.12.1-blue.svg?&logo=python&label=Python)](https://www.python.org/downloads/release/python-3121/)
-[![Version 2.0.4](https://img.shields.io/pypi/v/pddiktipy?logo=Python&logoColor=white&label=PyPI&color=c125ff)](https://pypi.org/project/pddiktipy/2.0.4/)
-[![Donwload](https://img.shields.io/pepy/dt/pddiktipy?logo=PyPI&logoColor=white&label=Downloads&color=c125ff)](https://www.pepy.tech/projects/pddiktipy)
+[![Version 2.0.5](https://img.shields.io/pypi/v/pddiktipy?logo=Python&logoColor=white&label=PyPI&color=c125ff)](https://pypi.org/project/pddiktipy/2.0.5/)
+[![Downloads](https://img.shields.io/pepy/dt/pddiktipy?logo=PyPI&logoColor=white&label=Downloads&color=c125ff)](https://www.pepy.tech/projects/pddiktipy)
 [![Author](https://img.shields.io/badge/Author-Ilham%20Riski-blue.svg?style=flat)](https://github.com/IlhamriSKY)
 [![License](https://img.shields.io/github/license/IlhamriSKY/PDDIKTI-kemdikbud-API.svg)](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/blob/master/LICENSE)
 
-## Change Log
+> **Library Python untuk mengakses data PDDIKTI Kemdikbud dengan mudah, aman, dan terdokumentasi lengkap**
 
-*   V 1.0.0 "First Release"
-*   V 2.0.0 "Refactor codebase to align with the updated API"
-*   V 2.0.3 "Fix code bug"
-*   V 2.0.4 "Fix new endpoint and headers" Latest Stable Version
+Wrapper API Python yang powerful dan user-friendly untuk mengambil data dari [PDDIKTI](https://pddikti.kemdikbud.go.id/) Kemdikbud. Library ini menyediakan interface yang mudah digunakan untuk mengakses data mahasiswa, dosen, perguruan tinggi, dan program studi di Indonesia dengan dukungan type hints, error handling yang komprehensif, dan dokumentasi lengkap.
 
-## Requirements
+## 📋 Daftar Isi
 
-*   Python 3.\*
-*   requests
+- [🚀 Fitur Utama](#-fitur-utama)
+- [📦 Instalasi](#-instalasi)
+- [⚡ Quick Start](#-quick-start)
+- [📚 Penggunaan Lengkap](#-penggunaan-lengkap)
+- [🔧 Fitur Lanjutan](#-fitur-lanjutan)
+- [⚠️ Error Handling](#️-error-handling)
+- [📊 Struktur Data Response](#-struktur-data-response)
+- [📖 Dokumentasi API Lengkap](#-dokumentasi-api-lengkap)
+- [🔄 Changelog](#-changelog)
+- [📋 Requirements](#-requirements)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
 
-## Installation
+## 🚀 Fitur Utama
 
-```sh
-$ pip install pddiktipy
+- ✅ **Type Hints Lengkap**: Full type annotations untuk better IDE support
+- ✅ **Error Handling Komprehensif**: Custom exceptions dan validation
+- ✅ **Context Manager Support**: Resource management yang aman
+- ✅ **Dokumentasi Lengkap**: Google-style docstrings dengan 63 API methods
+- ✅ **Performance Optimized**: Connection pooling dan retry strategy
+- ✅ **Indonesian Context**: Field explanations dalam konteks pendidikan Indonesia
+- ✅ **Flexible Parameters**: Support untuk integer dan string parameters
+- ✅ **Production Ready**: Enhanced validation dan logging
+
+## 📦 Instalasi
+
+```bash
+pip install pddiktipy
 ```
 
-## Pengenalan
+**Requirements:**
+- Python 3.7+
+- requests
+- urllib3
 
-Kelas `api` dari modul `pddiktipy` adalah sebuah antarmuka yang dirancang untuk mengakses berbagai data melalui API. Kelas ini menyediakan berbagai metode untuk melakukan pencarian dan pengambilan informasi terkait mahasiswa, dosen, program studi, universitas, dan berbagai data pendidikan lainnya.
+## ⚡ Quick Start
 
-## Cara Menggunakan
-
-### 1\. Mengimpor Kelas dan Membuat Instance
-
-``` python
+```python
 from pddiktipy import api
-from pprint import pprint as p
-a = api()
-
-p(a.search_all('ilham riski'))
-```
-
-Kode di atas mengimpor kelas `api` dari modul `pddiktipy` dan membuat sebuah instance dari kelas tersebut. Objek `a` sekarang dapat digunakan untuk memanggil berbagai metode yang tersedia dalam kelas `api`.
-
-### 2\. Menggunakan Metode `search_all`
-
-``` python
-p(a.search_all('ilham riski'))
-```
-
-Kode ini menggunakan metode `search_all` untuk melakukan pencarian dengan kata kunci `'ilham riski'`. Hasil pencarian akan dicetak dengan rapi menggunakan fungsi `pprint`.
-
-## Penjelasan Setiap Fungsi
-
-### 1\. `search_all(keyword: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk melakukan pencarian di semua kategori berdasarkan kata kunci yang diberikan.
-
-**Parameter**:  
-`keyword (str)`: Kata kunci untuk pencarian.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.search_all('ilham riski')
-```
-
-**Return**:  
-Return hasil pencarian dalam bentuk JSON yang mencakup data dari berbagai kategori seperti mahasiswa, dosen, universitas, dan program studi.
-
-### 2\. `search_mahasiswa(keyword: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mencari mahasiswa berdasarkan kata kunci yang diberikan.
-
-**Parameter**:  
-`keyword (str)`: Nama mahasiswa untuk pencarian.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.search_mahasiswa('Ilham')
-```
-
-**Return**:  
-Return data mahasiswa yang sesuai dengan kata kunci yang diberikan.
-
-### 3\. `search_dosen(keyword: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mencari dosen berdasarkan kata kunci yang diberikan.
-
-**Parameter**:  
-`keyword (str)`: Nama dosen untuk pencarian.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.search_dosen('Ilham')
-```
-
-**Return**:  
-Return data dosen yang sesuai dengan kata kunci yang diberikan.
-
-### 4\. `search_pt(keyword: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mencari universitas berdasarkan kata kunci yang diberikan.
-
-**Parameter**:  
-`keyword (str)`: Nama universitas untuk pencarian.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.search_pt('Unika')
-```
-
-**Return**:  
-Return data universitas yang sesuai dengan kata kunci yang diberikan.
-
-### 5\. `search_prodi(keyword: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mencari program studi berdasarkan kata kunci yang diberikan.
-
-**Parameter**:  
-`keyword (str)`: Nama program studi untuk pencarian.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.search_prodi('Sistem Informasi')
-```
-
-**Return**:  
-Return data program studi yang sesuai dengan kata kunci yang diberikan.
-
-### 6\. `get_detail_mhs(mahasiswa_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan detail mahasiswa berdasarkan ID.
-
-**Parameter**:  
-`mahasiswa_id (str)`: ID mahasiswa.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_detail_mhs('D0vgDgXXWzsaQdswAEPqHinsUH_5DUERcHgYt2c5eVXcKoWovccnVqzuxA_lRhZ-L8VPiA==')
-```
-
-**Return**:  
-Return detail mahasiswa yang sesuai dengan ID yang diberikan.
-
-### 7\. `get_dosen_profile(dosen_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan profil dosen berdasarkan ID.
-
-**Parameter**:  
-`dosen_id (str)`: ID dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_dosen_profile('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return profil dosen yang sesuai dengan ID yang diberikan.
-
-### 8\. `get_dosen_penelitian(dosen_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan data penelitian dosen berdasarkan ID.
-
-**Parameter**:  
-`dosen_id (str)`: ID dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_dosen_penelitian('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return data penelitian dosen yang sesuai dengan ID yang diberikan.
-
-### 9\. `get_dosen_pengabdian(dosen_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan data pengabdian dosen berdasarkan ID.
-
-**Parameter**:  
-`dosen_id (str)`: ID dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_dosen_pengabdian('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return data pengabdian dosen yang sesuai dengan ID yang diberikan.
-
-### 10\. `get_dosen_karya(dosen_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan data karya dosen berdasarkan ID.
-
-**Parameter**:  
-`dosen_id (str)`: ID dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_dosen_karya('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return data karya dosen yang sesuai dengan ID yang diberikan.
-
-### 11\. `get_dosen_paten(dosen_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan data paten dosen berdasarkan ID.
-
-**Parameter**:  
-`dosen_id (str)`: ID dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_dosen_paten('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return data paten dosen yang sesuai dengan ID yang diberikan.
-
-### 12\. `get_dosen_study_history(dosen_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan data riwayat studi dosen berdasarkan ID.
-
-**Parameter**:  
-`dosen_id (str)`: ID dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_dosen_study_history('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return data riwayat studi dosen yang sesuai dengan ID yang diberikan.
-
-### 13\. `get_dosen_teaching_history(dosen_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan data riwayat mengajar dosen berdasarkan ID.
-
-**Parameter**:  
-`dosen_id (str)`: ID dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_dosen_teaching_history('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return data riwayat mengajar dosen yang sesuai dengan ID yang diberikan.
-
-### 14\. `get_detail_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan detail universitas berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_detail_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return detail universitas yang sesuai dengan ID yang diberikan.
-
-### 15\. `get_prodi_pt(pt_id: str, tahun: int) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan data program studi di universitas tertentu berdasarkan ID dan tahun akademik.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.  
-`tahun (int)`: Tahun akademik.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_prodi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==', 20241)
-```
-
-**Return**:  
-Return data program studi yang sesuai dengan ID universitas dan tahun akademik yang diberikan.
-
-### 16\. `get_logo_pt(pt_id: str) -> Optional[str]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan logo universitas berdasarkan ID dan Returnnya sebagai string yang telah di-encode dengan base64.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-logo_base64 = a.get_logo_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return logo universitas dalam format base64.
-
-### 17\. `get_rasio_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan rasio mahasiswa terhadap dosen di universitas tertentu berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_rasio_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return rasio mahasiswa terhadap dosen di universitas yang sesuai dengan ID yang diberikan.
-
-### 18\. `get_mahasiswa_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan data mahasiswa di universitas tertentu berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_mahasiswa_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return data mahasiswa di universitas yang sesuai dengan ID yang diberikan.
-
-### 19\. `get_waktu_studi_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan data waktu studi rata-rata mahasiswa di universitas tertentu berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_waktu_studi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return data waktu studi rata-rata mahasiswa di universitas yang sesuai dengan ID yang diberikan.
-
-### 20\. `get_name_histories_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan sejarah nama universitas berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_name_histories_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return sejarah nama universitas yang sesuai dengan ID yang diberikan.
-
-### 21\. `get_cost_range_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan kisaran biaya kuliah di universitas tertentu berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_cost_range_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return kisaran biaya kuliah di universitas yang sesuai dengan ID yang diberikan.
-
-### 22\. `get_graduation_rate_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan tingkat kelulusan di universitas tertentu berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_graduation_rate_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return tingkat kelulusan di universitas yang sesuai dengan ID yang diberikan.
-
-### 23\. `get_jumlah_prodi_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan jumlah program studi di universitas tertentu berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_jumlah_prodi_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return jumlah program studi di universitas yang sesuai dengan ID yang diberikan.
-
-### 24\. `get_jumlah_mahasiswa_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan jumlah mahasiswa di universitas tertentu berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_jumlah_mahasiswa_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return jumlah mahasiswa di universitas yang sesuai dengan ID yang diberikan.
-
-### 25\. `get_jumlah_dosen_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan jumlah dosen di universitas tertentu berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_jumlah_dosen_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return jumlah dosen di universitas yang sesuai dengan ID yang diberikan.
-
-### 26\. `get_sarpras_file_name_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan nama file sarana dan prasarana di universitas tertentu berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_sarpras_file_name_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return nama file sarana dan prasarana di universitas yang sesuai dengan ID yang diberikan.
-
-### 27\. `get_sarpras_blob_pt(pt_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan data blob sarana dan prasarana di universitas tertentu berdasarkan ID.
-
-**Parameter**:  
-`pt_id (str)`: ID universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_sarpras_blob_pt('790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w==')
-```
-
-**Return**:  
-Return data blob sarana dan prasarana di universitas yang sesuai dengan ID yang diberikan.
-
-### 28\. `get_detail_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan detail program studi berdasarkan ID.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_detail_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
-```
-
-**Return**:  
-Return detail program studi yang sesuai dengan ID yang diberikan.
-
-### 29\. `get_desc_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan deskripsi program studi berdasarkan ID.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_desc_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
-```
-
-**Return**:  
-Return deskripsi program studi yang sesuai dengan ID yang diberikan.
-
-### 30\. `get_name_histories_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan sejarah nama program studi berdasarkan ID.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_name_histories_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
-```
-
-**Return**:  
-Return sejarah nama program studi yang sesuai dengan ID yang diberikan.
-
-### 31\. `get_num_students_lecturers_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan jumlah mahasiswa dan dosen di program studi tertentu berdasarkan ID.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_num_students_lecturers_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
-```
-
-**Return**:  
-Return jumlah mahasiswa dan dosen di program studi yang sesuai dengan ID yang diberikan.
-
-### 32\. `get_cost_range_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan kisaran biaya kuliah di program studi tertentu berdasarkan ID.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_cost_range_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
-```
-
-**Return**:  
-Return kisaran biaya kuliah di program studi yang sesuai dengan ID yang diberikan.
-
-### 33\. `get_daya_tampung_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan kapasitas (daya tampung) program studi berdasarkan ID.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_daya_tampung_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
-```
-
-**Return**:  
-Return data kapasitas program studi yang sesuai dengan ID yang diberikan.
-
-### 34\. `get_rasio_dosen_mahasiswa_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan rasio dosen terhadap mahasiswa di program studi tertentu berdasarkan ID.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_rasio_dosen_mahasiswa_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
-```
-
-**Return**:  
-Return rasio dosen terhadap mahasiswa di program studi yang sesuai dengan ID yang diberikan.
-
-### 35\. `get_graduation_rate_prodi(prodi_id: str) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan tingkat kelulusan di program studi tertentu berdasarkan ID.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_graduation_rate_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
-```
-
-**Return**:  
-Return tingkat kelulusan di program studi yang sesuai dengan ID yang diberikan.
-
-### 36\. `get_logo_prodi(prodi_id: str) -> Optional[str]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan logo program studi berdasarkan ID dan Returnnya sebagai string yang telah di-encode dengan base64.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-logo_base64 = a.get_logo_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==')
-```
-
-**Return**:  
-Return logo program studi dalam format base64.
-
-### 37\. `get_homebase_prodi(prodi_id: str, tahun: int) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan rasio homebase program studi berdasarkan ID dan tahun akademik.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.  
-`tahun (int)`: Tahun akademik.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_homebase_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==', 20241)
-```
-
-**Return**:  
-Return rasio homebase program studi yang sesuai dengan ID dan tahun akademik yang diberikan.
-
-### 38\. `get_penghitung_ratio_prodi(prodi_id: str, tahun: int) -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan penghitung rasio program studi berdasarkan ID dan tahun akademik.
-
-**Parameter**:  
-`prodi_id (str)`: ID program studi.  
-`tahun (int)`: Tahun akademik.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_penghitung_ratio_prodi('lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg==', 20241)
-```
-
-**Return**:  
-Return penghitung rasio program studi yang sesuai dengan ID dan tahun akademik yang diberikan.
-
-### 39\. `get_dosen_count_active() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan jumlah dosen aktif.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_dosen_count_active()
-```
-
-**Return**:  
-Return jumlah dosen aktif.
-
-### 40\. `get_mahasiswa_count_active() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan jumlah mahasiswa aktif.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_mahasiswa_count_active()
-```
-
-**Return**:  
-Return jumlah mahasiswa aktif.
-
-### 41\. `get_prodi_count() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan jumlah program studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_prodi_count()
-```
-
-**Return**:  
-Return jumlah program studi.
-
-### 42\. `get_pt_count() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan jumlah universitas.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_pt_count()
-```
-
-**Return**:  
-Return jumlah universitas.
-
-### 43\. `get_data_dosen_keaktifan() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data keaktifan dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_dosen_keaktifan()
-```
-
-**Return**:  
-Return visualisasi data keaktifan dosen.
-
-### 44\. `get_data_dosen_bidang() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data bidang studi dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_dosen_bidang()
-```
-
-**Return**:  
-Return visualisasi data bidang studi dosen.
-
-### 45\. `get_data_dosen_jenis_kelamin() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data distribusi jenis kelamin dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_dosen_jenis_kelamin()
-```
-
-**Return**:  
-Return visualisasi data distribusi jenis kelamin dosen.
-
-### 46\. `get_data_dosen_jenjang() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data jenjang akademik dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_dosen_jenjang()
-```
-
-**Return**:  
-Return visualisasi data jenjang akademik dosen.
-
-### 47\. `get_data_dosen_ikatan() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data ikatan kerja dosen.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_dosen_ikatan()
-```
-
-**Return**:  
-Return visualisasi data ikatan kerja dosen.
-
-### 48\. `get_data_mahasiswa_bidang() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data mahasiswa berdasarkan bidang studi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_mahasiswa_bidang()
-```
-
-**Return**:  
-Return visualisasi data mahasiswa berdasarkan bidang studi.
-
-### 49\. `get_data_mahasiswa_jenis_kelamin() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data distribusi jenis kelamin mahasiswa.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_mahasiswa_jenis_kelamin()
-```
-
-**Return**:  
-Return visualisasi data distribusi jenis kelamin mahasiswa.
-
-### 50\. `get_data_mahasiswa_jenjang() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data mahasiswa berdasarkan jenjang pendidikan.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_mahasiswa_jenjang()
-```
-
-**Return**:  
-Return visualisasi data mahasiswa berdasarkan jenjang pendidikan.
-
-### 51\. `get_data_mahasiswa_kelompok_lembaga() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data mahasiswa berdasarkan kelompok lembaga.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_mahasiswa_kelompok_lembaga()
-```
-
-**Return**:  
-Return visualisasi data mahasiswa berdasarkan kelompok lembaga.
-
-### 52\. `get_data_mahasiswa_status() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data mahasiswa berdasarkan status (aktif, tidak aktif).
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_mahasiswa_status()
-```
-
-**Return**:  
-Return visualisasi data mahasiswa berdasarkan status.
-
-### 53\. `get_data_pt_bentuk() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data bentuk perguruan tinggi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_pt_bentuk()
-```
-
-**Return**:  
-Return visualisasi data bentuk perguruan tinggi.
-
-### 54\. `get_data_pt_akreditasi() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data akreditasi perguruan tinggi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_pt_akreditasi()
-```
-
-**Return**:  
-Return visualisasi data akreditasi perguruan tinggi.
-
-### 55\. `get_data_pt_kelompok_pembina() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data perguruan tinggi berdasarkan kelompok pembina.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_pt_kelompok_pembina()
-```
-
-**Return**:  
-Return visualisasi data perguruan tinggi berdasarkan kelompok pembina.
-
-### 56\. `get_data_pt_provinsi() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data perguruan tinggi berdasarkan provinsi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_pt_provinsi()
-```
-
-**Return**:  
-Return visualisasi data perguruan tinggi berdasarkan provinsi.
-
-### 57\. `get_data_prodi_jenjang() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data program studi berdasarkan jenjang pendidikan.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_prodi_jenjang()
-```
-
-**Return**:  
-Return visualisasi data program studi berdasarkan jenjang pendidikan.
-
-### 58\. `get_data_prodi_akreditasi() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data program studi berdasarkan akreditasi.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_prodi_akreditasi()
-```
-
-**Return**:  
-Return visualisasi data program studi berdasarkan akreditasi.
-
-### 59\. `get_data_prodi_bidang_ilmu() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data program studi berdasarkan bidang ilmu.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_prodi_bidang_ilmu()
+from pprint import pprint
+
+# Menggunakan context manager (recommended)
+with api() as client:
+    # Cari semua data dengan keyword
+    hasil = client.search_all('Universitas Indonesia')
+    pprint(hasil)
+    
+    # Cari mahasiswa spesifik
+    mahasiswa = client.search_mahasiswa('Ahmad Rizki')
+    pprint(mahasiswa)
 ```
-
-**Return**:  
-Return visualisasi data program studi berdasarkan bidang ilmu.
-
-### 60\. `get_data_prodi_kelompok_pembina() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan visualisasi data program studi berdasarkan kelompok pembina.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_data_prodi_kelompok_pembina()
-```
-
-**Return**:  
-Return visualisasi data program studi berdasarkan kelompok pembina.
-
-### 61\. `get_contributor() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan daftar kontributor.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_contributor()
-```
-
-**Return**:  
-Return daftar kontributor.
-
-### 62\. `get_news() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan daftar berita.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_news()
-```
-
-**Return**:  
-Return daftar berita.
-
-### 63\. `get_bidang_ilmu_prodi() -> Optional[Dict[str, Any]]`
-
-**Deskripsi**:  
-Metode ini digunakan untuk mendapatkan bidang ilmu.
-
-**Contoh Penggunaan**:  
-
-``` python
-result = a.get_bidang_ilmu_prodi()
-```
-
-**Return**:  
-Return bidang ilmu.
-
-## Catatan Tambahan
-
-*   Semua metode yang ada di dalam kelas `api` menggunakan decorator `@handle_errors` yang menangani kesalahan yang terjadi selama pemanggilan API. Jika ada kesalahan, maka akan dicatat ke log dan metode tersebut akan Return `None`.
-*   Beberapa metode Return data dalam format JSON, dan untuk memudahkan pemahaman dan analisis data tersebut, Anda dapat menggunakan modul `pprint` seperti yang telah dicontohkan.
 
-Dokumentasi ini bertujuan untuk mempermudah Anda dalam menggunakan kelas `api` dan memanfaatkan berbagai fungsi yang disediakannya. Jangan ragu untuk mencoba dan menyesuaikan contoh penggunaan sesuai dengan kebutuhan Anda.
+## 📚 Penggunaan Lengkap
+
+### Context Manager
+
+**Direkomendasikan** untuk menggunakan context manager untuk resource management yang aman:
+
+```python
+from pddiktipy import api
+
+# Context manager otomatis handle resource cleanup
+with api() as client:
+    hasil = client.search_all('data yang dicari')
+    print(hasil)
+# Resource otomatis dibersihkan di sini
+```
+
+### Contoh Pencarian Data
+
+#### 1. Pencarian Mahasiswa
+
+```python
+with api() as client:
+    mahasiswa = client.search_mahasiswa('Ahmad Rizki')
+    
+    if mahasiswa and mahasiswa.get('data'):
+        for mhs in mahasiswa['data']:
+            print(f"Nama: {mhs['nama']}")
+            print(f"NIM: {mhs['nim']}")
+            print(f"Universitas: {mhs['nama_pt']}")
+            print(f"Prodi: {mhs['nama_prodi']}")
+            print("-" * 30)
+```
+
+#### 2. Pencarian Dosen
+
+```python
+with api() as client:
+    dosen = client.search_dosen('Prof. Dr.')
+    
+    if dosen and dosen.get('data'):
+        for dsn in dosen['data']:
+            print(f"Nama: {dsn['nama']}")
+            print(f"NIDN: {dsn['nidn']}")
+            print(f"Universitas: {dsn['nama_pt']}")
+```
+
+#### 3. Detail Perguruan Tinggi
+
+```python
+with api() as client:
+    # Cari universitas
+    pt_search = client.search_pt('Universitas Indonesia')
+    if pt_search and pt_search.get('data'):
+        pt_id = pt_search['data'][0]['id']
+        
+        # Detail universitas
+        detail_pt = client.get_detail_pt(pt_id)
+        if detail_pt:
+            print(f"Nama: {detail_pt['nama_pt']}")
+            print(f"Alamat: {detail_pt['alamat']}")
+            print(f"Website: {detail_pt['website']}")
+            print(f"Akreditasi: {detail_pt['akreditasi_pt']}")
+```
+
+## 🔧 Fitur Lanjutan
+
+### Flexible Year Parameter
+
+```python
+with api() as client:
+    pt_id = "some_university_id"
+    
+    # Kedua format ini didukung (bug integer parsing telah diperbaiki)
+    prodi_int = client.get_prodi_pt(pt_id, 20241)      # Integer
+    prodi_str = client.get_prodi_pt(pt_id, "20241")    # String
+```
+
+### Batch Processing
+
+```python
+with api() as client:
+    keywords = ['Universitas Indonesia', 'ITB', 'UGM']
+    
+    results = {}
+    for keyword in keywords:
+        results[keyword] = client.search_pt(keyword)
+        
+    for keyword, result in results.items():
+        if result and result.get('data'):
+            print(f"{keyword}: {len(result['data'])} hasil")
+```
+
+## ⚠️ Error Handling
+
+Library ini menyediakan error handling yang komprehensif:
+
+```python
+from pddiktipy import api
+from pddiktipy.exceptions import (
+    ValidationError, 
+    APIConnectionError, 
+    APITimeoutError,
+    PDDIKTIError
+)
+
+try:
+    with api() as client:
+        # Ini akan raise ValidationError karena keyword kosong
+        result = client.search_mahasiswa("")
+        
+except ValidationError as e:
+    print(f"Error validasi: {e}")
+except APIConnectionError as e:
+    print(f"Error koneksi: {e}")
+except APITimeoutError as e:
+    print(f"Request timeout: {e}")
+except PDDIKTIError as e:
+    print(f"Error PDDIKTI API: {e}")
+```
+
+### Custom Exceptions
+
+- **`PDDIKTIError`**: Base exception untuk semua error
+- **`ValidationError`**: Error validasi parameter
+- **`APIConnectionError`**: Error koneksi network
+- **`APITimeoutError`**: Request timeout
+- **`APIRateLimitError`**: Rate limit exceeded
+- **`APIResponseError`**: Error response dari API
+
+## 📊 Struktur Data Response
+
+### Data Mahasiswa
+```python
+{
+    'id': 'unique_identifier',
+    'nama': 'Nama Lengkap',
+    'nim': '123456789',
+    'nama_pt': 'Nama Universitas',
+    'singkatan_pt': 'UNIV',
+    'nama_prodi': 'Program Studi',
+    'jenis_kelamin': 'L/P',
+    'jenjang': 'S1/S2/S3/D3/D4',
+    'status_saat_ini': 'Status Akademik',
+    'tahun_masuk': '2020'
+}
+```
+
+### Data Dosen
+```python
+{
+    'id': 'unique_identifier',
+    'nama': 'Nama Lengkap',
+    'nidn': '1234567890',
+    'nama_pt': 'Nama Universitas',
+    'singkatan_pt': 'UNIV',
+    'nama_prodi': 'Program Studi',
+    'jabatan_akademik': 'Jabatan',
+    'pendidikan_tertinggi': 'S3/S2/S1',
+    'status_ikatan_kerja': 'Status',
+    'status_aktivitas': 'Aktif/Tidak Aktif'
+}
+```
+
+## 📖 Dokumentasi API Lengkap
+
+Untuk dokumentasi API yang komprehensif dengan semua method dan parameter yang tersedia, silakan lihat:
+
+**➡️ [API Documentation](API_DOCUMENTATION.md)**
+
+Dokumentasi ini mencakup:
+- 🔍 **63 Method API** dengan penjelasan detail
+- 📝 **Parameter & Return Values** untuk setiap method
+- 💡 **Contoh penggunaan** yang praktis
+- 📊 **Struktur data response** yang lengkap
+- 🛠️ **Best practices** dan tips penggunaan
+
+### Quick Links ke Dokumentasi API:
+- [Method Pencarian](API_DOCUMENTATION.md#-method-pencarian) - Search mahasiswa, dosen, PT, prodi
+- [Data Mahasiswa](API_DOCUMENTATION.md#-data-mahasiswa) - Detail dan statistik mahasiswa
+- [Data Dosen](API_DOCUMENTATION.md#-data-dosen) - Profil, penelitian, pengabdian dosen
+- [Data Perguruan Tinggi](API_DOCUMENTATION.md#️-data-perguruan-tinggi) - Detail PT dan statistik
+- [Data Program Studi](API_DOCUMENTATION.md#-data-program-studi) - Detail prodi dan metrics
+- [Data Statistik](API_DOCUMENTATION.md#-data-statistik--visualisasi) - Visualisasi dan analytics
+
+## 🔄 Changelog
+
+### V 2.0.5 (Versi Terbaru Stabil) ⭐
+- ✅ **Dokumentasi API Lengkap**: 63 method terdokumentasi komprehensif
+- ✅ **Lokalisasi Indonesia**: Dokumentasi penuh dalam bahasa Indonesia
+- ✅ **Enhanced Error Handling**: Custom exception hierarchy yang ditingkatkan
+- ✅ **Full Type Hints Support**: 100% coverage untuk better IDE experience
+- ✅ **Comprehensive Documentation**: Google-style docstrings di semua method
+- ✅ **Context Manager Support**: Resource management yang aman
+- ✅ **Performance Improvements**: Connection pooling dan retry strategy
+- ✅ **Bug Fixes**: Integer parsing di `get_prodi_pt()` dan validasi parameter
+
+### Versi Sebelumnya
+- **V 2.0.4**: Enhanced error handling dan documentation improvements
+- **V 2.0.3**: Fix code bugs dan stability improvements
+- **V 2.0.0**: Major refactor untuk align dengan updated API
+- **V 1.0.0**: First release dengan basic functionality
+
+**📋 [Lihat Changelog Lengkap](CHANGELOG.md)** untuk detail semua perubahan dan roadmap versi mendatang.
+
+## 📋 Requirements
+
+- **Python**: 3.7+
+- **Dependencies**:
+  - `requests`: HTTP library
+  - `urllib3`: HTTP client
+  - `typing`: Type hints (built-in untuk Python 3.7+)
+
+## 🤝 Contributing
+
+Kontribusi sangat diterima! Kami menyambut berbagai jenis kontribusi dari community.
+
+### Quick Contribution Guide
+
+1. Fork repository ini
+2. Buat feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
+4. Push ke branch (`git push origin feature/AmazingFeature`)
+5. Buat Pull Request
+
+### 📚 Detailed Contributing Guide
+
+**➡️ [CONTRIBUTING.md](CONTRIBUTING.md)**
+
+Untuk panduan lengkap tentang:
+- 🐛 **Melaporkan bug** dengan template yang tepat
+- 💡 **Mengusulkan fitur baru** dan feature requests
+- 🔧 **Development setup** dan environment configuration
+- 📝 **Code guidelines** dan best practices
+- 🧪 **Testing procedures** dan coverage requirements
+- 📖 **Documentation standards** dan formatting
+- 🔄 **Pull request process** step-by-step
+
+### Development Setup (Quick)
+
+```bash
+# Clone repository
+git clone https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API.git
+cd PDDIKTI-kemdikbud-API
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install in development mode
+pip install -e .
+
+# Run tests
+python run_tests.py
+```
+
+**📖 [Lihat Contributing Guide Lengkap](CONTRIBUTING.md)** untuk detail setup dan guidelines.
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` file for more information.
+
+---
+
+## 📞 Support & Contact
+
+- **Author**: [Ilham Riski](https://github.com/IlhamriSKY)
+- **Issues**: [GitHub Issues](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/issues)
+- **PyPI**: [pddiktipy](https://pypi.org/project/pddiktipy/)
+- **📖 API Documentation**: [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+
+### 📚 Dokumentasi Lengkap
+- **[README.md](README.md)**: Panduan penggunaan dan contoh dasar
+- **[API Documentation](API_DOCUMENTATION.md)**: Dokumentasi lengkap semua method API
+- **[Changelog](CHANGELOG.md)**: Version history dan roadmap
+- **[Contributing](CONTRIBUTING.md)**: Panduan untuk berkontribusi
+- **Code Comments**: Inline documentation dalam source code
+
+---
+
+**⭐ Jika library ini membantu proyek Anda, jangan lupa untuk memberikan star di GitHub!**

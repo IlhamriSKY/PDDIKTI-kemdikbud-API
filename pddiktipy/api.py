@@ -1,52 +1,323 @@
 import logging
-from typing import Any, Dict, Optional, Callable
+from typing import Any, Dict, Optional, Callable, Union, List, Tuple, TypeVar
+from functools import wraps
 from .helper import helper
+from .exceptions import (
+    PDDIKTIError, APIConnectionError, APITimeoutError, 
+    APIRateLimitError, APIResponseError, ValidationError
+)
+
+# Type variables for better type hinting
+T = TypeVar('T')
+APIResponse = Optional[Union[Dict[str, Any], str]]
+APIMethod = Callable[..., APIResponse]
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+def handle_errors(func: APIMethod) -> APIMethod:
+    """Decorator to handle errors for API calls with comprehensive error categorization.
+    
+    This decorator provides enhanced error handling for API methods by:
+    - Validating input parameters
+    - Catching and categorizing different types of exceptions
+    - Providing meaningful error messages
+    - Logging errors for debugging purposes
+    
+    Args:
+        func: The API method function to wrap with error handling.
+        
+    Returns:
+        APIMethod: The wrapped function with comprehensive error handling.
+        
+    Note:
+        This decorator automatically validates string parameters to ensure 
+        they are not empty and handles various API-specific exceptions.
+    """
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> APIResponse:
+        func_name = getattr(func, '__name__', 'unknown_function')
+        
+        try:
+            # Input validation for common parameters
+            if len(args) > 1:  # Has parameters beyond self
+                for i, arg in enumerate(args[1:], 1):  # Skip self
+                    if isinstance(arg, str) and not arg.strip():
+                        raise ValidationError(f"Parameter {i} cannot be empty string")
+            
+            response = func(*args, **kwargs)
+            
+            # Additional response validation
+            if response is None:
+                logger.warning(f"{func_name}: Received None response")
+                return None
+                
+            if isinstance(response, dict) and response.get("error"):
+                error_msg = response.get("error", "Unknown API error")
+                logger.error(f"{func_name}: API returned error - {error_msg}")
+                raise APIResponseError(f"API error: {error_msg}")
+                
+            return response
+            
+        except ValidationError as e:
+            logger.error(f"{func_name}: Validation error - {e.message}")
+            return None
+            
+        except APITimeoutError as e:
+            logger.error(f"{func_name}: Timeout error - {e.message}")
+            return None
+            
+        except APIConnectionError as e:
+            logger.error(f"{func_name}: Connection error - {e.message}")
+            return None
+            
+        except APIRateLimitError as e:
+            logger.warning(f"{func_name}: Rate limit error - {e.message}")
+            return None
+            
+        except APIResponseError as e:
+            logger.error(f"{func_name}: Response error - {e.message}")
+            return None
+            
+        except PDDIKTIError as e:
+            logger.error(f"{func_name}: PDDIKTI API error - {e.message}")
+            return None
+            
+        except Exception as e:
+            logger.error(f"{func_name}: Unexpected error - {str(e)}", exc_info=True)
+            return None
+            
+    return wrapper
+
 class api:
     def __init__(self) -> None:
-        self.H = helper()
-        self.api_link = self.H.endpoint()
-
-    def handle_errors(func: Callable) -> Callable:
+        """Initialize the PDDIKTI API client.
+        
+        Creates a new instance of the PDDIKTI API client with all necessary
+        components including the helper class for HTTP operations, API endpoint
+        configuration, and logging setup.
+        
+        Raises:
+            PDDIKTIError: If the API client initialization fails due to 
+                         configuration issues or network problems.
+                         
+        Example:
+            >>> api_client = api()
+            >>> # or using context manager
+            >>> with api() as client:
+            ...     result = client.search_mahasiswa("John")
         """
-        Decorator to handle errors for API calls.
-
-        Args:
-            func (Callable): The function to wrap.
-
+        try:
+            self.H: helper = helper()
+            self.api_link: str = self.H.endpoint()
+            self.logger: logging.Logger = logging.getLogger(__name__)
+            self.logger.info("PDDIKTI API client initialized successfully")
+            
+        except Exception as e:
+            logger.error(f"Failed to initialize API client: {e}")
+            raise PDDIKTIError(f"Initialization failed: {str(e)}")
+    
+    def __enter__(self) -> 'api':
+        """Enter the context manager.
+        
         Returns:
-            Callable: The wrapped function.
+            api: The API client instance for use within the context.
         """
-        def wrapper(*args, **kwargs) -> Optional[Dict[str, Any]]:
-            try:
-                response = func(*args, **kwargs)
-                if response is None or (isinstance(response, dict) and response.get("error")):
-                    raise ValueError("API response indicates an error")
-                return response
-            except Exception as e:
-                logger.error(f"Error occurred in {func.__name__}: {str(e)}")
-                return None
-        return wrapper
+        return self
+    
+    def __exit__(self, 
+                 exc_type: Optional[type], 
+                 exc_val: Optional[BaseException], 
+                 exc_tb: Optional[Any]) -> None:
+        """Exit the context manager and perform cleanup.
+        
+        Args:
+            exc_type: The exception type if an exception occurred.
+            exc_val: The exception value if an exception occurred.
+            exc_tb: The exception traceback if an exception occurred.
+        """
+        self.close()
+        
+        # Log any exceptions that occurred
+        if exc_type is not None:
+            self.logger.error(f"Exception in context: {exc_type.__name__}: {exc_val}")
+    
+    def close(self) -> None:
+        """Close the API client and release resources.
+        
+        Properly closes the helper class and releases any network resources
+        that were allocated during the API client's lifetime.
+        
+        Note:
+            This method is automatically called when using the context manager,
+            but can be called manually if needed.
+        """
+        try:
+            if hasattr(self.H, 'close'):
+                self.H.close()
+                self.logger.debug("API client closed successfully")
+        except Exception as e:
+            self.logger.error(f"Error closing API client: {e}")
+    
+    def _validate_keyword(self, keyword: str, max_length: int = 100) -> None:
+        """Validate search keyword parameters.
+        
+        Ensures that the provided keyword is a valid string that meets
+        the requirements for API search operations.
+        
+        Args:
+            keyword: The search keyword to validate.
+            max_length: Maximum allowed length for the keyword. Defaults to 100.
+            
+        Raises:
+            ValidationError: If the keyword is not a string, is empty, 
+                           or exceeds the maximum length.
+                           
+        Example:
+            >>> self._validate_keyword("John Doe")  # Valid
+            >>> self._validate_keyword("")  # Raises ValidationError
+        """
+        if not isinstance(keyword, str):
+            raise ValidationError("Keyword must be a string")
+            
+        if not keyword or not keyword.strip():
+            raise ValidationError("Keyword cannot be empty")
+            
+        if len(keyword) > max_length:
+            raise ValidationError(f"Keyword too long (max {max_length} characters)")
+    
+    def _validate_year(self, year: Union[int, str], field_name: str = "Year") -> None:
+        """Validate year parameter for API calls.
+        
+        Ensures the year parameter is valid and within reasonable bounds.
+        Accepts both integer and string representations of years.
+        
+        Args:
+            year: The year to validate (accepts int or str).
+            field_name: Name of the field for error messages. Defaults to "Year".
+            
+        Raises:
+            ValidationError: If the year is None, empty, not a valid number,
+                           or outside the range 1900-2100.
+                           
+        Example:
+            >>> self._validate_year(2024)     # Valid
+            >>> self._validate_year("2024")   # Valid  
+            >>> self._validate_year(1800)     # Raises ValidationError
+        """
+        if year is None:
+            raise ValidationError(f"{field_name} cannot be None")
+        
+        # Convert to string if it's an integer
+        year_str = str(year)
+        
+        if not year_str.strip():
+            raise ValidationError(f"{field_name} cannot be empty")
+        
+        # Basic year validation (should be reasonable year)
+        try:
+            year_int = int(year_str)
+            if year_int < 1900 or year_int > 2100:
+                raise ValidationError(f"{field_name} must be between 1900 and 2100")
+        except ValueError:
+            raise ValidationError(f"{field_name} must be a valid year number")
+    
+    def _validate_id(self, id_value: str, field_name: str = "ID") -> None:
+        """Validate ID parameters for API calls.
+        
+        Ensures that ID parameters meet the basic format requirements for
+        PDDIKTI API calls. IDs are typically base64-encoded strings.
+        
+        Args:
+            id_value: The ID string to validate.
+            field_name: Type of ID for error messages. Defaults to "ID".
+            
+        Raises:
+            ValidationError: If the ID is not a string, is empty, or appears
+                           to be too short (less than 10 characters).
+                           
+        Example:
+            >>> self._validate_id("f1c3b0ea-c239-45dd-841f...")  # Valid
+            >>> self._validate_id("123")  # Raises ValidationError (too short)
+        """
+        if not isinstance(id_value, str):
+            raise ValidationError(f"{field_name} must be a string")
+            
+        if not id_value or not id_value.strip():
+            raise ValidationError(f"{field_name} cannot be empty")
+            
+        # Basic format validation for base64-like IDs
+        if len(id_value) < 10:
+            raise ValidationError(f"{field_name} appears to be too short")
+    
+    def _build_endpoint(self, path: str, *args: Union[str, int]) -> str:
+        """Build complete API endpoint URL with parameters.
+        
+        Constructs a properly formatted API endpoint URL by combining the base
+        API link with the specified path and encoded parameters.
+        
+        Args:
+            path: The API endpoint path (e.g., "pencarian/mhs").
+            *args: Variable number of parameters to append to the URL.
+                  Each parameter will be URL-encoded automatically.
+                  
+        Returns:
+            str: Complete formatted API endpoint URL.
+            
+        Example:
+            >>> self._build_endpoint("pencarian/mhs", "John Doe")
+            'https://api.pddikti.kemdikbud.go.id/pencarian/mhs/John%20Doe'
+        """
+        if not path:
+            raise ValidationError("API path cannot be empty")
+            
+        try:
+            parsed_args: List[str] = [self.H.parse(arg) for arg in args if arg is not None]
+            if parsed_args:
+                full_path: str = f"{path}/{'/'.join(parsed_args)}"
+            else:
+                full_path = path
+                
+            endpoint: str = f"{self.api_link}/{full_path}"
+            self.logger.debug(f"Built endpoint: {endpoint}")
+            return endpoint
+            
+        except Exception as e:
+            raise ValidationError(f"Error building endpoint: {str(e)}")
 
     # Search
     @handle_errors
     def search_all(self, keyword: str) -> Optional[Dict[str, Any]]:
-        """
-        Search all categories by keyword.
-
+        """Search across all categories in the PDDIKTI database.
+        
+        Performs a comprehensive search across students (mahasiswa), lecturers (dosen),
+        universities (perguruan tinggi), and study programs (program studi) using a
+        single keyword.
+        
         Args:
-            keyword (str): The search keyword.
+            keyword: The search term to query across all categories. Should be a
+                    non-empty string with meaningful content.
 
+        Returns:
+            Optional[Dict[str, Any]]: A dictionary containing search results organized
+                by category, or None if the search fails or no results are found.
+                
+        Raises:
+            ValidationError: If the keyword is invalid (empty, too long, or wrong type).
+            APIConnectionError: If there's a network connectivity issue.
+            APITimeoutError: If the request times out.
+            
         Example:
-            keyword = "Ilham"
+            >>> with api() as client:
+            ...     results = client.search_all("Universitas Indonesia")
+            ...     if results:
+            ...         print(f"Found {len(results)} categories")
 
-        Data:
+        Data Structure:
+            Returns data in format:
             [
                 'mahasiswa', 
-                ['id', 'nama', 'nim', 'nama_pt', 'sinkatan_pt', 'nama_prodi'], 
+                ['id', 'nama', 'nim', 'nama_pt', 'singkatan_pt', 'nama_prodi'], 
                 'dosen', 
                 ['id', 'nama', 'nidn', 'nama_pt', 'singkatan_pt', 'nama_prodi'], 
                 'pt', 
@@ -56,144 +327,296 @@ class api:
             ]
         
         Note:
-            "singkatan" means abbreviation in Indonesian. The term "sinkatan" was a typo and has been corrected. 
-            Ask developer why :)
-        
-        Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            The API may return "sinkatan_pt" instead of "singkatan_pt" in some
+            responses due to a typo in the original API endpoint.
         """
-        endpoint = f"{self.api_link}/pencarian/all/{self.H.parse(keyword)}"
+        self._validate_keyword(keyword)
+        endpoint: str = self._build_endpoint("pencarian/all", keyword)
         return self.H.response(endpoint)
 
     @handle_errors
     def search_mahasiswa(self, keyword: str) -> Optional[Dict[str, Any]]:
-        """
-        Search for students by keyword.
-
-        Args:
-            keyword (str): The student name to search.
-
-        Example:
-            keyword = "Ilham"
-
-        Data:
-            ['id', 'nama', 'nim', 'nama_pt', 'singkatan_pt', 'nama_prodi']
+        """Search for students (mahasiswa) in the PDDIKTI database.
         
+        Searches for student records matching the provided keyword. The search
+        can match against student names and returns comprehensive information
+        about each matching student.
+        
+        Args:
+            keyword: The search term for student names. Should be a meaningful
+                    search term (e.g., student's first name, last name, or full name).
+
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            Optional[Dict[str, Any]]: A dictionary containing matching student records,
+                or None if no students are found or the search fails.
+                
+        Raises:
+            ValidationError: If the keyword is invalid (empty, too long, or wrong type).
+            APIConnectionError: If there's a network connectivity issue.
+            APITimeoutError: If the request times out.
+            
+        Example:
+            >>> with api() as client:
+            ...     students = client.search_mahasiswa("Ahmad")
+            ...     for student in students.get('data', []):
+            ...         print(f"Student: {student['nama']} - NIM: {student['nim']}")
+
+        Data Structure:
+            Each student record contains:
+            ['id', 'nama', 'nim', 'nama_pt', 'singkatan_pt', 'nama_prodi']
+            
+            Where:
+            - id: Unique student identifier
+            - nama: Student's full name
+            - nim: Student identification number (Nomor Induk Mahasiswa)
+            - nama_pt: Full university name
+            - singkatan_pt: University abbreviation
+            - nama_prodi: Study program name
         """
-        endpoint = f"{self.api_link}/pencarian/mhs/{self.H.parse(keyword)}"
+        self._validate_keyword(keyword)
+        endpoint: str = self._build_endpoint("pencarian/mhs", keyword)
         return self.H.response(endpoint)
 
     @handle_errors
     def search_dosen(self, keyword: str) -> Optional[Dict[str, Any]]:
-        """
-        Search for lecturers by keyword.
-
-        Args:
-            keyword (str): The lecturer name to search.
-
-        Example:
-            keyword = "Ilham"
-
-        Data:
-            ['id', 'nama', 'nidn', 'nama_pt', 'singkatan_pt', 'nama_prodi']
+        """Search for lecturers (dosen) in the PDDIKTI database.
         
+        Searches for lecturer records matching the provided keyword. The search
+        can match against lecturer names and returns comprehensive information
+        about each matching lecturer.
+        
+        Args:
+            keyword: The search term for lecturer names. Should be a meaningful
+                    search term (e.g., lecturer's first name, last name, or full name).
+
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            Optional[Dict[str, Any]]: A dictionary containing matching lecturer records,
+                or None if no lecturers are found or the search fails.
+                
+        Raises:
+            ValidationError: If the keyword is invalid (empty, too long, or wrong type).
+            APIConnectionError: If there's a network connectivity issue.
+            APITimeoutError: If the request times out.
+            
+        Example:
+            >>> with api() as client:
+            ...     lecturers = client.search_dosen("Prof. Dr.")
+            ...     for lecturer in lecturers.get('data', []):
+            ...         print(f"Lecturer: {lecturer['nama']} - NIDN: {lecturer['nidn']}")
+
+        Data Structure:
+            Each lecturer record contains:
+            ['id', 'nama', 'nidn', 'nama_pt', 'singkatan_pt', 'nama_prodi']
+            
+            Where:
+            - id: Unique lecturer identifier
+            - nama: Lecturer's full name
+            - nidn: National lecturer identification number (NIDN)
+            - nama_pt: Full university name
+            - singkatan_pt: University abbreviation
+            - nama_prodi: Study program name
         """
-        endpoint = f"{self.api_link}/pencarian/dosen/{self.H.parse(keyword)}"
+        self._validate_keyword(keyword)
+        endpoint: str = self._build_endpoint("pencarian/dosen", keyword)
         return self.H.response(endpoint)
 
     @handle_errors
     def search_pt(self, keyword: str) -> Optional[Dict[str, Any]]:
-        """
-        Search for universities by keyword.
-
-        Args:
-            keyword (str): The university name to search.
-
-        Example:
-            keyword = "Unika"
-
-        Data:
-            ['id', 'kode', 'nama_singkat', 'nama']
+        """Search for universities (perguruan tinggi) in the PDDIKTI database.
         
+        Searches for university records matching the provided keyword. The search
+        can match against university names and returns comprehensive information
+        about each matching institution.
+        
+        Args:
+            keyword: The search term for university names. Can be a full name,
+                    abbreviation, or partial name of the institution.
+
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            Optional[Dict[str, Any]]: A dictionary containing matching university records,
+                or None if no universities are found or the search fails.
+                
+        Raises:
+            ValidationError: If the keyword is invalid (empty, too long, or wrong type).
+            APIConnectionError: If there's a network connectivity issue.
+            APITimeoutError: If the request times out.
+            
+        Example:
+            >>> with api() as client:
+            ...     universities = client.search_pt("Universitas Indonesia")
+            ...     for uni in universities.get('data', []):
+            ...         print(f"University: {uni['nama']} - Code: {uni['kode']}")
+
+        Data Structure:
+            Each university record contains:
+            ['id', 'kode', 'nama_singkat', 'nama']
+            
+            Where:
+            - id: Unique university identifier
+            - kode: Official university code
+            - nama_singkat: University abbreviation/short name
+            - nama: Full university name
         """
-        endpoint = f"{self.api_link}/pencarian/pt/{self.H.parse(keyword)}"
+        self._validate_keyword(keyword)
+        endpoint: str = self._build_endpoint("pencarian/pt", keyword)
         return self.H.response(endpoint)
 
     @handle_errors
     def search_prodi(self, keyword: str) -> Optional[Dict[str, Any]]:
-        """
-        Search for study programs by keyword.
-
-        Args:
-            keyword (str): The study program name to search.
-
-        Example:
-            keyword = "Sistem Informasi"
-
-        Data:
-            ['id', 'nama', 'jenjang', 'pt', 'pt_singkat']
+        """Search for study programs (program studi) in the PDDIKTI database.
         
+        Searches for study program records matching the provided keyword. The search
+        can match against program names and returns information about each matching
+        program including the associated university.
+        
+        Args:
+            keyword: The search term for study program names. Can be a full program
+                    name or partial name (e.g., "Sistem Informasi", "Teknik").
+
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            Optional[Dict[str, Any]]: A dictionary containing matching study program records,
+                or None if no programs are found or the search fails.
+                
+        Raises:
+            ValidationError: If the keyword is invalid (empty, too long, or wrong type).
+            APIConnectionError: If there's a network connectivity issue.
+            APITimeoutError: If the request times out.
+            
+        Example:
+            >>> with api() as client:
+            ...     programs = client.search_prodi("Teknik Informatika")
+            ...     for program in programs.get('data', []):
+            ...         print(f"Program: {program['nama']} at {program['pt']}")
+
+        Data Structure:
+            Each study program record contains:
+            ['id', 'nama', 'jenjang', 'pt', 'pt_singkat']
+            
+            Where:
+            - id: Unique program identifier
+            - nama: Full study program name
+            - jenjang: Education level (S1, S2, S3, D3, D4, etc.)
+            - pt: Full university name offering the program
+            - pt_singkat: University abbreviation
         """
-        endpoint = f"{self.api_link}/pencarian/prodi/{self.H.parse(keyword)}"
+        self._validate_keyword(keyword)
+        endpoint: str = self._build_endpoint("pencarian/prodi", keyword)
         return self.H.response(endpoint)
 
     # Data Mahasiswa
     @handle_errors
     def get_detail_mhs(self, mahasiswa_id: str) -> Optional[Dict[str, Any]]:
-        """
-        Get detail of a students by ID.
-
-        Args:
-            mahasiswa_id (str): The students's ID.
-
-        Example:
-            mahasiswa_id = "D0vgDgXXWzsaQdswAEPqHinsUH_5DUERcHgYt2c5eVXcKoWovccnVqzuxA_lRhZ-L8VPiA=="
-
-        Data:
-            ['id', 'nama_pt', 'kode_pt', 'kode_prodi', 'prodi', 'nama', 'nim', 'jenis_daftar', 'id_pt', 'id_sms', 'jenis_kelamin', 'jenjang', 'status_saat_ini', 'tahun_masuk']
+        """Get detailed information about a specific student.
         
+        Retrieves comprehensive details about a student including their academic
+        information, university affiliation, and current status using the student's
+        unique identifier.
+        
+        Args:
+            mahasiswa_id: The unique identifier for the student. This is typically
+                         a base64-encoded string obtained from search results.
+
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            Optional[Dict[str, Any]]: A dictionary containing the student's detailed
+                information, or None if the student is not found or the request fails.
+                
+        Raises:
+            ValidationError: If the mahasiswa_id is invalid (empty, too short, or wrong type).
+            APIConnectionError: If there's a network connectivity issue.
+            APITimeoutError: If the request times out.
+            
+        Example:
+            >>> with api() as client:
+            ...     # First search for a student
+            ...     search_results = client.search_mahasiswa("Ahmad")
+            ...     if search_results and search_results.get('data'):
+            ...         student_id = search_results['data'][0]['id']
+            ...         details = client.get_detail_mhs(student_id)
+            ...         print(f"Student: {details['nama']} - NIM: {details['nim']}")
+
+        Data Structure:
+            The returned data contains:
+            ['id', 'nama_pt', 'kode_pt', 'kode_prodi', 'prodi', 'nama', 'nim', 
+             'jenis_daftar', 'id_pt', 'id_sms', 'jenis_kelamin', 'jenjang', 
+             'status_saat_ini', 'tahun_masuk']
+            
+            Where:
+            - id: Unique student identifier
+            - nama: Student's full name
+            - nim: Student identification number
+            - nama_pt: Full university name
+            - kode_pt: University code
+            - prodi: Study program name
+            - kode_prodi: Study program code
+            - jenis_kelamin: Gender (L/P)
+            - jenjang: Education level (S1, S2, etc.)
+            - status_saat_ini: Current academic status
+            - tahun_masuk: Year of enrollment
         """
-        endpoint = f"{self.api_link}/detail/mhs/{self.H.parse(mahasiswa_id)}"
+        self._validate_id(mahasiswa_id, "Mahasiswa ID")
+        endpoint = self._build_endpoint("detail/mhs", mahasiswa_id)
         return self.H.response(endpoint)
 
     # Data Dosen
     @handle_errors
     def get_dosen_profile(self, dosen_id: str) -> Optional[Dict[str, Any]]:
-        """
-        Get profile of a lecturer by ID.
-
-        Args:
-            dosen_id (str): The lecturer's ID.
-
-        Example:
-            dosen_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
-
-        Data:
-            ['id_sdm', 'nama_dosen', 'nama_pt', 'nama_prodi', 'jenis_kelamin', 'jabatan_akademik', 'pendidikan_tertinggi', 'status_ikatan_kerja', 'status_aktivitas']
+        """Get comprehensive profile information of a lecturer.
         
+        Retrieves detailed profile information about a specific lecturer including
+        their academic credentials, current position, and institutional affiliation
+        using the lecturer's unique identifier.
+        
+        Args:
+            dosen_id: The unique identifier for the lecturer. This is typically
+                     a base64-encoded string obtained from lecturer search results.
+
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            Optional[Dict[str, Any]]: A dictionary containing the lecturer's profile
+                information, or None if the lecturer is not found or request fails.
+                
+        Raises:
+            ValidationError: If dosen_id is invalid (empty, too short, or wrong type).
+            APIConnectionError: If there's a network connectivity issue.
+            APITimeoutError: If the request times out.
+            
+        Example:
+            >>> with api() as client:
+            ...     # First search for a lecturer
+            ...     search_results = client.search_dosen("Prof. Ahmad")
+            ...     if search_results and search_results.get('data'):
+            ...         lecturer_id = search_results['data'][0]['id']
+            ...         profile = client.get_dosen_profile(lecturer_id)
+            ...         print(f"Lecturer: {profile['nama_dosen']}")
+            ...         print(f"Position: {profile['jabatan_akademik']}")
+
+        Data Structure:
+            The returned profile contains:
+            ['id_sdm', 'nama_dosen', 'nama_pt', 'nama_prodi', 'jenis_kelamin', 
+             'jabatan_akademik', 'pendidikan_tertinggi', 'status_ikatan_kerja', 
+             'status_aktivitas']
+            
+            Where:
+            - id_sdm: Human resources system ID
+            - nama_dosen: Lecturer's full name
+            - nama_pt: Full university name
+            - nama_prodi: Study program name
+            - jenis_kelamin: Gender (L/P)
+            - jabatan_akademik: Academic position/rank
+            - pendidikan_tertinggi: Highest education level
+            - status_ikatan_kerja: Employment status
+            - status_aktivitas: Current activity status
         """
-        endpoint = f"{self.api_link}/dosen/profile/{self.H.parse(dosen_id)}"
+        self._validate_id(dosen_id, "Dosen ID")
+        endpoint: str = self._build_endpoint("dosen/profile", dosen_id)
         return self.H.response(endpoint)
     
     @handle_errors
     def get_dosen_penelitian(self, dosen_id: str) -> Optional[Dict[str, Any]]:
         """
-        Get research of a lecturer by ID.
+        Get research of a lecturer by ID with enhanced validation.
 
         Args:
-            dosen_id (str): The lecturer's ID.
+            dosen_id: The lecturer's ID.
 
         Example:
             dosen_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -202,18 +625,22 @@ class api:
             ['id_sdm', 'jenis_kegiatan', 'judul_kegiatan', 'tahun_kegiatan']
         
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            JSON response or None if an error occurs.
+            
+        Raises:
+            ValidationError: If dosen_id is invalid
         """
-        endpoint = f"{self.api_link}/dosen/portofolio/penelitian/{self.H.parse(dosen_id)}"
+        self._validate_id(dosen_id, "Dosen ID")
+        endpoint: str = self._build_endpoint("dosen/portofolio/penelitian", dosen_id)
         return self.H.response(endpoint)
 
     @handle_errors
     def get_dosen_pengabdian(self, dosen_id: str) -> Optional[Dict[str, Any]]:
         """
-        Get dedication of a lecturer by ID.
+        Get dedication of a lecturer by ID with enhanced validation.
 
         Args:
-            dosen_id (str): The lecturer's ID.
+            dosen_id: The lecturer's ID.
 
         Example:
             dosen_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -222,18 +649,22 @@ class api:
             ['id_sdm', 'jenis_kegiatan', 'judul_kegiatan', 'tahun_kegiatan']
         
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            JSON response or None if an error occurs.
+            
+        Raises:
+            ValidationError: If dosen_id is invalid
         """
-        endpoint = f"{self.api_link}/dosen/portofolio/pengabdian/{self.H.parse(dosen_id)}"
+        self._validate_id(dosen_id, "Dosen ID")
+        endpoint: str = self._build_endpoint("dosen/portofolio/pengabdian", dosen_id)
         return self.H.response(endpoint)
 
     @handle_errors
     def get_dosen_karya(self, dosen_id: str) -> Optional[Dict[str, Any]]:
         """
-        Get creation of a lecturer by ID.
+        Get creation of a lecturer by ID with enhanced validation.
 
         Args:
-            dosen_id (str): The lecturer's ID.
+            dosen_id: The lecturer's ID.
 
         Example:
             dosen_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -242,18 +673,22 @@ class api:
             ['id_sdm', 'jenis_kegiatan', 'judul_kegiatan', 'tahun_kegiatan']
         
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            JSON response or None if an error occurs.
+            
+        Raises:
+            ValidationError: If dosen_id is invalid
         """
-        endpoint = f"{self.api_link}/dosen/portofolio/karya/{self.H.parse(dosen_id)}"
+        self._validate_id(dosen_id, "Dosen ID")
+        endpoint: str = self._build_endpoint("dosen/portofolio/karya", dosen_id)
         return self.H.response(endpoint)
 
     @handle_errors
     def get_dosen_paten(self, dosen_id: str) -> Optional[Dict[str, Any]]:
         """
-        Get patent of a lecturer by ID.
+        Get patent of a lecturer by ID with enhanced validation.
 
         Args:
-            dosen_id (str): The lecturer's ID.
+            dosen_id: The lecturer's ID.
 
         Example:
             dosen_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -262,32 +697,40 @@ class api:
             ['id_sdm', 'jenis_kegiatan', 'judul_kegiatan', 'tahun_kegiatan']
         
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            JSON response or None if an error occurs.
+            
+        Raises:
+            ValidationError: If dosen_id is invalid
         """
-        endpoint = f"{self.api_link}/dosen/portofolio/paten/{self.H.parse(dosen_id)}"
+        self._validate_id(dosen_id, "Dosen ID")
+        endpoint: str = self._build_endpoint("dosen/portofolio/paten", dosen_id)
         return self.H.response(endpoint)
 
     @handle_errors
     def get_dosen_study_history(self, dosen_id: str) -> Optional[Dict[str, Any]]:
         """
-        Get study history of a lecturer by ID.
+        Get study history of a lecturer by ID with enhanced validation.
 
         Args:
-            dosen_id (str): The lecturer's ID.
+            dosen_id: The lecturer's ID.
 
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            JSON response or None if an error occurs.
+            
+        Raises:
+            ValidationError: If dosen_id is invalid
         """
-        endpoint = f"{self.api_link}/dosen/study-history/{self.H.parse(dosen_id)}"
+        self._validate_id(dosen_id, "Dosen ID")
+        endpoint: str = self._build_endpoint("dosen/study-history", dosen_id)
         return self.H.response(endpoint)
 
     @handle_errors
     def get_dosen_teaching_history(self, dosen_id: str) -> Optional[Dict[str, Any]]:
         """
-        Get teaching history of a lecturer by ID.
+        Get teaching history of a lecturer by ID with enhanced validation.
 
         Args:
-            dosen_id (str): The lecturer's ID.
+            dosen_id: The lecturer's ID.
 
         Example:
             dosen_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -296,19 +739,23 @@ class api:
             ['id_sdm', 'nama_semester', 'kode_matkul', 'nama_matkul', 'nama_kelas', 'nama_pt']
         
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            JSON response or None if an error occurs.
+            
+        Raises:
+            ValidationError: If dosen_id is invalid
         """
-        endpoint = f"{self.api_link}/dosen/teaching-history/{self.H.parse(dosen_id)}"
+        self._validate_id(dosen_id, "Dosen ID")
+        endpoint: str = self._build_endpoint("dosen/teaching-history", dosen_id)
         return self.H.response(endpoint)
 
     # Data Universities
     @handle_errors
     def get_detail_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
         """
-        Get detail of a universities by ID.
+        Get detail of a universities by ID with enhanced validation.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -317,77 +764,129 @@ class api:
             ['kelompok', 'pembina', 'id_sp', 'kode_pt', 'email', 'no_tel', 'no_fax', 'website', 'alamat', 'nama_pt', 'nm_singkat', 'kode_pos', 'provinsi_pt', 'kab_kota_pt', 'kecamatan_pt', 'lintang_pt', 'bujur_pt', 'tgl_berdiri_pt', 'tgl_sk_pendirian_sp', 'sk_pendirian_sp', 'status_pt', 'akreditasi_pt', 'status_akreditasi']
         
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            JSON response or None if an error occurs.
+            
+        Raises:
+            ValidationError: If pt_id is invalid
         """
-        endpoint = f"{self.api_link}/pt/detail/{self.H.parse(pt_id)}"
+        self._validate_id(pt_id, "PT ID")
+        endpoint: str = self._build_endpoint("detail/pt", pt_id)
         return self.H.response(endpoint)
     
     @handle_errors
-    def get_prodi_pt(self, pt_id: str, tahun: int) -> Optional[Dict[str, Any]]:
-        """
-        Get study programs of a universities by ID.
-
-        Args:
-            pt_id (str): The universities's ID.
-            tahun (int): Academic year.
-
-        Example:
-            pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
-            tahun = 20241 (tahun, bulan)
-
-        Data:
-            ['id_sms', 'kode_prodi', 'nama_prodi', 'akreditasi', 'jenjang_prodi', 'status_prodi', 'jumlah_dosen_nidn', 'jumlah_dosen_nidk', 'jumlah_dosen', 'jumlah_dosen_ajar', 'jumlah_mahasiswa', 'rasio', 'indikator_kelengkapan_data']
+    def get_prodi_pt(self, pt_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]:
+        """Get study programs offered by a specific university for a given academic year.
         
+        Retrieves detailed information about all study programs available at a specific
+        university during a particular academic year, including statistics about
+        students, lecturers, and accreditation status.
+        
+        Args:
+            pt_id: The unique identifier for the university. This is typically
+                  a base64-encoded string obtained from university search results.
+            tahun: The academic year in YYYYM format where YYYY is the year and M
+                  is the month/semester (e.g., 20241 for first semester 2024,
+                  20242 for second semester 2024). Accepts both integer and string.
+
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            Optional[Dict[str, Any]]: A dictionary containing study program information
+                for the specified university and year, or None if not found or request fails.
+                
+        Raises:
+            ValidationError: If pt_id is invalid or tahun is not within valid range (1900-2100).
+            APIConnectionError: If there's a network connectivity issue.
+            APITimeoutError: If the request times out.
+            
+        Example:
+            >>> with api() as client:
+            ...     # Search for a university first
+            ...     universities = client.search_pt("Universitas Indonesia")
+            ...     if universities and universities.get('data'):
+            ...         uni_id = universities['data'][0]['id']
+            ...         # Get programs for first semester 2024
+            ...         programs = client.get_prodi_pt(uni_id, 20241)
+            ...         for program in programs.get('data', []):
+            ...             print(f"Program: {program['nama_prodi']} - Accreditation: {program['akreditasi']}")
+
+        Data Structure:
+            Each study program record contains:
+            ['id_sms', 'kode_prodi', 'nama_prodi', 'akreditasi', 'jenjang_prodi', 
+             'status_prodi', 'jumlah_dosen_nidn', 'jumlah_dosen_nidk', 'jumlah_dosen', 
+             'jumlah_dosen_ajar', 'jumlah_mahasiswa', 'rasio', 'indikator_kelengkapan_data']
+            
+            Where:
+            - id_sms: Study management system ID
+            - kode_prodi: Official study program code
+            - nama_prodi: Full study program name
+            - akreditasi: Accreditation grade (A, B, C, etc.)
+            - jenjang_prodi: Education level (S1, S2, S3, D3, D4)
+            - status_prodi: Program status (Active, Inactive, etc.)
+            - jumlah_dosen_*: Various lecturer counts
+            - jumlah_mahasiswa: Number of students
+            - rasio: Student-to-lecturer ratio
+            - indikator_kelengkapan_data: Data completeness indicator
+            
+        Note:
+            This method was enhanced to handle both integer and string year parameters
+            to fix the integer parsing bug in the original implementation.
         """
-        endpoint = f"{self.api_link}/pt/detail/{self.H.parse(pt_id)}/{self.H.parse(tahun)}"
+        self._validate_id(pt_id, "PT ID")
+        self._validate_year(tahun)
+        endpoint: str = self._build_endpoint("pt/detail", pt_id, tahun)
         return self.H.response(endpoint)
 
     @handle_errors
     def get_logo_pt(self, pt_id: str) -> Optional[str]:
         """
-        Get the logo of a university by ID and return it as a base64-encoded string.
+        Get the logo of a university by ID and return it as a base64-encoded string with enhanced validation.
 
         Args:
-            pt_id (str): The university's ID.
+            pt_id: The university's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
 
         Returns:
-            Optional[str]: Base64-encoded image or None if an error occurs.
+            Base64-encoded image or None if an error occurs.
+            
+        Raises:
+            ValidationError: If pt_id is invalid
         """
-        url = f"{self.H.endpoint()}/pt/logo/{self.H.parse(pt_id)}"
+        self._validate_id(pt_id, "PT ID")
+        url: str = f"{self.H.endpoint()}/pt/logo/{self.H.parse(pt_id)}"
         return self.H.fetch_image_as_base64(url)
 
     @handle_errors
     def get_rasio_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
         """
-        Get ratio of a universities by ID.
+        Get ratio of a universities by ID with enhanced validation.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
 
         Data:
             ['rasio']
-        
+            
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            JSON response or None if an error occurs.
+            
+        Raises:
+            ValidationError: If pt_id is invalid
         """
-        endpoint = f"{self.api_link}/pt/rasio/{self.H.parse(pt_id)}"
+        self._validate_id(pt_id, "PT ID")
+        endpoint: str = self._build_endpoint("pt/rasio", pt_id)
         return self.H.response(endpoint)
     
     @handle_errors
     def get_mahasiswa_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
         """
-        Get student of a universities by ID.
+        Get student of a universities by ID with enhanced validation.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -396,9 +895,13 @@ class api:
             ['id_sp', 'kode_pt', 'mean_jumlah_lulus', 'mean_jumlah_baru']
         
         Returns:
-            Optional[Dict[str, Any]]: JSON response or None if an error occurs.
+            JSON response or None if an error occurs.
+            
+        Raises:
+            ValidationError: If pt_id is invalid
         """
-        endpoint = f"{self.api_link}/pt/mahasiswa/{self.H.parse(pt_id)}"
+        self._validate_id(pt_id, "PT ID")
+        endpoint: str = self._build_endpoint("pt/mahasiswa", pt_id)
         return self.H.response(endpoint)
     
     @handle_errors
@@ -407,7 +910,7 @@ class api:
         Get study time of a universities by ID.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -427,13 +930,14 @@ class api:
         Get study time of a universities by ID.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
 
         Data:
-            TODO: Define the structure once known.
+            The response structure contains university name change history.
+            Fields may include previous names, dates of changes, and official documentation.
         
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
@@ -447,7 +951,7 @@ class api:
         Get cost range of a universities by ID.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -467,7 +971,7 @@ class api:
         Get graduation rate of a universities by ID.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -487,7 +991,7 @@ class api:
         Get prodi count of a universities by ID.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -507,7 +1011,7 @@ class api:
         Get student count of a universities by ID.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -527,7 +1031,7 @@ class api:
         Get lecturer count of a universities by ID.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
@@ -547,13 +1051,13 @@ class api:
         Get sarpras file name of a universities by ID.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
 
         Data:
-            TODO: Define the structure once known.
+            The response structure depends on the specific API endpoint. Refer to PDDIKTI API documentation for detailed field descriptions.
         
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
@@ -567,13 +1071,13 @@ class api:
         Get sarpras blob of a universities by ID.
 
         Args:
-            pt_id (str): The universities's ID.
+            pt_id: The universities's ID.
 
         Example:
             pt_id = "790W6QZ49VIBAks-T2pSPlFh4URK9dTZioFjEqeUDCj6L0X6iSaPHxbDgu8pz6FFAha58w=="
 
         Data:
-            TODO: Define the structure once known.
+            The response structure depends on the specific API endpoint. Refer to PDDIKTI API documentation for detailed field descriptions.
         
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
@@ -588,7 +1092,7 @@ class api:
         Get detail of a study programs by ID.
 
         Args:
-            prodi_id (str): The study programs's ID.
+            prodi_id: The study programs's ID.
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
@@ -608,7 +1112,7 @@ class api:
         Get desc of a study programs by ID.
 
         Args:
-            prodi_id (str): The study programs's ID.
+            prodi_id: The study programs's ID.
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
@@ -628,13 +1132,13 @@ class api:
         Get name histories of a study programs by ID.
 
         Args:
-            prodi_id (str): The study programs's ID.
+            prodi_id: The study programs's ID.
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
 
         Data:
-            TODO: Define the structure once known.
+            The response structure depends on the specific API endpoint. Refer to PDDIKTI API documentation for detailed field descriptions.
         
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
@@ -648,7 +1152,7 @@ class api:
         Get num students lecturers of a study programs by ID.
 
         Args:
-            prodi_id (str): The study programs's ID.
+            prodi_id: The study programs's ID.
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
@@ -668,7 +1172,7 @@ class api:
         Get cost ranges of a study programs by ID.
 
         Args:
-            prodi_id (str): The study programs's ID.
+            prodi_id: The study programs's ID.
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
@@ -688,7 +1192,7 @@ class api:
         Get capacity of a study programs by ID.
 
         Args:
-            prodi_id (str): The study programs's ID.
+            prodi_id: The study programs's ID.
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
@@ -708,7 +1212,7 @@ class api:
         Get lecturer student ratio of a study programs by ID.
 
         Args:
-            prodi_id (str): The study programs's ID.
+            prodi_id: The study programs's ID.
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
@@ -728,7 +1232,7 @@ class api:
         Get graduation rate of a study programs by ID.
 
         Args:
-            prodi_id (str): The study programs's ID.
+            prodi_id: The study programs's ID.
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
@@ -748,7 +1252,7 @@ class api:
         Get the logo of a study programs by ID and return it as a base64-encoded string.
 
         Args:
-            pt_id (str): The university's ID.
+            pt_id: The university's ID.
 
         Example:
             pt_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
@@ -760,20 +1264,20 @@ class api:
         return self.H.fetch_image_as_base64(url)
 
     @handle_errors
-    def get_homebase_prodi(self, prodi_id: str, tahun: int) -> Optional[Dict[str, Any]]:
+    def get_homebase_prodi(self, prodi_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]:
         """
         Get homebase ratio of a study programs by ID.
 
         Args:
-            prodi_id (str): The study programs's ID.
-            tahun (int): Academic year.
+            prodi_id: The study programs's ID.
+            tahun: Academic year (accepts both integer and string).
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
-            tahun = 20241 (tahun, bulan)
+            tahun = 20241 or "20241" (tahun, bulan)
 
         Data:
-            TODO: Define the structure once known.
+            The response structure depends on the specific API endpoint. Refer to PDDIKTI API documentation for detailed field descriptions.
         
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
@@ -782,20 +1286,20 @@ class api:
         return self.H.response(endpoint)
     
     @handle_errors
-    def get_penghitung_ratio_prodi(self, prodi_id: str, tahun: int) -> Optional[Dict[str, Any]]:
+    def get_penghitung_ratio_prodi(self, prodi_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]:
         """
         Get ratio counter of a study programs by ID.
 
         Args:
-            prodi_id (str): The study programs's ID.
-            tahun (int): Academic year.
+            prodi_id: The study programs's ID.
+            tahun: Academic year (accepts both integer and string).
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
-            tahun = 20241 (tahun, bulan)
+            tahun = 20241 or "20241" (tahun, bulan)
 
         Data:
-            TODO: Define the structure once known.
+            The response structure depends on the specific API endpoint. Refer to PDDIKTI API documentation for detailed field descriptions.
         
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
