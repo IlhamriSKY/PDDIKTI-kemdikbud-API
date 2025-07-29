@@ -46,7 +46,7 @@ pytest tests/ -v
 pytest tests/test_comprehensive.py -v
 ```
 
-## 📊 Hasil Testing (100% LULUS - 87 Test)
+## 📊 Hasil Testing (100% PASS - 87 Test)
 
 ```bash
 $ python run_tests.py
@@ -60,11 +60,11 @@ Lecturer: Ridwan Sanjaya
 Program: Sistem Informasi
 ============================================================
 
-✅ tests/test_api_final.py         → 18 test LULUS
-✅ tests/test_comprehensive.py     → 69 test LULUS  
+✅ tests/test_api_final.py         → 18 test PASS
+✅ tests/test_comprehensive.py     → 69 test PASS  
 
 ================================================
-87 lulus dalam 46.13 detik
+87 PASS dalam 46.13 detik
 ================================================
 
 SUKSES: Semua test berhasil!

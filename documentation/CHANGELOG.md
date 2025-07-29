@@ -2,6 +2,25 @@
 
 Semua perubahan penting pada proyek ini akan didokumentasikan di file ini.
 
+## [2.0.5.post1] - 2025-07-29 (Patch Release) 🔧
+
+### 🔧 Diperbaiki
+- **Build System**: Optimasi konfigurasi packaging untuk PyPI
+  - Perbaikan format metadata license di `setup.py`
+  - Exclusion folder `tests/` dari distribution package
+  - Optimasi `MANIFEST.in` untuk package yang lebih clean
+  - Validasi PyPI compatibility (PASSED twine check)
+
+### 📦 Package Improvements
+- **Package Size**: Reduced package size dengan menghapus development files
+- **Distribution**: Hanya include file utama (`pddiktipy/` + essentials)
+- **Metadata**: Format license yang kompatibel dengan PyPI standards
+
+### 🛠️ Technical Changes
+- Update build system dari `pyproject.toml` ke `setup.py` untuk compatibility
+- Perbaikan exclude configuration untuk test files
+- Clean distribution tanpa folder development/testing
+
 ## [2.0.5] - 2025-07-29 (Versi Terbaru Stabil) 🔥 [🚨 Breaking Changes]
 
 ### ✅ Ditambahkan
