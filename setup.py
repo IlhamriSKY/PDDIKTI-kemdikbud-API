@@ -19,7 +19,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="pddiktipy",
     version=get_version(),
-    author="Ilham Riski",
+    author="Ilham Riski Wibowo",
     author_email="ilhamrisky21@gmail.com",
     description="Unofficial Python API wrapper to get data at PDDIKTI Kemdikbud",
     long_description=long_description,

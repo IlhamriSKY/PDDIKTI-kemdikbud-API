@@ -14,9 +14,9 @@ def main():
     print("PDDIKTI API TEST SUITE")
     print("=" * 60)
     print("Testing Universitas Unika Soegijapranata Data")
-    print("Student: Ilham Riski")
-    print("Lecturer: Ridwan Sanjaya") 
-    print("Program: Sistem Informasi")
+    print("Student: Ilham Riski Wibowo (NIM: 15.N1.0012)")
+    print("Lecturer: Ridwan Sanjaya")
+    print("University: Universitas Katolik Soegijapranata")
     print("=" * 60)
     
     # Get current directory

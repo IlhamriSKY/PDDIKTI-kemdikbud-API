@@ -55,7 +55,9 @@ $ python run_tests.py
 PDDIKTI API TEST SUITE
 ============================================================
 Testing Universitas Unika Soegijapranata Data
-Student: Ilham Riski
+Student: Ilham Riski Wibowo (NIM: 15.N1.0012)
+Lecturer: Ridwan Sanjaya  
+University: Universitas Katolik Soegijapranata
 Lecturer: Ridwan Sanjaya
 Program: Sistem Informasi
 ============================================================
