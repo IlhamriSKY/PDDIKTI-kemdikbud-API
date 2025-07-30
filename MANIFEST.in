@@ -2,7 +2,6 @@
 include README.md
 include LICENSE
 include requirements.txt
-include pyproject.toml
 
 # Exclude test files and development files
 exclude run_tests.py

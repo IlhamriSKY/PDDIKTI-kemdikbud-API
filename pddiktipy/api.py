@@ -222,6 +222,58 @@ class api:
         except ValueError:
             raise ValidationError(f"{field_name} must be a valid year number")
     
+    def _validate_semester(self, semester: Union[int, str], field_name: str = "Semester") -> None:
+        """Validate semester parameter for API calls.
+        
+        Ensures the semester parameter is valid for PDDIKTI API which expects
+        format YYYYS where YYYY is year (1900-2100) and S is semester (1-2).
+        
+        Args:
+            semester: The semester to validate in YYYYS format (accepts int or str).
+            field_name: Name of the field for error messages. Defaults to "Semester".
+            
+        Raises:
+            ValidationError: If the semester is None, empty, not a valid number,
+                           wrong format, or year/semester out of range.
+                           
+        Example:
+            >>> self._validate_semester(20241)     # Valid (year 2024, semester 1)
+            >>> self._validate_semester("20242")   # Valid (year 2024, semester 2)  
+            >>> self._validate_semester(18001)     # Raises ValidationError (year too old)
+            >>> self._validate_semester(20243)     # Raises ValidationError (invalid semester)
+        """
+        if semester is None:
+            raise ValidationError(f"{field_name} cannot be None")
+        
+        # Convert to string if it's an integer
+        semester_str = str(semester)
+        
+        if not semester_str.strip():
+            raise ValidationError(f"{field_name} cannot be empty")
+        
+        # Validate semester format (YYYYS - 5 digits)
+        try:
+            semester_int = int(semester_str)
+            
+            # Check if it's 5 digits
+            if len(semester_str) != 5:
+                raise ValidationError(f"{field_name} must be in YYYYS format (5 digits), e.g., 20241 or 20242")
+            
+            # Extract year and semester parts
+            year = semester_int // 10  # First 4 digits
+            sem = semester_int % 10    # Last digit
+            
+            # Validate year range
+            if year < 1900 or year > 2100:
+                raise ValidationError(f"Year in {field_name} must be between 1900 and 2100")
+            
+            # Validate semester (usually 1 or 2, but allow up to 9 for flexibility)
+            if sem < 1 or sem > 2:
+                raise ValidationError(f"Semester digit in {field_name} must be 1 or 2 (got {sem})")
+                
+        except ValueError:
+            raise ValidationError(f"{field_name} must be a valid semester number in YYYYS format")
+    
     def _validate_id(self, id_value: str, field_name: str = "ID") -> None:
         """Validate ID parameters for API calls.
         
@@ -784,16 +836,16 @@ class api:
         Args:
             pt_id: The unique identifier for the university. This is typically
                   a base64-encoded string obtained from university search results.
-            tahun: The academic year in YYYYM format where YYYY is the year and M
-                  is the month/semester (e.g., 20241 for first semester 2024,
+            tahun: The academic semester in YYYYS format where YYYY is the year and S
+                  is the semester number (e.g., 20241 for first semester 2024,
                   20242 for second semester 2024). Accepts both integer and string.
 
         Returns:
             Optional[Dict[str, Any]]: A dictionary containing study program information
-                for the specified university and year, or None if not found or request fails.
+                for the specified university and semester, or None if not found or request fails.
                 
         Raises:
-            ValidationError: If pt_id is invalid or tahun is not within valid range (1900-2100).
+            ValidationError: If pt_id is invalid or tahun is not in valid YYYYS format.
             APIConnectionError: If there's a network connectivity issue.
             APITimeoutError: If the request times out.
             
@@ -827,12 +879,13 @@ class api:
             - indikator_kelengkapan_data: Data completeness indicator
             
         Note:
-            This method was enhanced to handle both integer and string year parameters
-            to fix the integer parsing bug in the original implementation.
+            This method was enhanced to handle semester codes (YYYYS format) instead of
+            just year codes, fixing the validation issue that prevented valid semester
+            codes like 20241 from being accepted.
         """
         self._validate_id(pt_id, "PT ID")
-        self._validate_year(tahun)
-        endpoint: str = self._build_endpoint("pt/detail", pt_id, tahun)
+        self._validate_semester(tahun, "Academic semester")
+        endpoint: str = self._build_endpoint("pt/prodi", pt_id, tahun)
         return self.H.response(endpoint)
 
     @handle_errors
@@ -1270,11 +1323,11 @@ class api:
 
         Args:
             prodi_id: The study programs's ID.
-            tahun: Academic year (accepts both integer and string).
+            tahun: Academic semester in YYYYS format (accepts both integer and string).
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
-            tahun = 20241 or "20241" (tahun, bulan)
+            tahun = 20241 or "20241" (year 2024, semester 1)
 
         Data:
             The response structure depends on the specific API endpoint. Refer to PDDIKTI API documentation for detailed field descriptions.
@@ -1282,6 +1335,8 @@ class api:
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
         """
+        self._validate_id(prodi_id, "Prodi ID")
+        self._validate_semester(tahun, "Academic semester")
         endpoint = f"{self.api_link}/dosen/homebase/{self.H.parse(prodi_id)}?semester={self.H.parse(tahun)}"
         return self.H.response(endpoint)
     
@@ -1292,11 +1347,11 @@ class api:
 
         Args:
             prodi_id: The study programs's ID.
-            tahun: Academic year (accepts both integer and string).
+            tahun: Academic semester in YYYYS format (accepts both integer and string).
 
         Example:
             prodi_id = "lCOatIX_hCe2RQSG1Rghn5kO81hHLJdYawJxkqiblUu6ZPeJ9OkBwbb5tnuvQqb-WcMSAg=="
-            tahun = 20241 or "20241" (tahun, bulan)
+            tahun = 20241 or "20241" (year 2024, semester 1)
 
         Data:
             The response structure depends on the specific API endpoint. Refer to PDDIKTI API documentation for detailed field descriptions.
@@ -1304,6 +1359,8 @@ class api:
         Returns:
             Optional[Dict[str, Any]]: JSON response or None if an error occurs.
         """
+        self._validate_id(prodi_id, "Prodi ID")
+        self._validate_semester(tahun, "Academic semester")
         endpoint = f"{self.api_link}/dosen/penghitung-ratio/{self.H.parse(prodi_id)}?semester={self.H.parse(tahun)}"
         return self.H.response(endpoint)
 

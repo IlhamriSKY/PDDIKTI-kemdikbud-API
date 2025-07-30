@@ -2,6 +2,53 @@
 
 Semua perubahan penting pada proyek ini akan didokumentasikan di file ini.
 
+## [2.0.6] - 2025-07-30 (Bug Fix Release) 🐛
+
+### 🐛 Diperbaiki
+- **Critical Fix**: Memperbaiki method `get_prodi_pt()` yang gagal dengan semester codes (Issue GitHub)
+  - **Root Cause**: Method menggunakan endpoint yang salah `"pt/detail"` → **Fixed**: `"pt/prodi"`  
+  - **Impact**: Method sekarang berhasil mengembalikan data program studi untuk semester 20241, 20242, dll
+  - **Validation**: Semester validation tetap berfungsi dengan benar (format YYYYS)
+  - **Testing**: Method telah diverifikasi dengan 308 programs dari Universitas Indonesia
+
+### ✅ Testing & Verification  
+- **New Test Suite**: Menambahkan `test_fix_verification.py` dengan 4 comprehensive tests
+  - Test valid semester 20241 & 20242
+  - Test invalid semester format validation  
+  - Test dengan real university data
+- **Test Results**: 72 total tests (68 original + 4 new) - **ALL PASSED** ✅
+- **Backward Compatibility**: Semua existing tests masih berjalan sempurna
+
+### 🛠️ Technical Details
+- **File Changed**: `pddiktipy/api.py` line 888
+- **Error Handling**: Tetap mengembalikan `None` untuk input tidak valid
+- **API Endpoint**: Menggunakan official PDDIKTI API `kemdiktisaintek.go.id`
+- **Performance**: Tidak ada perubahan performa, hanya perbaikan endpoint
+
+### 📊 Impact
+- **Breaking Changes**: ❌ TIDAK ADA - Full backward compatibility
+- **Method Signature**: Tidak berubah
+- **Production Ready**: ✅ Siap untuk production use
+
+## [2.0.5.post1] - 2025-07-29 (Patch Release) 🔧
+
+### 🔧 Diperbaiki
+- **Build System**: Optimasi konfigurasi packaging untuk PyPI
+  - Perbaikan format metadata license di `setup.py`
+  - Exclusion folder `tests/` dari distribution package
+  - Optimasi `MANIFEST.in` untuk package yang lebih clean
+  - Validasi PyPI compatibility (PASSED twine check)
+
+### 📦 Package Improvements
+- **Package Size**: Reduced package size dengan menghapus development files
+- **Distribution**: Hanya include file utama (`pddiktipy/` + essentials)
+- **Metadata**: Format license yang kompatibel dengan PyPI standards
+
+### 🛠️ Technical Changes
+- Update build system dari `pyproject.toml` ke `setup.py` untuk compatibility
+- Perbaikan exclude configuration untuk test files
+- Clean distribution tanpa folder development/testing
+
 ## [2.0.5] - 2025-07-29 (Versi Terbaru Stabil) 🔥 [🚨 Breaking Changes]
 
 ### ✅ Ditambahkan

@@ -63,7 +63,7 @@ with api() as client:
 **Contoh Penggunaan**:
 ```python
 with api() as client:
-    mahasiswa = client.search_mahasiswa('Ilham Riski')
+    mahasiswa = client.search_mahasiswa('Ilham Riski Wibowo')
     if mahasiswa and mahasiswa.get('data'):
         for mhs in mahasiswa['data']:
             print(f"Nama: {mhs['nama']}")
