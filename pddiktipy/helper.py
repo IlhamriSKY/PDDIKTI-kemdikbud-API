@@ -10,7 +10,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from typing import Optional, Union, Any
 from .exceptions import (
-    APIConnectionError, APITimeoutError, APIRateLimitError,
+    PDDIKTIError, APIConnectionError, APITimeoutError, APIRateLimitError,
     APIResponseError, ValidationError
 )
 
@@ -302,6 +302,10 @@ class helper:
                     endpoint=endpoint
                 )
                 
+        except PDDIKTIError:
+            # Our own typed errors (rate limit, forbidden, not found, ...) are
+            # already meaningful; propagate them without re-wrapping.
+            raise
         except requests.Timeout:
             raise APITimeoutError(
                 f"Request timeout after {timeout} seconds",
