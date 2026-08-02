@@ -2,13 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## [2.1.1] - 2026-08-02
+
+### Fixed
+- `response()` now propagates typed API errors (such as the Cloudflare
+  challenge) instead of re-wrapping them as "Unexpected error", so the
+  actionable message surfaces cleanly.
+
+### Docs
+- Removed em-dashes from the README and changelog.
+- Refreshed the dynamic PyPI version badge and ignored local virtualenvs.
+
 ## [2.1.0] - 2026-08-02 (Upstream Migration + Cloudflare) 🚨
 
 ### 💥 Breaking
 - **Old host retired**: `api-pddikti.kemdiktisaintek.go.id` now refuses connections.
   The base URL moved to same-origin `https://pddikti.kemdiktisaintek.go.id/api`.
 - **Cloudflare Turnstile**: the upstream now requires browser-solved clearance.
-  `api()` with no arguments is no longer sufficient — see the README
+  `api()` with no arguments is no longer sufficient. See the README
   "Cloudflare access" section.
 
 ### ✨ Added
@@ -18,7 +29,7 @@ All notable changes to this project are documented in this file.
 - New helpers: `encrypt_id()`, `decrypt_id()`, `decrypt()`.
 - New methods: `get_announcements`, `get_publications`, `get_activities`,
   `get_activity_detail`, `get_pt_locations`, `get_dosen_count`, `get_mahasiswa_count`.
-- Full endpoint coverage — added the remaining upstream endpoints:
+- Full endpoint coverage. Added the remaining upstream endpoints:
   `search_pt_filter`, `search_prodi_filter` (`/v2/*/search/filter`), and
   `get_beranda` (`/beranda`).
 - Actionable 403 error message explaining how to supply clearance.
