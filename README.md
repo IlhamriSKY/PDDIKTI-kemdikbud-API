@@ -28,7 +28,7 @@ with connection pooling, retries, validation, and comprehensive error handling.
 
 ## 🚀 Features
 
-- ✅ **70+ endpoints** — search, details, statistics, and visualizations
+- ✅ **70+ endpoints**: search, details, statistics, and visualizations
 - ✅ **Full type hints** for good editor support
 - ✅ **Robust error handling** with custom exceptions and input validation
 - ✅ **Context manager** support for clean resource management
@@ -53,11 +53,11 @@ pip install "pddiktipy[auto]"
 The upstream API (`https://pddikti.kemdiktisaintek.go.id/api`) is protected by a
 **Cloudflare Turnstile** challenge. A plain HTTP client always receives `403`, so
 **`api()` with no arguments will not work on its own.** Only a real browser can
-pass the challenge — even automated browsers (Selenium/Playwright) are blocked.
+pass the challenge. Even automated browsers (Selenium/Playwright) are blocked.
 
 You therefore need to supply Cloudflare *clearance* in one of three ways.
 
-### Option A — auto cookie (easiest, on your own machine)
+### Option A: auto cookie (easiest, on your own machine)
 
 ```bash
 pip install "pddiktipy[auto]"
@@ -65,7 +65,7 @@ pip install "pddiktipy[auto]"
 
 1. Open `https://pddikti.kemdiktisaintek.go.id` in Chrome or Edge and complete
    the **"Verify you are human"** check once.
-2. Run your code — the client reads the `cf_clearance` cookie for you:
+2. Run your code. The client reads the `cf_clearance` cookie for you:
 
 ```python
 from pddiktipy import api
@@ -74,7 +74,7 @@ with api(auto_cookie=True) as client:
     print(client.get_pt_count())   # {'status': 'success', 'data': {'jumlah': 4416}}
 ```
 
-### Option B — paste the cookie manually (works on servers / other machines)
+### Option B: paste the cookie manually (works on servers or other machines)
 
 1. Open the site in your browser and pass the check.
 2. Open DevTools (`F12`) → **Application → Cookies** → select the site → copy the
@@ -92,7 +92,7 @@ client = api(
 print(client.get_pt_count())
 ```
 
-### Option C — run your own solver proxy (most stable for production)
+### Option C: run your own solver proxy (most stable for production)
 
 Point `base_url` at a service that solves Cloudflare for you (for example a
 [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr)-backed proxy that
@@ -157,7 +157,7 @@ If the upstream returns a Cloudflare challenge, the client raises an
 
 ## 📚 Documentation
 
-**➡️ [API Documentation](documentation/API_DOCUMENTATION.md)** — every method, with
+**➡️ [API Documentation](documentation/API_DOCUMENTATION.md)**: every method, with
 parameters, examples, and response field descriptions.
 
 ## 📋 Requirements
@@ -169,7 +169,7 @@ parameters, examples, and response field descriptions.
 
 ## 🧪 Testing
 
-**🧪 [Testing Guide](documentation/TESTING.md)** — how to run the test suite.
+**🧪 [Testing Guide](documentation/TESTING.md)**: how to run the test suite.
 
 Offline tests (no network) can be run directly:
 
@@ -179,7 +179,7 @@ python -m pytest tests/test_crypto_and_endpoints.py -q
 
 ## 🤝 Contributing
 
-**🤝 [Contributing Guide](documentation/CONTRIBUTING.md)** — how to contribute.
+**🤝 [Contributing Guide](documentation/CONTRIBUTING.md)**: how to contribute.
 
 ## 📄 License
 
