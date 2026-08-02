@@ -1,6 +1,40 @@
 # 📋 Changelog
 
-Semua perubahan penting pada proyek ini akan didokumentasikan di file ini.
+All notable changes to this project are documented in this file.
+
+## [2.1.0] - 2026-08-02 (Upstream Migration + Cloudflare) 🚨
+
+### 💥 Breaking
+- **Old host retired**: `api-pddikti.kemdiktisaintek.go.id` now refuses connections.
+  The base URL moved to same-origin `https://pddikti.kemdiktisaintek.go.id/api`.
+- **Cloudflare Turnstile**: the upstream now requires browser-solved clearance.
+  `api()` with no arguments is no longer sufficient — see the README
+  "Cloudflare access" section.
+
+### ✨ Added
+- New constructor: `api(base_url=..., session=..., cf_clearance=..., user_agent=..., auto_cookie=...)`.
+  - `auto_cookie=True` reads `cf_clearance` from a local browser (`pip install "pddiktipy[auto]"`).
+- Transparent AES-256-CBC decryption for `search_all()` (endpoint is now `pencarian/enc/all`).
+- New helpers: `encrypt_id()`, `decrypt_id()`, `decrypt()`.
+- New methods: `get_announcements`, `get_publications`, `get_activities`,
+  `get_activity_detail`, `get_pt_locations`, `get_dosen_count`, `get_mahasiswa_count`.
+- Full endpoint coverage — added the remaining upstream endpoints:
+  `search_pt_filter`, `search_prodi_filter` (`/v2/*/search/filter`), and
+  `get_beranda` (`/beranda`).
+- Actionable 403 error message explaining how to supply clearance.
+
+### 🔀 Changed
+- `detail/pt` → `pt/detail` (`get_detail_pt`).
+- `news/list` → `content/announcements`; `get_news()` is kept as a paginated alias
+  of `get_announcements()`.
+- New dependency: `cryptography`. Optional: `browser_cookie3` (extra `[auto]`).
+- Trimmed verbose docstrings and switched to a library `NullHandler` logger.
+
+### ✅ Verified live (2026-08-02)
+- `pt/count` → `{"status":"success","data":{"jumlah":4416}}`.
+- `pencarian/enc/all/undip` → encrypted blob decrypted to valid UNDIP student data
+  using the AES key/IV in `helper.py`.
+- Verified through a browser session that had passed the Cloudflare Turnstile check.
 
 ## [2.0.6] - 2025-07-30 (Bug Fix Release) 🐛
 

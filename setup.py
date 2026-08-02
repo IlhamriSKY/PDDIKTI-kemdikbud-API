@@ -53,7 +53,12 @@ setup(
     python_requires=">=3.7",
     install_requires=[
         "requests>=2.25.0",
+        "cryptography>=41.0.0",
     ],
+    extras_require={
+        # auto_cookie=True: read cf_clearance straight from a local browser.
+        "auto": ["browser_cookie3>=0.19.1"],
+    },
     keywords=[
         "pddikti", 
         "api", 
