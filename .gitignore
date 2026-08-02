@@ -137,3 +137,7 @@ verify_fix.py
 ISSUE_*.md
 *_test.py
 *_testing.py
+
+# Virtual environments
+.venv/
+venv/

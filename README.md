@@ -2,7 +2,7 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/39e00a8c8c1c4007a68d1ae3f53c03e7)](https://app.codacy.com/gh/IlhamriSKY/PDDIKTI-kemdikbud-API/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![python3.x](https://img.shields.io/badge/3.12.1-blue.svg?&logo=python&label=Python)](https://www.python.org/downloads/release/python-3121/)
-[![Version](https://img.shields.io/pypi/v/pddiktipy?logo=Python&logoColor=white&label=PyPI&color=c125ff)](https://pypi.org/project/pddiktipy/)
+[![Version](https://img.shields.io/pypi/v/pddiktipy?logo=pypi&logoColor=white&label=PyPI&color=c125ff&cacheSeconds=3600)](https://pypi.org/project/pddiktipy/)
 [![Downloads](https://img.shields.io/pepy/dt/pddiktipy?logo=PyPI&logoColor=white&label=Downloads&color=c125ff)](https://www.pepy.tech/projects/pddiktipy)
 [![Author](https://img.shields.io/badge/Author-Ilham%20Riski-blue.svg?style=flat)](https://github.com/IlhamriSKY)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/IlhamriSKY/PDDIKTI-kemdikbud-API/blob/master/LICENSE)
