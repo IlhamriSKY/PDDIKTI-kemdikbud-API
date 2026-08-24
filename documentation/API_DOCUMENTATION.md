@@ -1,3 +1,7 @@
+<!-- markdownlint-disable-file MD043 -->
+<!-- MD043 is set to an empty required-heading list,
+     which no document can satisfy. -->
+
 # 📖 Dokumentasi API PDDIKTI Python Wrapper
 
 Dokumentasi lengkap untuk semua method dan endpoint yang tersedia dalam library

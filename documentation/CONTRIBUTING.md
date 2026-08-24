@@ -1,3 +1,7 @@
+<!-- markdownlint-disable-file MD043 -->
+<!-- MD043 is set to an empty required-heading list,
+     which no document can satisfy. -->
+
 # 🤝 Panduan Kontribusi
 
 Terima kasih atas minat Anda untuk berkontribusi! Panduan ini akan membantu Anda

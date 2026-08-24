@@ -1,6 +1,6 @@
-"""
-PDDIKTI API Test Runner
-Runs all tests in the tests folder with clean output
+"""PDDIKTI API test runner.
+
+Runs every test in the tests folder with clean output.
 """
 
 import subprocess  # nosec B404 - fixed argv, no shell, no external input
@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 def main():
-    """Run all tests with proper output"""
+    """Run all tests with proper output."""
     print("=" * 60)
     print("PDDIKTI API TEST SUITE")
     print("=" * 60)

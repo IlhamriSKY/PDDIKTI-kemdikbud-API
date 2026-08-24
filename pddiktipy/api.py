@@ -69,11 +69,10 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     The lowercase name and the ``H`` helper attribute are part of the public
     surface since v1 and are kept for backwards compatibility. Every endpoint
     method is wrapped in :func:`handle_errors`, so failures are logged and
-    surface as ``None`` instead of raising.
+    surface as ``None`` instead of raising. Typical use::
 
-    Example:
-        >>> with api(auto_cookie=True) as client:
-        ...     client.search_mahasiswa("budi")
+        with api(auto_cookie=True) as client:
+            client.search_mahasiswa("budi")
     """
 
     def __init__(
@@ -119,9 +118,11 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
             raise PDDIKTIError(f"Initialization failed: {e}") from e
 
     def __enter__(self) -> 'api':
+        """Enter the context manager and return the client itself."""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        """Close the client on the way out, logging any escaping exception."""
         self.close()
         if exc_type is not None:
             self.logger.error("Exception in context: %s: %s", exc_type.__name__, exc_val)

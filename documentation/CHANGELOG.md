@@ -1,5 +1,8 @@
 <!-- markdownlint-disable-file MD024 -->
 <!-- Repeating section headings per release is the point of a changelog. -->
+<!-- markdownlint-disable-file MD043 -->
+<!-- MD043 is set to an empty required-heading list,
+     which no document can satisfy. -->
 
 # 📋 Changelog
 
@@ -18,15 +21,21 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
-- Every multi-line docstring now opens its summary on the second line, matching
-  the convention the package already used and clearing 89 pydocstyle D213
-  findings.
+- Docstrings brought in line with pydocstyle: multi-line summaries start on the
+  second line (D213), every summary ends in punctuation (D415), one-sentence
+  docstrings fit on one line (D200), and the `Raises:`/`Example:` blocks are
+  written as prose so they are not parsed as numpydoc sections (D406/D407/D413).
+  `__enter__`, `__exit__` and `PDDIKTIError.__init__` gained the docstrings they
+  were missing.
 - All Markdown reflowed to 80 columns with headings, lists and fenced blocks
-  correctly spaced: 153 markdownlint findings cleared.
+  correctly spaced: 153 markdownlint findings cleared. MD024 and MD043 are
+  switched off per file, the first because a changelog repeats its section
+  headings by design, the second because it is configured with an empty
+  required-heading list that no document can satisfy.
 - The three remaining Bandit findings are marked `# nosec` with the reason
   (fixed argv subprocess call, and a best-effort browser-cookie loop).
-- Net effect on Codacy: 245 open issues down to none across markdownlint,
-  Prospector and Bandit.
+- Net effect on Codacy: 245 open issues cleared across markdownlint, Prospector
+  and Bandit.
 
 ### Compatibility
 

@@ -1,3 +1,7 @@
+<!-- markdownlint-disable-file MD043 -->
+<!-- MD043 is set to an empty required-heading list,
+     which no document can satisfy. -->
+
 # 📚 Dokumentasi PDDIKTI API Python Wrapper
 
 Folder ini berisi semua dokumentasi untuk library `pddiktipy`. Setiap file

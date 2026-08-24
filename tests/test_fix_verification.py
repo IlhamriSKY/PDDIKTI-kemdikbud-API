@@ -1,5 +1,5 @@
 """
-PDDIKTI API get_prodi_pt Fix Verification Test
+PDDIKTI API get_prodi_pt Fix Verification Test.
 
 This test specifically verifies that the get_prodi_pt method fix is working correctly.
 The fix changed the endpoint from 'pt/detail' to 'pt/prodi' to resolve GitHub issue.
@@ -24,7 +24,7 @@ from tests.test_data import TestDataConstants
 
 class TestGetProdiPTFix(unittest.TestCase):
     """
-    Test suite specifically for verifying the get_prodi_pt method fix
+    Test suite specifically for verifying the get_prodi_pt method fix.
 
     This test verifies that:
     1. The endpoint was correctly changed from 'pt/detail' to 'pt/prodi'
@@ -35,7 +35,7 @@ class TestGetProdiPTFix(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """Set up test data and API client once for all tests"""
+        """Set up test data and API client once for all tests."""
         cls.api_client = api()
         cls.test_data = TestDataConstants()
 
@@ -58,7 +58,7 @@ class TestGetProdiPTFix(unittest.TestCase):
             print("❌ Could not find valid university for testing")
 
     def test_get_prodi_pt_with_valid_semester_20241(self):
-        """Test get_prodi_pt with valid semester 20241"""
+        """Test get_prodi_pt with valid semester 20241."""
         print("\n🔍 Testing valid semester 20241...")
 
         self.assertIsNotNone(self.valid_university_id, "Need valid university ID for testing")
@@ -82,7 +82,7 @@ class TestGetProdiPTFix(unittest.TestCase):
             print(f"✅ Example program: {first_program.get('nama_prodi', 'N/A')}")
 
     def test_get_prodi_pt_with_valid_semester_20242(self):
-        """Test get_prodi_pt with valid semester 20242"""
+        """Test get_prodi_pt with valid semester 20242."""
         print("\n🔍 Testing valid semester 20242...")
 
         self.assertIsNotNone(self.valid_university_id, "Need valid university ID for testing")
@@ -97,7 +97,7 @@ class TestGetProdiPTFix(unittest.TestCase):
             print("✅ No data for 20242 (expected behavior)")
 
     def test_get_prodi_pt_with_invalid_semester_format(self):
-        """Test get_prodi_pt with invalid semester format (should return None)"""
+        """Test get_prodi_pt with invalid semester format (should return None)."""
         print("\n🔍 Testing invalid semester format...")
 
         self.assertIsNotNone(self.valid_university_id, "Need valid university ID for testing")
@@ -110,7 +110,7 @@ class TestGetProdiPTFix(unittest.TestCase):
         print("✅ Validation working correctly - returned None")
 
     def test_get_prodi_pt_with_test_data_constants(self):
-        """Test get_prodi_pt with test data constants"""
+        """Test get_prodi_pt with test data constants."""
         print("\n🔍 Testing with test data constants...")
 
         # Test with data from TestDataConstants
@@ -127,7 +127,7 @@ class TestGetProdiPTFix(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """Clean up after all tests"""
+        """Clean up after all tests."""
         print("\n" + "="*60)
         print("🎉 get_prodi_pt FIX VERIFICATION COMPLETED!")
         print("✅ Endpoint corrected from 'pt/detail' to 'pt/prodi'")

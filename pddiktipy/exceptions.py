@@ -1,17 +1,17 @@
-"""
-Custom exceptions for PDDIKTI API wrapper.
-"""
+"""Custom exceptions raised by the PDDIKTI API wrapper."""
 from typing import Optional
 
 
 class PDDIKTIError(Exception):
     """Base exception for PDDIKTI API errors."""
+
     def __init__(
         self,
         message: str,
         status_code: Optional[int] = None,
         endpoint: Optional[str] = None,
     ):
+        """Record the message and the endpoint/status it came from."""
         self.message = message
         self.status_code = status_code
         self.endpoint = endpoint

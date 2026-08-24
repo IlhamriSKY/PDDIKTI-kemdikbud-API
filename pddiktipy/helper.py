@@ -77,7 +77,8 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         user_agent: Optional[str] = None,
         auto_cookie: bool = False,
     ):
-        """
+        """Build the HTTP/crypto layer used by every API call.
+
         Args:
             base_url: Override the upstream API base URL. Point this at your own
                 Cloudflare-solving proxy (FlareSolverr, or a self-hosted wrapper).
@@ -114,7 +115,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
 
     @property
     def session(self) -> requests.Session:
-        """Lazy initialization of requests session with retry strategy"""
+        """Lazy initialization of requests session with retry strategy."""
         if self._session is None:
             self._session = requests.Session()
 
@@ -233,9 +234,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         return ip
 
     def get_headers(self) -> dict:
-        """
-        Returns a single header dictionary for requests.
-        """
+        """Return the request headers the upstream expects."""
         headers = {
             "Accept": "application/json, text/plain, */*",
             "Accept-Encoding": "gzip, deflate, br, zstd",
@@ -377,24 +376,18 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
             raise ValidationError(f"Error encoding URL: {e}") from e
 
     def close(self) -> None:
-        """
-        Close the session to free resources.
-        """
+        """Close the session to free resources."""
         if self._session:
             self._session.close()
             self._session = None
             self.logger.debug("Session closed successfully")
 
     def decodes(self, string: str) -> str:
-        """
-        Decodes the value.
-        """
+        """Decodes the value."""
         return base64.b64decode(string).decode('utf-8')
 
     def endpoint(self) -> str:
-        """
-        Returns the API base URL: the caller's override, or the official upstream.
-        """
+        """Returns the API base URL: the caller's override, or the official upstream."""
         return self.base_url or self.decodes(BASE_URL)
 
     def decrypt(self, encrypted: str) -> Any:
@@ -403,9 +396,8 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
 
         Upstream wraps these as {"status": ..., "data": "<base64 ciphertext>"}.
         Returns the parsed JSON when the plaintext is JSON, else the raw string.
-
-        Raises:
-            ValidationError: If the ciphertext is malformed or padding is invalid.
+        Raises ValidationError if the ciphertext is malformed or its padding is
+        invalid.
         """
         if not encrypted:
             raise ValidationError("Cannot decrypt empty payload")
@@ -455,14 +447,10 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         return base64.b64encode(encryptor.update(data) + encryptor.finalize()).decode()
 
     def decrypt_id(self, encrypted_id: str) -> str:
-        """
-        Decrypts an encrypted entity ID back to its plaintext form.
-        """
+        """Decrypts an encrypted entity ID back to its plaintext form."""
         plaintext = self.decrypt(encrypted_id)
         return plaintext if isinstance(plaintext, str) else json.dumps(plaintext)
 
     def with_version(self, version: str) -> str:
-        """
-        Appends a version to the decoded URL.
-        """
+        """Appends a version to the decoded URL."""
         return self.endpoint() + version
