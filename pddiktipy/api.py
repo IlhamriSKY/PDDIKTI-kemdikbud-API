@@ -63,8 +63,7 @@ def handle_errors(func: APIMethod) -> APIMethod:
 
 
 class api:  # pylint: disable=invalid-name,too-many-public-methods
-    """
-    Client for the PDDIKTI public API.
+    """Client for the PDDIKTI public API.
 
     The lowercase name and the ``H`` helper attribute are part of the public
     surface since v1 and are kept for backwards compatibility. Every endpoint
