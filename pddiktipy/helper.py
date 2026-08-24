@@ -79,21 +79,20 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
     ):
         """Build the HTTP/crypto layer used by every API call.
 
-        Args:
-            base_url: Override the upstream API base URL. Point this at your own
-                Cloudflare-solving proxy (FlareSolverr, or a self-hosted wrapper).
-                Defaults to the official upstream, which sits behind a Cloudflare
-                managed challenge and is unreachable from a plain HTTP client.
-            session: Pre-configured requests.Session. Overrides the built-in one.
-            cf_clearance: A `cf_clearance` cookie value copied from a real browser
-                that has solved the Cloudflare challenge. Must be paired with the
-                exact `user_agent` of that browser.
-            user_agent: The User-Agent string of the browser that produced
-                `cf_clearance` (the cookie is bound to it).
-            auto_cookie: If True, read `cf_clearance` (and, where possible, the
-                matching User-Agent) from a locally installed browser via
-                browser_cookie3. Requires `pip install pddiktipy[auto]` and that
-                you have opened https://pddikti.kemdiktisaintek.go.id once.
+        - ``base_url``: Override the upstream API base URL. Point this at your own
+          Cloudflare-solving proxy (FlareSolverr, or a self-hosted wrapper).
+          Defaults to the official upstream, which sits behind a Cloudflare
+          managed challenge and is unreachable from a plain HTTP client.
+        - ``session``: Pre-configured requests.Session. Overrides the built-in one.
+        - ``cf_clearance``: A `cf_clearance` cookie value copied from a real browser
+          that has solved the Cloudflare challenge. Must be paired with the
+          exact `user_agent` of that browser.
+        - ``user_agent``: The User-Agent string of the browser that produced
+          `cf_clearance` (the cookie is bound to it).
+        - ``auto_cookie``: If True, read `cf_clearance` (and, where possible, the
+          matching User-Agent) from a locally installed browser via
+          browser_cookie3. Requires `pip install pddiktipy[auto]` and that
+          you have opened https://pddikti.kemdiktisaintek.go.id once.
         """
         self.base_url = base_url.rstrip("/") if base_url else None
         self.cf_clearance = cf_clearance
@@ -140,8 +139,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         return self._session
 
     def _read_browser_clearance(self):
-        """
-        Read `cf_clearance` and a matching User-Agent from a local browser.
+        """Read `cf_clearance` and a matching User-Agent from a local browser.
 
         Returns (cookie, user_agent), either of which may be None. Never raises:
         a missing browser_cookie3 or an unreadable cookie store just yields None
@@ -179,8 +177,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         return None, None
 
     def _detect_chrome_user_agent(self, brand: str = "Chrome") -> Optional[str]:
-        """
-        Best-effort Chrome/Edge User-Agent so it matches the cookie's browser.
+        """Best-effort Chrome/Edge User-Agent so it matches the cookie's browser.
 
         cf_clearance is bound to the UA that solved the challenge, so a mismatch
         invalidates it. On Windows we read the installed version from the
@@ -208,8 +205,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
             return None
 
     def get_ip(self) -> Optional[str]:
-        """
-        Return the caller's public IP, cached for an hour.
+        """Return the caller's public IP, cached for an hour.
 
         Falls back to the last known (or a hard-coded) IP when the lookup fails;
         the value is only used for the upstream's ``X-User-IP`` header.
@@ -291,8 +287,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         response.raise_for_status()
 
     def response(self, endpoint: str, timeout: int = 30) -> Optional[dict]:
-        """
-        GET the endpoint and return the decoded JSON.
+        """GET the endpoint and return the decoded JSON.
 
         Raises APITimeoutError, APIConnectionError, APIRateLimitError, or
         APIResponseError depending on the failure.
@@ -391,8 +386,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         return self.base_url or self.decodes(BASE_URL)
 
     def decrypt(self, encrypted: str) -> Any:
-        """
-        Decrypts an AES-256-CBC payload returned by the `*/enc/*` endpoints.
+        """Decrypts an AES-256-CBC payload returned by the `*/enc/*` endpoints.
 
         Upstream wraps these as {"status": ..., "data": "<base64 ciphertext>"}.
         Returns the parsed JSON when the plaintext is JSON, else the raw string.
@@ -427,8 +421,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
             return plaintext.decode("utf-8", errors="replace")
 
     def encrypt_id(self, plain_id: str) -> str:
-        """
-        Encrypts a plaintext entity ID into the base64 form the upstream expects.
+        """Encrypts a plaintext entity ID into the base64 form the upstream expects.
 
         Only needed when you hold a raw ID; IDs returned by the search endpoints
         are already encrypted and should be passed through unchanged.

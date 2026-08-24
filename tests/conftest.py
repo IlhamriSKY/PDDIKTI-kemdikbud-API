@@ -1,5 +1,4 @@
-"""
-Pytest configuration and fixtures for PDDIKTI API testing.
+"""Pytest configuration and fixtures for PDDIKTI API testing.
 
 This file provides shared test configuration and fixtures for all PDDIKTI API tests.
 Includes API client fixture and common test setup to ensure consistent testing environment.

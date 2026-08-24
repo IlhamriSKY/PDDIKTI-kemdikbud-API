@@ -1,5 +1,4 @@
-"""
-Minimal quickstart for pddiktipy.
+"""Minimal quickstart for pddiktipy.
 
 The upstream API sits behind Cloudflare, so you must provide clearance. Pick the
 option that fits your setup (see the README "Cloudflare access" section):

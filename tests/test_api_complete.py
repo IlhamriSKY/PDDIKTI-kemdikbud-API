@@ -1,5 +1,4 @@
-"""
-PDDIKTI API Complete Test Suite.
+"""PDDIKTI API Complete Test Suite.
 
 Comprehensive test suite for all implemented PDDIKTI API methods.
 Tests only methods that are actually implemented in the API class.
@@ -25,8 +24,7 @@ from tests.test_data import TestDataConstants
 
 
 class TestPDDIKTIAPIComplete(unittest.TestCase):
-    """
-    Complete test suite for PDDIKTI API methods.
+    """Complete test suite for PDDIKTI API methods.
 
     Tests all methods that are actually implemented in the api.py file.
     Uses real data from PDDIKTI endpoints for authentic testing.

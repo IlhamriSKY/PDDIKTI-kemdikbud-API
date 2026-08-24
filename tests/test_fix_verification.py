@@ -1,5 +1,4 @@
-"""
-PDDIKTI API get_prodi_pt Fix Verification Test.
+"""PDDIKTI API get_prodi_pt Fix Verification Test.
 
 This test specifically verifies that the get_prodi_pt method fix is working correctly.
 The fix changed the endpoint from 'pt/detail' to 'pt/prodi' to resolve GitHub issue.
@@ -23,8 +22,7 @@ from tests.test_data import TestDataConstants
 
 
 class TestGetProdiPTFix(unittest.TestCase):
-    """
-    Test suite specifically for verifying the get_prodi_pt method fix.
+    """Test suite specifically for verifying the get_prodi_pt method fix.
 
     This test verifies that:
     1. The endpoint was correctly changed from 'pt/detail' to 'pt/prodi'

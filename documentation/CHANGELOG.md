@@ -21,12 +21,16 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
-- Docstrings brought in line with pydocstyle: multi-line summaries start on the
-  second line (D213), every summary ends in punctuation (D415), one-sentence
-  docstrings fit on one line (D200), and the `Raises:`/`Example:` blocks are
-  written as prose so they are not parsed as numpydoc sections (D406/D407/D413).
-  `__enter__`, `__exit__` and `PDDIKTIError.__init__` gained the docstrings they
-  were missing.
+- Docstrings brought in line with pydocstyle: every summary starts on the
+  opening line (D212) and ends in punctuation (D415), one-sentence docstrings
+  fit on one line (D200), and the `Args:`, `Raises:` and `Example:` blocks are
+  written as bullet lists or prose so they are not parsed as numpydoc sections
+  wanting a dashed underline (D406/D407/D413). `__enter__`, `__exit__` and
+  `PDDIKTIError.__init__` gained the docstrings they were missing.
+- Codacy has both D212 and D213 enabled for Prospector, and those two rules
+  contradict each other: one wants the summary on the opening line, the other
+  on the line below, so every multi-line docstring violates exactly one of
+  them. The package follows D212, which was already its majority style.
 - All Markdown reflowed to 80 columns with headings, lists and fenced blocks
   correctly spaced: 153 markdownlint findings cleared. MD024 and MD043 are
   switched off per file, the first because a changelog repeats its section
