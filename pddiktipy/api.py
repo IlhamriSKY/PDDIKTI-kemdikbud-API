@@ -68,11 +68,10 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     The lowercase name and the ``H`` helper attribute are part of the public
     surface since v1 and are kept for backwards compatibility. Every endpoint
     method is wrapped in :func:`handle_errors`, so failures are logged and
-    surface as ``None`` instead of raising.
+    surface as ``None`` instead of raising. Typical use::
 
-    Example:
-        >>> with api(auto_cookie=True) as client:
-        ...     client.search_mahasiswa("budi")
+        with api(auto_cookie=True) as client:
+            client.search_mahasiswa("budi")
     """
 
     def __init__(
@@ -94,12 +93,13 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
           the challenge (the cookie is bound to that exact User-Agent).
         - ``base_url`` pointing at your own Cloudflare-solving proxy.
 
-        Args:
-            base_url: Override the upstream base URL (e.g. a local solver proxy).
-            session: Pre-configured ``requests.Session``.
-            cf_clearance: ``cf_clearance`` cookie from a solved browser session.
-            user_agent: User-Agent that produced ``cf_clearance``.
-            auto_cookie: Load ``cf_clearance`` from an installed browser.
+        The parameters:
+
+        - ``base_url``: Override the upstream base URL (e.g. a local solver proxy).
+        - ``session``: Pre-configured ``requests.Session``.
+        - ``cf_clearance``: ``cf_clearance`` cookie from a solved browser session.
+        - ``user_agent``: User-Agent that produced ``cf_clearance``.
+        - ``auto_cookie``: Load ``cf_clearance`` from an installed browser.
         """
         try:
             self.H: helper = helper(
@@ -117,9 +117,11 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
             raise PDDIKTIError(f"Initialization failed: {e}") from e
 
     def __enter__(self) -> 'api':
+        """Enter the context manager and return the client itself."""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        """Close the client on the way out, logging any escaping exception."""
         self.close()
         if exc_type is not None:
             self.logger.error("Exception in context: %s: %s", exc_type.__name__, exc_val)
@@ -270,10 +272,9 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     ) -> Optional[Dict[str, Any]]:
         """Filtered, paginated university search.
 
-        Args:
-            limit: Maximum number of results.
-            offset: Number of results to skip.
-            **filters: Any extra upstream filter parameters, passed as query args.
+        - ``limit``: Maximum number of results.
+        - ``offset``: Number of results to skip.
+        - ``**filters``: Any extra upstream filter parameters, passed as query args.
         """
         query = self._filter_query(limit, offset, filters)
         endpoint = f"{self.api_link}/v2/pt/search/filter?{query}"
@@ -285,10 +286,9 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     ) -> Optional[Dict[str, Any]]:
         """Filtered, paginated study-program search.
 
-        Args:
-            limit: Maximum number of results.
-            offset: Number of results to skip.
-            **filters: Any extra upstream filter parameters, passed as query args.
+        - ``limit``: Maximum number of results.
+        - ``offset``: Number of results to skip.
+        - ``**filters``: Any extra upstream filter parameters, passed as query args.
         """
         query = self._filter_query(limit, offset, filters)
         endpoint = f"{self.api_link}/v2/prodi/search/filter?{query}"
@@ -397,9 +397,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     def get_prodi_pt(self, pt_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]:
         """Get study programs of a university for an academic semester.
 
-        Args:
-            pt_id: University ID.
-            tahun: Academic semester in YYYYS format, e.g. 20241 (2024, sem 1).
+        - ``pt_id``: University ID.
+        - ``tahun``: Academic semester in YYYYS format, e.g. 20241 (2024, sem 1).
 
         Data: ['id_sms', 'kode_prodi', 'nama_prodi', 'akreditasi', 'jenjang_prodi',
         'status_prodi', 'jumlah_dosen_nidn', 'jumlah_dosen_nidk', 'jumlah_dosen',
@@ -596,9 +595,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     def get_homebase_prodi(self, prodi_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]:
         """Get a study program's homebase ratio for an academic semester.
 
-        Args:
-            prodi_id: Study program ID.
-            tahun: Academic semester in YYYYS format, e.g. 20241.
+        - ``prodi_id``: Study program ID.
+        - ``tahun``: Academic semester in YYYYS format, e.g. 20241.
         """
         self._validate_id(prodi_id, "Prodi ID")
         self._validate_semester(tahun, "Academic semester")
@@ -614,9 +612,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     ) -> Optional[Dict[str, Any]]:
         """Get a study program's ratio counter for an academic semester.
 
-        Args:
-            prodi_id: Study program ID.
-            tahun: Academic semester in YYYYS format, e.g. 20241.
+        - ``prodi_id``: Study program ID.
+        - ``tahun``: Academic semester in YYYYS format, e.g. 20241.
         """
         self._validate_id(prodi_id, "Prodi ID")
         self._validate_semester(tahun, "Academic semester")
@@ -831,8 +828,7 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     def get_beranda(self, content_limit: int = 4) -> Optional[Dict[str, Any]]:
         """Get the homepage summary (latest content and aggregate stats).
 
-        Args:
-            content_limit: Number of content items to include.
+        - ``content_limit``: Number of content items to include.
         """
         endpoint = f"{self.api_link}/beranda?content_limit={self.H.parse(content_limit)}"
         return self.H.response(endpoint)

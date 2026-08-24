@@ -1,12 +1,17 @@
+<!-- markdownlint-disable-file MD043 -->
+<!-- MD043 is set to an empty required-heading list,
+     which no document can satisfy. -->
+
 # 🤝 Panduan Kontribusi
 
-Terima kasih atas minat Anda untuk berkontribusi! Panduan ini akan membantu Anda memulai.
+Terima kasih atas minat Anda untuk berkontribusi! Panduan ini akan membantu Anda
+memulai.
 
 ## 🎯 Cara Berkontribusi
 
 - **🐛 Laporkan Bug**: Buat issue dengan detail lengkap
 - **💡 Usulkan Fitur**: Diskusikan ide baru via issue
-- **📖 Perbaiki Docs**: Tingkatkan dokumentasi  
+- **📖 Perbaiki Docs**: Tingkatkan dokumentasi
 - **🔧 Kirim PR**: Fix bug atau implement fitur
 - **🧪 Tambah Test**: Tingkatkan test coverage
 
@@ -33,12 +38,14 @@ python -c "from pddiktipy import api; print('Setup OK!')"
 ## 📝 Panduan Kode
 
 ### Standar
+
 - Ikuti panduan style **PEP 8**
 - Gunakan **Type Hints** untuk semua functions
 - Tulis **Google-style docstrings**
 - Jaga functions tetap **kecil** dan terfokus
 
 ### Contoh
+
 ```python
 def search_mahasiswa(self, keyword: str) -> Optional[Dict[str, Any]]:
     """Mencari mahasiswa berdasarkan nama atau NIM.
@@ -67,6 +74,7 @@ pytest tests/ -v
 ```
 
 ### Persyaratan Test
+
 - ✅ **Semua test harus lulus** sebelum submit PR
 - ✅ **Test coverage**: Tambahkan test untuk fungsi baru
 - ✅ **Data test**: Gunakan data terpusat di `tests/test_data.py`
@@ -84,6 +92,7 @@ pytest tests/ -v
 6. **Push & buat PR**
 
 ### Checklist PR
+
 - [ ] **Test lulus** (`python run_tests.py`)
 - [ ] **Tambah test** untuk functionality baru
 - [ ] Kode mengikuti panduan style
@@ -125,11 +134,13 @@ Kapan fitur ini akan berguna?
 ## 📖 Dokumentasi
 
 Update dokumentasi jika:
+
 - Menambah method baru
 - Mengubah perilaku API
 - Menambah dependensi
 
 File yang perlu diupdate:
+
 - `README.md`: Panduan quick start
 - `API_DOCUMENTATION.md`: Referensi API detail
 - Code docstrings: Dokumentasi inline

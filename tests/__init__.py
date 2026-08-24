@@ -1,5 +1,4 @@
-"""
-PDDIKTI API Test Package
+"""PDDIKTI API Test Package.
 
 This package contains comprehensive test suites for the PDDIKTI API Python wrapper.
 

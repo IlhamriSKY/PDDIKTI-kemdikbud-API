@@ -1,7 +1,7 @@
 """pddiktipy — an unofficial Python client for the PDDIKTI public API."""
 
 # __variables__ with double-quoted values will be available in setup.py
-__version__ = "2.1.2"
+__version__ = "2.1.3"
 
 from .api import api
 from .exceptions import (

@@ -1,5 +1,4 @@
-"""
-Test data constants for PDDIKTI API testing.
+"""Test data constants for PDDIKTI API testing.
 
 This file contains validated test data sourced from real PDDIKTI database entries.
 All IDs are encoded and anonymized for testing purposes while maintaining
@@ -55,8 +54,7 @@ SEARCH_PROGRAM_TERM = "Teknik Informatika"  # Popular study program name
 
 
 class TestDataConstants:  # pylint: disable=too-few-public-methods
-    """
-    Centralized test data constants for PDDIKTI API testing.
+    """Centralized test data constants for PDDIKTI API testing.
 
     Contains validated real IDs and search terms for comprehensive API testing.
     All data is anonymized but functional with live PDDIKTI endpoints.
