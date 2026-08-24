@@ -2,6 +2,32 @@
 
 All notable changes to this project are documented in this file.
 
+## [2.1.2] - 2026-08-24
+
+### Fixed
+- `requirements-test.txt` listed `doctest`, which is a standard-library module and
+  not a PyPI package, so `pip install -r requirements-test.txt` always failed. The
+  file now pins only what the suite actually uses (`pytest`, `pytest-cov`).
+
+### Changed
+- Static-analysis cleanup across the package, tests and helper scripts: Pylint goes
+  from 8.07/10 with ~370 findings to 10.00/10 with none, and Ruff reports none.
+- `helper.response()` split into `_raise_for_status()` plus a status-code lookup
+  table, dropping its cyclomatic complexity from 16 (Radon C) into Radon A.
+- Logging switched to lazy `%` formatting, every re-raise now chains with
+  `raise ... from`, and the base64 endpoint / User-Agent literals moved to module
+  constants.
+
+### Compatibility
+- No breaking changes. Every `api` method keeps its name, signature and behaviour;
+  `helper.url`, `.host`, `.origin`, `.referer` and `.ip` still read back the same
+  values (now class attributes rather than per-instance copies). Verified by
+  diffing the public surface and the observable behaviour of 20+ request,
+  validation and crypto scenarios against 2.1.1.
+
+### Added
+- `ruff.toml` pinning the 100-column limit the project already follows.
+
 ## [2.1.1] - 2026-08-02
 
 ### Fixed

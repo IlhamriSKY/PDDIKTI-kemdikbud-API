@@ -1,11 +1,18 @@
+"""Public client for the PDDIKTI (kemdiktisaintek) API."""
+
 import logging
-from typing import Any, Dict, Optional, Callable, Union, List
 from functools import wraps
-from .helper import helper
+from typing import Any, Callable, Dict, List, Optional, Union
+
 from .exceptions import (
-    PDDIKTIError, APIConnectionError, APITimeoutError,
-    APIRateLimitError, APIResponseError, ValidationError
+    APIConnectionError,
+    APIRateLimitError,
+    APIResponseError,
+    APITimeoutError,
+    PDDIKTIError,
+    ValidationError,
 )
+from .helper import helper
 
 APIResponse = Optional[Union[Dict[str, Any], str]]
 APIMethod = Callable[..., APIResponse]
@@ -28,32 +35,46 @@ def handle_errors(func: APIMethod) -> APIMethod:
 
             response = func(*args, **kwargs)
             if response is None:
-                logger.warning(f"{func_name}: received None response")
+                logger.warning("%s: received None response", func_name)
                 return None
             if isinstance(response, dict) and response.get("error"):
                 raise APIResponseError(f"API error: {response.get('error')}")
             return response
 
         except ValidationError as e:
-            logger.error(f"{func_name}: validation error - {e.message}")
+            logger.error("%s: validation error - %s", func_name, e.message)
         except APITimeoutError as e:
-            logger.error(f"{func_name}: timeout error - {e.message}")
+            logger.error("%s: timeout error - %s", func_name, e.message)
         except APIConnectionError as e:
-            logger.error(f"{func_name}: connection error - {e.message}")
+            logger.error("%s: connection error - %s", func_name, e.message)
         except APIRateLimitError as e:
-            logger.warning(f"{func_name}: rate limit error - {e.message}")
+            logger.warning("%s: rate limit error - %s", func_name, e.message)
         except APIResponseError as e:
-            logger.error(f"{func_name}: response error - {e.message}")
+            logger.error("%s: response error - %s", func_name, e.message)
         except PDDIKTIError as e:
-            logger.error(f"{func_name}: PDDIKTI error - {e.message}")
-        except Exception as e:
-            logger.error(f"{func_name}: unexpected error - {e}", exc_info=True)
+            logger.error("%s: PDDIKTI error - %s", func_name, e.message)
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            # Last line of defence: this decorator's whole contract is that an
+            # API call returns None rather than raising.
+            logger.exception("%s: unexpected error - %s", func_name, e)
         return None
 
     return wrapper
 
 
-class api:
+class api:  # pylint: disable=invalid-name,too-many-public-methods
+    """Client for the PDDIKTI public API.
+
+    The lowercase name and the ``H`` helper attribute are part of the public
+    surface since v1 and are kept for backwards compatibility. Every endpoint
+    method is wrapped in :func:`handle_errors`, so failures are logged and
+    surface as ``None`` instead of raising.
+
+    Example:
+        >>> with api(auto_cookie=True) as client:
+        ...     client.search_mahasiswa("budi")
+    """
+
     def __init__(
         self,
         base_url: Optional[str] = None,
@@ -91,9 +112,9 @@ class api:
             self.api_link: str = self.H.endpoint()
             self.logger: logging.Logger = logging.getLogger(__name__)
             self.logger.info("PDDIKTI API client initialized")
-        except Exception as e:
-            logger.error(f"Failed to initialize API client: {e}")
-            raise PDDIKTIError(f"Initialization failed: {str(e)}")
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            logger.error("Failed to initialize API client: %s", e)
+            raise PDDIKTIError(f"Initialization failed: {e}") from e
 
     def __enter__(self) -> 'api':
         return self
@@ -101,15 +122,16 @@ class api:
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         self.close()
         if exc_type is not None:
-            self.logger.error(f"Exception in context: {exc_type.__name__}: {exc_val}")
+            self.logger.error("Exception in context: %s: %s", exc_type.__name__, exc_val)
 
     def close(self) -> None:
         """Release the underlying HTTP session."""
         try:
             if hasattr(self.H, 'close'):
                 self.H.close()
-        except Exception as e:
-            self.logger.error(f"Error closing API client: {e}")
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            # close() is called from __exit__; it must never raise.
+            self.logger.error("Error closing API client: %s", e)
 
     def _validate_keyword(self, keyword: str, max_length: int = 100) -> None:
         """Ensure a search keyword is a non-empty string within max_length."""
@@ -131,8 +153,8 @@ class api:
             year_int = int(year_str)
             if year_int < 1900 or year_int > 2100:
                 raise ValidationError(f"{field_name} must be between 1900 and 2100")
-        except ValueError:
-            raise ValidationError(f"{field_name} must be a valid year number")
+        except ValueError as e:
+            raise ValidationError(f"{field_name} must be a valid year number") from e
 
     def _validate_semester(self, semester: Union[int, str], field_name: str = "Semester") -> None:
         """Ensure a semester is in YYYYS format (year 1900-2100, semester 1-2)."""
@@ -144,15 +166,20 @@ class api:
         try:
             semester_int = int(semester_str)
             if len(semester_str) != 5:
-                raise ValidationError(f"{field_name} must be in YYYYS format (5 digits), e.g., 20241 or 20242")
+                raise ValidationError(
+                    f"{field_name} must be in YYYYS format (5 digits), "
+                    "e.g., 20241 or 20242"
+                )
             year = semester_int // 10
             sem = semester_int % 10
             if year < 1900 or year > 2100:
                 raise ValidationError(f"Year in {field_name} must be between 1900 and 2100")
             if sem < 1 or sem > 2:
                 raise ValidationError(f"Semester digit in {field_name} must be 1 or 2 (got {sem})")
-        except ValueError:
-            raise ValidationError(f"{field_name} must be a valid semester number in YYYYS format")
+        except ValueError as e:
+            raise ValidationError(
+                f"{field_name} must be a valid semester number in YYYYS format"
+            ) from e
 
     def _validate_id(self, id_value: str, field_name: str = "ID") -> None:
         """Ensure an entity ID is a non-empty string of plausible length."""
@@ -171,8 +198,8 @@ class api:
             parsed_args: List[str] = [self.H.parse(arg) for arg in args if arg is not None]
             full_path = f"{path}/{'/'.join(parsed_args)}" if parsed_args else path
             return f"{self.api_link}/{full_path}"
-        except Exception as e:
-            raise ValidationError(f"Error building endpoint: {str(e)}")
+        except (TypeError, ValueError, ValidationError) as e:
+            raise ValidationError(f"Error building endpoint: {e}") from e
 
     # -- Search ---------------------------------------------------------------
     @handle_errors
@@ -238,7 +265,9 @@ class api:
         return query
 
     @handle_errors
-    def search_pt_filter(self, limit: int = 10, offset: int = 0, **filters: Any) -> Optional[Dict[str, Any]]:
+    def search_pt_filter(
+        self, limit: int = 10, offset: int = 0, **filters: Any
+    ) -> Optional[Dict[str, Any]]:
         """Filtered, paginated university search.
 
         Args:
@@ -246,11 +275,14 @@ class api:
             offset: Number of results to skip.
             **filters: Any extra upstream filter parameters, passed as query args.
         """
-        endpoint = f"{self.api_link}/v2/pt/search/filter?{self._filter_query(limit, offset, filters)}"
+        query = self._filter_query(limit, offset, filters)
+        endpoint = f"{self.api_link}/v2/pt/search/filter?{query}"
         return self.H.response(endpoint)
 
     @handle_errors
-    def search_prodi_filter(self, limit: int = 10, offset: int = 0, **filters: Any) -> Optional[Dict[str, Any]]:
+    def search_prodi_filter(
+        self, limit: int = 10, offset: int = 0, **filters: Any
+    ) -> Optional[Dict[str, Any]]:
         """Filtered, paginated study-program search.
 
         Args:
@@ -258,7 +290,8 @@ class api:
             offset: Number of results to skip.
             **filters: Any extra upstream filter parameters, passed as query args.
         """
-        endpoint = f"{self.api_link}/v2/prodi/search/filter?{self._filter_query(limit, offset, filters)}"
+        query = self._filter_query(limit, offset, filters)
+        endpoint = f"{self.api_link}/v2/prodi/search/filter?{query}"
         return self.H.response(endpoint)
 
     # -- Students -------------------------------------------------------------
@@ -569,11 +602,16 @@ class api:
         """
         self._validate_id(prodi_id, "Prodi ID")
         self._validate_semester(tahun, "Academic semester")
-        endpoint = f"{self.api_link}/dosen/homebase/{self.H.parse(prodi_id)}?semester={self.H.parse(tahun)}"
+        endpoint = (
+            f"{self.api_link}/dosen/homebase/{self.H.parse(prodi_id)}"
+            f"?semester={self.H.parse(tahun)}"
+        )
         return self.H.response(endpoint)
 
     @handle_errors
-    def get_penghitung_ratio_prodi(self, prodi_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]:
+    def get_penghitung_ratio_prodi(
+        self, prodi_id: str, tahun: Union[int, str]
+    ) -> Optional[Dict[str, Any]]:
         """Get a study program's ratio counter for an academic semester.
 
         Args:
@@ -582,7 +620,10 @@ class api:
         """
         self._validate_id(prodi_id, "Prodi ID")
         self._validate_semester(tahun, "Academic semester")
-        endpoint = f"{self.api_link}/dosen/penghitung-ratio/{self.H.parse(prodi_id)}?semester={self.H.parse(tahun)}"
+        endpoint = (
+            f"{self.api_link}/dosen/penghitung-ratio/{self.H.parse(prodi_id)}"
+            f"?semester={self.H.parse(tahun)}"
+        )
         return self.H.response(endpoint)
 
     # -- Aggregate counts -----------------------------------------------------
@@ -815,22 +856,30 @@ class api:
         )
 
     @handle_errors
-    def get_news(self, page: int = 1, page_size: int = 10, search: str = "") -> Optional[Dict[str, Any]]:
+    def get_news(
+        self, page: int = 1, page_size: int = 10, search: str = ""
+    ) -> Optional[Dict[str, Any]]:
         """Get news. Alias of get_announcements(); upstream replaced news/list."""
         return self.H.response(self._content("announcements", page, page_size, search))
 
     @handle_errors
-    def get_announcements(self, page: int = 1, page_size: int = 10, search: str = "") -> Optional[Dict[str, Any]]:
+    def get_announcements(
+        self, page: int = 1, page_size: int = 10, search: str = ""
+    ) -> Optional[Dict[str, Any]]:
         """Get paginated announcements."""
         return self.H.response(self._content("announcements", page, page_size, search))
 
     @handle_errors
-    def get_publications(self, page: int = 1, page_size: int = 10, search: str = "") -> Optional[Dict[str, Any]]:
+    def get_publications(
+        self, page: int = 1, page_size: int = 10, search: str = ""
+    ) -> Optional[Dict[str, Any]]:
         """Get paginated publications."""
         return self.H.response(self._content("publications", page, page_size, search))
 
     @handle_errors
-    def get_activities(self, page: int = 1, page_size: int = 10, search: str = "") -> Optional[Dict[str, Any]]:
+    def get_activities(
+        self, page: int = 1, page_size: int = 10, search: str = ""
+    ) -> Optional[Dict[str, Any]]:
         """Get paginated activities."""
         return self.H.response(self._content("activities", page, page_size, search))
 

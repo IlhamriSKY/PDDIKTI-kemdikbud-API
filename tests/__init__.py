@@ -5,7 +5,7 @@ This package contains comprehensive test suites for the PDDIKTI API Python wrapp
 
 Test modules:
 - test_data.py: Test data constants and configuration
-- test_pddikti_api_methods.py: Main API method testing suite  
+- test_pddikti_api_methods.py: Main API method testing suite
 - conftest.py: Pytest configuration and shared fixtures
 
 Testing approach:

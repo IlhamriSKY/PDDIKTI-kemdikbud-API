@@ -1,24 +1,74 @@
-import urllib.request as urllib
-import requests
+"""HTTP, crypto and encoding helpers backing the PDDIKTI API client."""
+
 import base64
+import binascii
 import json
 import logging
 import time
+from typing import Any, Optional, Union
+
+import requests
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from requests.utils import requote_uri
 from requests.adapters import HTTPAdapter
+from requests.utils import requote_uri
 from urllib3.util.retry import Retry
-from typing import Optional, Union, Any
+
 from .exceptions import (
-    PDDIKTIError, APIConnectionError, APITimeoutError, APIRateLimitError,
-    APIResponseError, ValidationError
+    APIConnectionError,
+    APIRateLimitError,
+    APIResponseError,
+    APITimeoutError,
+    ValidationError,
+)
+
+CLOUDFLARE_HELP = (
+    "Blocked by Cloudflare. The upstream now requires a browser-solved "
+    "clearance. Fix it one of these ways:\n"
+    "  1) Open https://pddikti.kemdiktisaintek.go.id in your browser, "
+    "then: api(auto_cookie=True)\n"
+    "  2) Copy cf_clearance + User-Agent from DevTools: "
+    "api(cf_clearance='...', user_agent='...')\n"
+    "  3) Point at a solver proxy: api(base_url='http://localhost:8080/api')"
+)
+
+# Upstream status codes that map to a fixed error message.
+STATUS_MESSAGES = {
+    401: "Authentication failed",
+    403: "Access forbidden",
+    404: "Endpoint not found",
+}
+
+# Base64-obfuscated upstream endpoints, decoded at call time.
+BASE_URL = "aHR0cHM6Ly9wZGRpa3RpLmtlbWRpa3Rpc2FpbnRlay5nby5pZC9hcGk="
+HOST = "cGRkaWt0aS5rZW1kaWt0aXNhaW50ZWsuZ28uaWQ="
+ORIGIN = "aHR0cHM6Ly9wZGRpa3RpLmtlbWRpa3Rpc2FpbnRlay5nby5pZA=="
+REFERER = "aHR0cHM6Ly9wZGRpa3RpLmtlbWRpa3Rpc2FpbnRlay5nby5pZC8="
+FALLBACK_IP = "MTAzLjQ3LjEzMi4yOQ=="
+
+# How long a looked-up public IP stays valid.
+IP_CACHE_SECONDS = 3600
+
+DEFAULT_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
 )
 
 # AES-256-CBC key/IV used by the upstream for its `*/enc/*` payloads and entity IDs.
 AES_KEY = "ecHyOABV9jgO2/+dzE49cfexQpr/H4SiAYWrHLD7PQ0="
 AES_IV = "Gu3qsglYJhOOm0eXf6aN2w=="
 
-class helper:
+
+class helper:  # pylint: disable=invalid-name  # public API name since v1
+    """Low-level HTTP/crypto layer shared by every :class:`~pddiktipy.api.api` call."""
+
+    # Kept as class attributes for backwards compatibility: they used to be set
+    # on every instance and are read by third-party code as `h.url`, `h.ip`, ...
+    url = BASE_URL
+    host = HOST
+    origin = ORIGIN
+    referer = REFERER
+    ip = FALLBACK_IP
+
     def __init__(
         self,
         base_url: Optional[str] = None,
@@ -44,12 +94,6 @@ class helper:
                 browser_cookie3. Requires `pip install pddiktipy[auto]` and that
                 you have opened https://pddikti.kemdiktisaintek.go.id once.
         """
-        self.url = "aHR0cHM6Ly9wZGRpa3RpLmtlbWRpa3Rpc2FpbnRlay5nby5pZC9hcGk="
-        self.host = "cGRkaWt0aS5rZW1kaWt0aXNhaW50ZWsuZ28uaWQ="
-        self.origin = "aHR0cHM6Ly9wZGRpa3RpLmtlbWRpa3Rpc2FpbnRlay5nby5pZA=="
-        self.referer = "aHR0cHM6Ly9wZGRpa3RpLmtlbWRpa3Rpc2FpbnRlay5nby5pZC8="
-        self.ip = "MTAzLjQ3LjEzMi4yOQ=="
-
         self.base_url = base_url.rstrip("/") if base_url else None
         self.cf_clearance = cf_clearance
         self.user_agent = user_agent
@@ -67,7 +111,6 @@ class helper:
         self._session = session
         self._cached_ip = None
         self._ip_cache_time = 0
-        self._ip_cache_duration = 3600  # Cache IP for 1 hour
 
     @property
     def session(self) -> requests.Session:
@@ -104,7 +147,7 @@ class helper:
         so the caller can fall back to an explicit cookie.
         """
         try:
-            import browser_cookie3 as bc
+            import browser_cookie3 as bc  # pylint: disable=import-outside-toplevel
         except ImportError:
             self.logger.warning(
                 "auto_cookie=True needs browser_cookie3 (pip install pddiktipy[auto])"
@@ -120,7 +163,9 @@ class helper:
         for loader, ua in loaders:
             try:
                 jar = loader(domain_name="kemdiktisaintek.go.id")
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
+                # browser_cookie3 backends raise anything from OSError to their
+                # own BrowserCookieError; any failure just means "try the next".
                 continue
             for cookie in jar:
                 if cookie.name == "cf_clearance" and cookie.value:
@@ -142,8 +187,12 @@ class helper:
         ponytail: Windows-only version detection; other OSes fall back to default UA.
         """
         try:
-            import winreg
-            key = r"Software\Microsoft\Edge\BLBeacon" if brand == "Edg" else r"Software\Google\Chrome\BLBeacon"
+            import winreg  # pylint: disable=import-outside-toplevel
+            key = (
+                r"Software\Microsoft\Edge\BLBeacon"
+                if brand == "Edg"
+                else r"Software\Google\Chrome\BLBeacon"
+            )
             with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key) as k:
                 version, _ = winreg.QueryValueEx(k, "version")
             major = version.split(".")[0]
@@ -154,48 +203,33 @@ class helper:
             if brand == "Edg":
                 ua += f" Edg/{major}.0.0.0"
             return ua
-        except Exception:
+        except (ImportError, OSError, IndexError):
             return None
-        
+
     def get_ip(self) -> Optional[str]:
+        """Return the caller's public IP, cached for an hour.
+
+        Falls back to the last known (or a hard-coded) IP when the lookup fails;
+        the value is only used for the upstream's ``X-User-IP`` header.
         """
-        Retrieves the public IP address with caching and better error handling.
-        """
-        current_time = time.time()
-        
-        # Return cached IP if still valid
-        if (self._cached_ip and 
-            current_time - self._ip_cache_time < self._ip_cache_duration):
+        now = time.time()
+        if self._cached_ip and now - self._ip_cache_time < IP_CACHE_SECONDS:
             return self._cached_ip
-            
+
         try:
             response = requests.get("https://api.ipify.org?format=json", timeout=10)
             response.raise_for_status()
             ip = response.json().get("ip")
-            
             if not ip:
                 raise APIResponseError("No IP returned from ipify service")
-            
-            # Cache the IP
-            self._cached_ip = ip
-            self._ip_cache_time = current_time
-            self.logger.debug(f"IP address retrieved and cached: {ip}")
-            return ip
-            
-        except requests.Timeout:
-            self.logger.warning("Timeout getting IP address, using fallback")
-            fallback_ip = self.decodes(self.ip)
-            return self._cached_ip or fallback_ip
-            
-        except requests.RequestException as e:
-            self.logger.warning(f"Error fetching IP: {e}, using fallback")
-            fallback_ip = self.decodes(self.ip)
-            return self._cached_ip or fallback_ip
-        
-        except Exception as e:
-            self.logger.error(f"Unexpected error getting IP: {e}")
-            fallback_ip = self.decodes(self.ip)
-            return self._cached_ip or fallback_ip
+        except (requests.RequestException, ValueError, APIResponseError) as e:
+            self.logger.warning("Could not fetch public IP (%s), using fallback", e)
+            return self._cached_ip or self.decodes(FALLBACK_IP)
+
+        self._cached_ip = ip
+        self._ip_cache_time = now
+        self.logger.debug("IP address retrieved and cached: %s", ip)
+        return ip
 
     def get_headers(self) -> dict:
         """
@@ -207,12 +241,12 @@ class helper:
             "Accept-Language": "en-US,en;q=0.9,mt;q=0.8",
             "Connection": "keep-alive",
             "DNT": "1",
-            "Origin": self.decodes(self.origin),
-            "Referer": self.decodes(self.referer),
+            "Origin": self.decodes(ORIGIN),
+            "Referer": self.decodes(REFERER),
             "Sec-Fetch-Dest": "empty",
             "Sec-Fetch-Mode": "cors",
             "Sec-Fetch-Site": "same-origin",
-            "User-Agent": self.user_agent or "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
+            "User-Agent": self.user_agent or DEFAULT_USER_AGENT,
             "X-User-IP": self.get_ip(),
             "sec-ch-ua": '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
             "sec-ch-ua-mobile": "?0",
@@ -222,9 +256,39 @@ class helper:
         # Only pin Host when talking to the official upstream. A custom base_url
         # (local proxy, FlareSolverr wrapper) needs requests to derive its own.
         if not self.base_url:
-            headers["Host"] = self.decodes(self.host)
+            headers["Host"] = self.decodes(HOST)
 
         return headers
+
+    @staticmethod
+    def _is_cloudflare_challenge(response: requests.Response) -> bool:
+        """A Cloudflare challenge comes back as 403 text/html, not JSON."""
+        return (
+            "text/html" in response.headers.get("content-type", "")
+            or response.headers.get("cf-mitigated") == "challenge"
+        )
+
+    def _raise_for_status(self, response: requests.Response, endpoint: str) -> None:
+        """Translate a non-2xx upstream response into the matching typed error."""
+        code = response.status_code
+        if code == 429:
+            retry_after = response.headers.get("Retry-After", "60")
+            raise APIRateLimitError(
+                f"Rate limit exceeded. Retry after {retry_after} seconds",
+                status_code=429,
+                endpoint=endpoint,
+            )
+        if code == 403 and not self.base_url and self._is_cloudflare_challenge(response):
+            raise APIResponseError(CLOUDFLARE_HELP, status_code=403, endpoint=endpoint)
+        if code in STATUS_MESSAGES:
+            raise APIResponseError(
+                STATUS_MESSAGES[code], status_code=code, endpoint=endpoint
+            )
+        if 500 <= code < 600:
+            raise APIResponseError(
+                f"Server error: {code}", status_code=code, endpoint=endpoint
+            )
+        response.raise_for_status()
 
     def response(self, endpoint: str, timeout: int = 30) -> Optional[dict]:
         """GET the endpoint and return the decoded JSON.
@@ -234,99 +298,34 @@ class helper:
         """
         if not endpoint:
             raise ValidationError("Endpoint cannot be empty")
-            
-        headers = self.get_headers()
-        
+
         try:
-            self.logger.debug(f"Making request to: {endpoint}")
-            response = self.session.get(endpoint, headers=headers, timeout=timeout)
-            
-            # Handle different HTTP status codes
-            if response.status_code == 429:
-                retry_after = response.headers.get('Retry-After', '60')
-                raise APIRateLimitError(
-                    f"Rate limit exceeded. Retry after {retry_after} seconds",
-                    status_code=429,
-                    endpoint=endpoint
-                )
-            elif response.status_code == 401:
-                raise APIResponseError(
-                    "Authentication failed",
-                    status_code=401,
-                    endpoint=endpoint
-                )
-            elif response.status_code == 403:
-                # A Cloudflare challenge page comes back as 403 text/html, not JSON.
-                is_challenge = "text/html" in response.headers.get("content-type", "") \
-                    or response.headers.get("cf-mitigated") == "challenge"
-                if is_challenge and not self.base_url:
-                    raise APIResponseError(
-                        "Blocked by Cloudflare. The upstream now requires a "
-                        "browser-solved clearance. Fix it one of these ways:\n"
-                        "  1) Open https://pddikti.kemdiktisaintek.go.id in your "
-                        "browser, then: api(auto_cookie=True)\n"
-                        "  2) Copy cf_clearance + User-Agent from DevTools: "
-                        "api(cf_clearance='...', user_agent='...')\n"
-                        "  3) Point at a solver proxy: api(base_url='http://localhost:8080/api')",
-                        status_code=403,
-                        endpoint=endpoint,
-                    )
-                raise APIResponseError(
-                    "Access forbidden",
-                    status_code=403,
-                    endpoint=endpoint
-                )
-            elif response.status_code == 404:
-                raise APIResponseError(
-                    "Endpoint not found",
-                    status_code=404,
-                    endpoint=endpoint
-                )
-            elif 500 <= response.status_code < 600:
-                raise APIResponseError(
-                    f"Server error: {response.status_code}",
-                    status_code=response.status_code,
-                    endpoint=endpoint
-                )
-            
-            response.raise_for_status()
-            
+            self.logger.debug("Making request to: %s", endpoint)
+            response = self.session.get(
+                endpoint, headers=self.get_headers(), timeout=timeout
+            )
+            self._raise_for_status(response, endpoint)
             try:
                 json_data = response.json()
-                self.logger.debug(f"Successful response from: {endpoint}")
-                return json_data
             except ValueError as e:
                 raise APIResponseError(
-                    f"Invalid JSON response: {str(e)}",
+                    f"Invalid JSON response: {e}",
                     status_code=response.status_code,
-                    endpoint=endpoint
-                )
-                
-        except PDDIKTIError:
-            # Our own typed errors (rate limit, forbidden, not found, ...) are
-            # already meaningful; propagate them without re-wrapping.
-            raise
-        except requests.Timeout:
+                    endpoint=endpoint,
+                ) from e
+            self.logger.debug("Successful response from: %s", endpoint)
+            return json_data
+
+        # Our own typed errors (rate limit, forbidden, ...) fall straight through:
+        # none of the handlers below catch them.
+        except requests.Timeout as e:
             raise APITimeoutError(
-                f"Request timeout after {timeout} seconds",
-                endpoint=endpoint
-            )
+                f"Request timeout after {timeout} seconds", endpoint=endpoint
+            ) from e
         except requests.ConnectionError as e:
-            raise APIConnectionError(
-                f"Connection error: {str(e)}",
-                endpoint=endpoint
-            )
+            raise APIConnectionError(f"Connection error: {e}", endpoint=endpoint) from e
         except requests.RequestException as e:
-            raise APIResponseError(
-                f"Request failed: {str(e)}",
-                endpoint=endpoint
-            )
-        except Exception as e:
-            self.logger.error(f"Unexpected error in response(): {e}")
-            raise APIResponseError(
-                f"Unexpected error: {str(e)}",
-                endpoint=endpoint
-            )
+            raise APIResponseError(f"Request failed: {e}", endpoint=endpoint) from e
 
     def base64_encode_image(self, image_content: bytes) -> str:
         """Encode raw image bytes as a base64 string."""
@@ -336,63 +335,45 @@ class helper:
         """Fetch an image URL and return it base64-encoded."""
         if not url:
             raise ValidationError("Image URL cannot be empty")
-            
-        headers = self.get_headers()
+
         try:
-            self.logger.debug(f"Fetching image from: {url}")
-            response = self.session.get(url, headers=headers, timeout=timeout)
-            response.raise_for_status()
-            
-            # Validate content type
-            content_type = response.headers.get('content-type', '')
-            if not content_type.startswith('image/'):
-                self.logger.warning(f"Unexpected content type: {content_type}")
-            
-            return self.base64_encode_image(response.content)
-            
-        except requests.Timeout:
-            raise APITimeoutError(
-                f"Image request timeout after {timeout} seconds",
-                endpoint=url
+            self.logger.debug("Fetching image from: %s", url)
+            response = self.session.get(
+                url, headers=self.get_headers(), timeout=timeout
             )
+            response.raise_for_status()
+
+            content_type = response.headers.get("content-type", "")
+            if not content_type.startswith("image/"):
+                self.logger.warning("Unexpected content type: %s", content_type)
+
+            return self.base64_encode_image(response.content)
+
+        except requests.Timeout as e:
+            raise APITimeoutError(
+                f"Image request timeout after {timeout} seconds", endpoint=url
+            ) from e
         except requests.ConnectionError as e:
             raise APIConnectionError(
-                f"Connection error fetching image: {str(e)}",
-                endpoint=url
-            )
+                f"Connection error fetching image: {e}", endpoint=url
+            ) from e
         except requests.RequestException as e:
-            raise APIResponseError(
-                f"Error fetching image: {str(e)}",
-                endpoint=url
-            )
-        except Exception as e:
-            self.logger.error(f"Unexpected error fetching image: {e}")
-            raise APIResponseError(
-                f"Unexpected error fetching image: {str(e)}",
-                endpoint=url
-            )
+            raise APIResponseError(f"Error fetching image: {e}", endpoint=url) from e
 
     def parse(self, value: Union[str, int, float, Any]) -> str:
         """URL-encode a value, coercing non-strings to str first."""
         if value is None:
             raise ValidationError("Cannot parse None value")
-            
-        # Convert to string if input is not a string
-        if not isinstance(value, str):
-            try:
-                value = str(value)
-            except Exception as e:
-                raise ValidationError(f"Cannot convert value to string: {e}")
-        
-        # Basic validation
+
+        value = value if isinstance(value, str) else str(value)
         if not value.strip():
             raise ValidationError("Cannot parse empty string")
-            
+
         try:
             return requote_uri(value)
-        except Exception as e:
-            raise ValidationError(f"Error encoding URL: {e}")
-    
+        except (TypeError, ValueError) as e:
+            raise ValidationError(f"Error encoding URL: {e}") from e
+
     def close(self) -> None:
         """
         Close the session to free resources.
@@ -401,7 +382,7 @@ class helper:
             self._session.close()
             self._session = None
             self.logger.debug("Session closed successfully")
-    
+
     def decodes(self, string: str) -> str:
         """
         Decodes the value.
@@ -412,7 +393,7 @@ class helper:
         """
         Returns the API base URL: the caller's override, or the official upstream.
         """
-        return self.base_url or self.decodes(self.url)
+        return self.base_url or self.decodes(BASE_URL)
 
     def decrypt(self, encrypted: str) -> Any:
         """
@@ -429,8 +410,8 @@ class helper:
 
         try:
             ciphertext = base64.b64decode(encrypted)
-        except Exception as e:
-            raise ValidationError(f"Invalid base64 ciphertext: {e}")
+        except (binascii.Error, ValueError) as e:
+            raise ValidationError(f"Invalid base64 ciphertext: {e}") from e
 
         if not ciphertext or len(ciphertext) % 16 != 0:
             raise ValidationError("Ciphertext length is not a multiple of the AES block size")

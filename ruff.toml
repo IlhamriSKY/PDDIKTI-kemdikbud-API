@@ -1,0 +1,3 @@
+# Matches the 100-column limit pylint already enforces on this project.
+line-length = 100
+target-version = "py38"

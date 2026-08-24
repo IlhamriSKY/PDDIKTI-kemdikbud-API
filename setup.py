@@ -1,9 +1,14 @@
-from setuptools import setup, find_packages
+"""Packaging metadata for pddiktipy."""
+
 import os
 import re
 
+from setuptools import find_packages, setup
+
+
 # Read version from __init__.py
 def get_version():
+    """Read __version__ out of pddiktipy/__init__.py."""
     init_file = os.path.join(os.path.dirname(__file__), 'pddiktipy', '__init__.py')
     with open(init_file, 'r', encoding='utf-8') as f:
         content = f.read()
@@ -60,11 +65,11 @@ setup(
         "auto": ["browser_cookie3>=0.19.1"],
     },
     keywords=[
-        "pddikti", 
-        "api", 
-        "education", 
-        "indonesia", 
-        "kemdikbud", 
+        "pddikti",
+        "api",
+        "education",
+        "indonesia",
+        "kemdikbud",
         "data"
     ],
     license="MIT",

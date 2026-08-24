@@ -18,7 +18,7 @@ UNIVERSITY_ID = "6m7kg4twGiZAdNiUDMC9Q6KaGqUBqNU9_fLWD8DaSxMF-cIjwu8A7K6lWYKzaJX
 UNIVERSITY_NAME = "Universitas Katolik Soegijapranata"
 
 # Test Lecturer Data - Real academic staff profile
-# Verified working lecturer ID from PDDIKTI database  
+# Verified working lecturer ID from PDDIKTI database
 LECTURER_ID = "cWS5HuRYaG9KU4nyNc5Ue2dYqK6Y87qxHe3an1uTAhr-ohr7y-Lm6G7pQP2Jy0V_KR-q4A=="
 LECTURER_NAME = "Ridwan Sanjaya"
 LECTURER_UNIVERSITY = "Universitas Katolik Soegijapranata"
@@ -40,7 +40,7 @@ VALID_YEAR = "2024"
 
 # Search Terms - Common terms guaranteed to return results from PDDIKTI
 SEARCH_STUDENT_TERM = "Ahmad"  # Common Indonesian name in PDDIKTI database
-SEARCH_LECTURER_TERM = "Dr"    # Academic title prefix common in lecturer names  
+SEARCH_LECTURER_TERM = "Dr"    # Academic title prefix common in lecturer names
 SEARCH_UNIVERSITY_TERM = "Institut"  # Common university type in Indonesia
 SEARCH_PROGRAM_TERM = "Teknik Informatika"  # Popular study program name
 
@@ -54,36 +54,37 @@ SEARCH_PROGRAM_TERM = "Teknik Informatika"  # Popular study program name
 # - Search terms chosen for consistent test results across API calls
 
 
-class TestDataConstants:
+class TestDataConstants:  # pylint: disable=too-few-public-methods
     """
     Centralized test data constants for PDDIKTI API testing.
-    
+
     Contains validated real IDs and search terms for comprehensive API testing.
     All data is anonymized but functional with live PDDIKTI endpoints.
     """
-    
+
     # University Data
     UNIVERSITY_ID = UNIVERSITY_ID
     UNIVERSITY_NAME = UNIVERSITY_NAME
-    
-    # Lecturer Data  
+
+    # Lecturer Data
     LECTURER_ID = LECTURER_ID
     LECTURER_NAME = LECTURER_NAME
     LECTURER_UNIVERSITY = LECTURER_UNIVERSITY
-    
+
     # Student Data
     STUDENT_ID = STUDENT_ID
     STUDENT_NAME = STUDENT_NAME
     STUDENT_UNIVERSITY = STUDENT_UNIVERSITY
-    
+
     # Program Data
     PROGRAM_ID = PROGRAM_ID
     PROGRAM_NAME = PROGRAM_NAME
-    
+
     # Test Parameters
     VALID_SEMESTER = VALID_SEMESTER
-    TEST_YEAR = VALID_SEMESTER  # Use semester format instead of year for methods that need YYYYS format
-    
+    # Methods that want a YYYYS semester rather than a plain year.
+    TEST_YEAR = VALID_SEMESTER
+
     # Search Keywords
     SEARCH_KEYWORD_GENERAL = SEARCH_UNIVERSITY_TERM
     SEARCH_KEYWORD_STUDENT = SEARCH_STUDENT_TERM

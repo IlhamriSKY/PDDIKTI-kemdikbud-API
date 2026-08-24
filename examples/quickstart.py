@@ -19,6 +19,7 @@ from pddiktipy import api
 
 
 def main() -> None:
+    """Run a few representative queries against the live API."""
     with api(auto_cookie=True) as client:
         # Aggregate counts
         print("Universities:", client.get_pt_count())

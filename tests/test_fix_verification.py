@@ -9,9 +9,11 @@ Date: 2025
 Test Framework: Python unittest
 """
 
-import unittest
+# pylint: disable=wrong-import-position
+
 import os
 import sys
+import unittest
 
 # Add the parent directory to the path to import the pddiktipy module
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
@@ -23,7 +25,7 @@ from tests.test_data import TestDataConstants
 class TestGetProdiPTFix(unittest.TestCase):
     """
     Test suite specifically for verifying the get_prodi_pt method fix
-    
+
     This test verifies that:
     1. The endpoint was correctly changed from 'pt/detail' to 'pt/prodi'
     2. Valid semester formats return program data
@@ -36,13 +38,13 @@ class TestGetProdiPTFix(unittest.TestCase):
         """Set up test data and API client once for all tests"""
         cls.api_client = api()
         cls.test_data = TestDataConstants()
-        
+
         # Get a valid university ID from search
         print("\n" + "="*60)
         print("SETTING UP get_prodi_pt FIX VERIFICATION TESTS")
         print("="*60)
         print("Getting valid University ID...")
-        
+
         search_result = cls.api_client.search_pt('universitas indonesia')
         if search_result and len(search_result) > 0:
             ui_data = search_result[0]
@@ -58,20 +60,20 @@ class TestGetProdiPTFix(unittest.TestCase):
     def test_get_prodi_pt_with_valid_semester_20241(self):
         """Test get_prodi_pt with valid semester 20241"""
         print("\n🔍 Testing valid semester 20241...")
-        
+
         self.assertIsNotNone(self.valid_university_id, "Need valid university ID for testing")
-        
+
         result = self.api_client.get_prodi_pt(self.valid_university_id, '20241')
-        
+
         # Should return data, not None
         self.assertIsNotNone(result, "Method should return data for valid semester")
-        
+
         # Should return a list
         self.assertIsInstance(result, list, "Result should be a list of programs")
-        
+
         # Should have programs
         self.assertGreater(len(result), 0, "Should find programs for Universitas Indonesia")
-        
+
         # First program should have expected structure
         if len(result) > 0:
             first_program = result[0]
@@ -82,11 +84,11 @@ class TestGetProdiPTFix(unittest.TestCase):
     def test_get_prodi_pt_with_valid_semester_20242(self):
         """Test get_prodi_pt with valid semester 20242"""
         print("\n🔍 Testing valid semester 20242...")
-        
+
         self.assertIsNotNone(self.valid_university_id, "Need valid university ID for testing")
-        
+
         result = self.api_client.get_prodi_pt(self.valid_university_id, '20242')
-        
+
         # Should return data (or None if semester not available, but no error)
         if result is not None:
             self.assertIsInstance(result, list, "Result should be a list of programs")
@@ -97,12 +99,12 @@ class TestGetProdiPTFix(unittest.TestCase):
     def test_get_prodi_pt_with_invalid_semester_format(self):
         """Test get_prodi_pt with invalid semester format (should return None)"""
         print("\n🔍 Testing invalid semester format...")
-        
+
         self.assertIsNotNone(self.valid_university_id, "Need valid university ID for testing")
-        
+
         # Test with invalid format - should return None due to validation
         result = self.api_client.get_prodi_pt(self.valid_university_id, '2024')
-        
+
         # Should return None because of validation error
         self.assertIsNone(result, "Method should return None for invalid semester format")
         print("✅ Validation working correctly - returned None")
@@ -110,10 +112,12 @@ class TestGetProdiPTFix(unittest.TestCase):
     def test_get_prodi_pt_with_test_data_constants(self):
         """Test get_prodi_pt with test data constants"""
         print("\n🔍 Testing with test data constants...")
-        
+
         # Test with data from TestDataConstants
-        result = self.api_client.get_prodi_pt(self.test_data.UNIVERSITY_ID, self.test_data.TEST_YEAR)
-        
+        result = self.api_client.get_prodi_pt(
+            self.test_data.UNIVERSITY_ID, self.test_data.TEST_YEAR
+        )
+
         # This might return None if the test data ID is not valid, which is acceptable
         if result is not None:
             self.assertIsInstance(result, list, "Result should be a list")

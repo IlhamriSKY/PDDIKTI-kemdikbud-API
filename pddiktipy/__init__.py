@@ -1,26 +1,26 @@
-# flake8: noqa
+"""pddiktipy — an unofficial Python client for the PDDIKTI public API."""
 
 # __variables__ with double-quoted values will be available in setup.py
-__version__ = "2.1.1"
+__version__ = "2.1.2"
 
 from .api import api
 from .exceptions import (
-    PDDIKTIError,
     APIConnectionError,
-    APITimeoutError,
     APIRateLimitError,
     APIResponseError,
+    APITimeoutError,
+    AuthenticationError,
+    PDDIKTIError,
     ValidationError,
-    AuthenticationError
 )
 
 __all__ = [
-    'api',
-    'PDDIKTIError',
-    'APIConnectionError', 
-    'APITimeoutError',
-    'APIRateLimitError',
-    'APIResponseError',
-    'ValidationError',
-    'AuthenticationError'
+    "api",
+    "PDDIKTIError",
+    "APIConnectionError",
+    "APITimeoutError",
+    "APIRateLimitError",
+    "APIResponseError",
+    "ValidationError",
+    "AuthenticationError",
 ]
