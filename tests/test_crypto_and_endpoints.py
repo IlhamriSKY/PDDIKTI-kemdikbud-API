@@ -1,4 +1,5 @@
-"""Offline checks for the v2.1 upstream migration.
+"""
+Offline checks for the v2.1 upstream migration.
 
 Covers the AES-256-CBC round trip and the endpoint URLs that changed when
 upstream moved from api-pddikti.kemdiktisaintek.go.id to the same-origin

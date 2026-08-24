@@ -63,7 +63,8 @@ def handle_errors(func: APIMethod) -> APIMethod:
 
 
 class api:  # pylint: disable=invalid-name,too-many-public-methods
-    """Client for the PDDIKTI public API.
+    """
+    Client for the PDDIKTI public API.
 
     The lowercase name and the ``H`` helper attribute are part of the public
     surface since v1 and are kept for backwards compatibility. Every endpoint
@@ -83,7 +84,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
         user_agent: Optional[str] = None,
         auto_cookie: bool = False,
     ) -> None:
-        """Create a PDDIKTI API client.
+        """
+        Create a PDDIKTI API client.
 
         The official upstream (https://pddikti.kemdiktisaintek.go.id/api) is
         protected by a Cloudflare challenge, so supply clearance one of three ways:
@@ -204,7 +206,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     # -- Search ---------------------------------------------------------------
     @handle_errors
     def search_all(self, keyword: str) -> Optional[Dict[str, Any]]:
-        """Search students, lecturers, universities and study programs at once.
+        """
+        Search students, lecturers, universities and study programs at once.
 
         The upstream returns this payload AES-256-CBC encrypted under ``data``;
         it is decrypted transparently before being returned.
@@ -218,7 +221,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def search_mahasiswa(self, keyword: str) -> Optional[Dict[str, Any]]:
-        """Search students by name.
+        """
+        Search students by name.
 
         Data: ['id', 'nama', 'nim', 'nama_pt', 'singkatan_pt', 'nama_prodi']
         """
@@ -228,7 +232,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def search_dosen(self, keyword: str) -> Optional[Dict[str, Any]]:
-        """Search lecturers by name.
+        """
+        Search lecturers by name.
 
         Data: ['id', 'nama', 'nidn', 'nama_pt', 'singkatan_pt', 'nama_prodi']
         """
@@ -238,7 +243,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def search_pt(self, keyword: str) -> Optional[Dict[str, Any]]:
-        """Search universities by name.
+        """
+        Search universities by name.
 
         Data: ['id', 'kode', 'nama_singkat', 'nama']
         """
@@ -248,7 +254,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def search_prodi(self, keyword: str) -> Optional[Dict[str, Any]]:
-        """Search study programs by name.
+        """
+        Search study programs by name.
 
         Data: ['id', 'nama', 'jenjang', 'pt', 'pt_singkat']
         """
@@ -268,7 +275,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     def search_pt_filter(
         self, limit: int = 10, offset: int = 0, **filters: Any
     ) -> Optional[Dict[str, Any]]:
-        """Filtered, paginated university search.
+        """
+        Filtered, paginated university search.
 
         Args:
             limit: Maximum number of results.
@@ -283,7 +291,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     def search_prodi_filter(
         self, limit: int = 10, offset: int = 0, **filters: Any
     ) -> Optional[Dict[str, Any]]:
-        """Filtered, paginated study-program search.
+        """
+        Filtered, paginated study-program search.
 
         Args:
             limit: Maximum number of results.
@@ -297,7 +306,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     # -- Students -------------------------------------------------------------
     @handle_errors
     def get_detail_mhs(self, mahasiswa_id: str) -> Optional[Dict[str, Any]]:
-        """Get student details by ID.
+        """
+        Get student details by ID.
 
         Data: ['id', 'nama_pt', 'kode_pt', 'kode_prodi', 'prodi', 'nama', 'nim',
         'jenis_daftar', 'id_pt', 'id_sms', 'jenis_kelamin', 'jenjang',
@@ -310,7 +320,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     # -- Lecturers ------------------------------------------------------------
     @handle_errors
     def get_dosen_profile(self, dosen_id: str) -> Optional[Dict[str, Any]]:
-        """Get a lecturer's profile by ID.
+        """
+        Get a lecturer's profile by ID.
 
         Data: ['id_sdm', 'nama_dosen', 'nama_pt', 'nama_prodi', 'jenis_kelamin',
         'jabatan_akademik', 'pendidikan_tertinggi', 'status_ikatan_kerja',
@@ -322,7 +333,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_dosen_penelitian(self, dosen_id: str) -> Optional[Dict[str, Any]]:
-        """Get a lecturer's research activities by ID.
+        """
+        Get a lecturer's research activities by ID.
 
         Data: ['id_sdm', 'jenis_kegiatan', 'judul_kegiatan', 'tahun_kegiatan']
         """
@@ -332,7 +344,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_dosen_pengabdian(self, dosen_id: str) -> Optional[Dict[str, Any]]:
-        """Get a lecturer's community service activities by ID.
+        """
+        Get a lecturer's community service activities by ID.
 
         Data: ['id_sdm', 'jenis_kegiatan', 'judul_kegiatan', 'tahun_kegiatan']
         """
@@ -342,7 +355,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_dosen_karya(self, dosen_id: str) -> Optional[Dict[str, Any]]:
-        """Get a lecturer's creative works by ID.
+        """
+        Get a lecturer's creative works by ID.
 
         Data: ['id_sdm', 'jenis_kegiatan', 'judul_kegiatan', 'tahun_kegiatan']
         """
@@ -352,7 +366,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_dosen_paten(self, dosen_id: str) -> Optional[Dict[str, Any]]:
-        """Get a lecturer's patents by ID.
+        """
+        Get a lecturer's patents by ID.
 
         Data: ['id_sdm', 'jenis_kegiatan', 'judul_kegiatan', 'tahun_kegiatan']
         """
@@ -369,7 +384,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_dosen_teaching_history(self, dosen_id: str) -> Optional[Dict[str, Any]]:
-        """Get a lecturer's teaching history by ID.
+        """
+        Get a lecturer's teaching history by ID.
 
         Data: ['id_sdm', 'nama_semester', 'kode_matkul', 'nama_matkul',
         'nama_kelas', 'nama_pt']
@@ -381,7 +397,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     # -- Universities ---------------------------------------------------------
     @handle_errors
     def get_detail_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get university details by ID.
+        """
+        Get university details by ID.
 
         Data: ['kelompok', 'pembina', 'id_sp', 'kode_pt', 'email', 'no_tel',
         'no_fax', 'website', 'alamat', 'nama_pt', 'nm_singkat', 'kode_pos',
@@ -395,7 +412,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_prodi_pt(self, pt_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]:
-        """Get study programs of a university for an academic semester.
+        """
+        Get study programs of a university for an academic semester.
 
         Args:
             pt_id: University ID.
@@ -419,7 +437,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_rasio_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get a university's student-to-lecturer ratio by ID.
+        """
+        Get a university's student-to-lecturer ratio by ID.
 
         Data: ['rasio']
         """
@@ -429,7 +448,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_mahasiswa_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get a university's student intake/graduation means by ID.
+        """
+        Get a university's student intake/graduation means by ID.
 
         Data: ['id_sp', 'kode_pt', 'mean_jumlah_lulus', 'mean_jumlah_baru']
         """
@@ -439,7 +459,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_waktu_studi_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get a university's mean study time by ID.
+        """
+        Get a university's mean study time by ID.
 
         Data: ['id_sp', 'jenjang', 'mean_masa_studi']
         """
@@ -454,7 +475,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_cost_range_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get a university's tuition cost range by ID.
+        """
+        Get a university's tuition cost range by ID.
 
         Data: ['id_sp', 'nama_pt', 'range_biaya_kuliah']
         """
@@ -463,7 +485,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_graduation_rate_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get a university's graduation rate by ID.
+        """
+        Get a university's graduation rate by ID.
 
         Data: ['id_sp', 'graduation_rate']
         """
@@ -472,7 +495,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_jumlah_prodi_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get the number of study programs of a university by ID.
+        """
+        Get the number of study programs of a university by ID.
 
         Data: ['id_sp', 'jumlah_prodi']
         """
@@ -481,7 +505,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_jumlah_mahasiswa_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get the number of students of a university by ID.
+        """
+        Get the number of students of a university by ID.
 
         Data: ['id_sp', 'jumlah_mahasiswa']
         """
@@ -490,7 +515,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_jumlah_dosen_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get the number of lecturers of a university by ID.
+        """
+        Get the number of lecturers of a university by ID.
 
         Data: ['id_sp', 'jumlah_dosen']
         """
@@ -512,7 +538,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     # -- Study programs -------------------------------------------------------
     @handle_errors
     def get_detail_prodi(self, prodi_id: str) -> Optional[Dict[str, Any]]:
-        """Get study program details by ID.
+        """
+        Get study program details by ID.
 
         Data: ['id_sp', 'id_sms', 'nama_pt', 'kode_pt', 'nama_prodi', 'kode_prodi',
         'kel_bidang', 'jenj_didik', 'tgl_berdiri', 'tgl_sk_selenggara',
@@ -525,7 +552,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_desc_prodi(self, prodi_id: str) -> Optional[Dict[str, Any]]:
-        """Get a study program's description by ID.
+        """
+        Get a study program's description by ID.
 
         Data: ['id_sms', 'kode_prodi', 'jumlah_dosen', 'jumlah_mahasiswa',
         'jumlah_dosen_ajar', 'rasio', 'rasio_terima_daftar', 'akreditasi',
@@ -543,7 +571,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_num_students_lecturers_prodi(self, prodi_id: str) -> Optional[Dict[str, Any]]:
-        """Get a study program's student and lecturer counts by ID.
+        """
+        Get a study program's student and lecturer counts by ID.
 
         Data: ['jumlah_mahasiswa', 'jumlah_dosen', 'jumlah_dosen_ajar', 'semester']
         """
@@ -552,7 +581,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_cost_range_prodi(self, prodi_id: str) -> Optional[Dict[str, Any]]:
-        """Get a study program's tuition cost range by ID.
+        """
+        Get a study program's tuition cost range by ID.
 
         Data: ['id_sms', 'nama_prodi', 'range_biaya_kuliah']
         """
@@ -561,7 +591,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_daya_tampung_prodi(self, prodi_id: str) -> Optional[Dict[str, Any]]:
-        """Get a study program's capacity (quota) by ID.
+        """
+        Get a study program's capacity (quota) by ID.
 
         Data: ['id_sms', 'nama_pt', 'nama_prodi', 'kuota']
         """
@@ -570,7 +601,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_rasio_dosen_mahasiswa_prodi(self, prodi_id: str) -> Optional[Dict[str, Any]]:
-        """Get a study program's lecturer-to-student ratio by ID.
+        """
+        Get a study program's lecturer-to-student ratio by ID.
 
         Data: ['rasio_dosen_mahasiswa']
         """
@@ -579,7 +611,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_graduation_rate_prodi(self, prodi_id: str) -> Optional[Dict[str, Any]]:
-        """Get a study program's graduation rate by ID.
+        """
+        Get a study program's graduation rate by ID.
 
         Data: ['id_sms', 'graduation_rate']
         """
@@ -594,7 +627,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_homebase_prodi(self, prodi_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]:
-        """Get a study program's homebase ratio for an academic semester.
+        """
+        Get a study program's homebase ratio for an academic semester.
 
         Args:
             prodi_id: Study program ID.
@@ -612,7 +646,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     def get_penghitung_ratio_prodi(
         self, prodi_id: str, tahun: Union[int, str]
     ) -> Optional[Dict[str, Any]]:
-        """Get a study program's ratio counter for an academic semester.
+        """
+        Get a study program's ratio counter for an academic semester.
 
         Args:
             prodi_id: Study program ID.
@@ -629,7 +664,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     # -- Aggregate counts -----------------------------------------------------
     @handle_errors
     def get_dosen_count_active(self) -> Optional[Dict[str, Any]]:
-        """Get the number of active lecturers.
+        """
+        Get the number of active lecturers.
 
         Data: ['jumlah_dosen']
         """
@@ -638,7 +674,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_mahasiswa_count_active(self) -> Optional[Dict[str, Any]]:
-        """Get the number of active students.
+        """
+        Get the number of active students.
 
         Data: ['jumlah_mahasiswa']
         """
@@ -647,7 +684,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_prodi_count(self) -> Optional[Dict[str, Any]]:
-        """Get the total number of study programs.
+        """
+        Get the total number of study programs.
 
         Data: ['jumlah']
         """
@@ -656,7 +694,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_pt_count(self) -> Optional[Dict[str, Any]]:
-        """Get the total number of universities.
+        """
+        Get the total number of universities.
 
         Data: ['jumlah']
         """
@@ -666,7 +705,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     # -- Visualizations -------------------------------------------------------
     @handle_errors
     def get_data_dosen_keaktifan(self) -> Optional[Dict[str, Any]]:
-        """Lecturer activeness distribution.
+        """
+        Lecturer activeness distribution.
 
         Data: ['status_keaktifan', 'jumlah_dosen']
         """
@@ -675,7 +715,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_dosen_bidang(self) -> Optional[Dict[str, Any]]:
-        """Lecturer distribution by field of study.
+        """
+        Lecturer distribution by field of study.
 
         Data: ['bidang', 'jumlah_dosen']
         """
@@ -684,7 +725,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_dosen_jenis_kelamin(self) -> Optional[Dict[str, Any]]:
-        """Lecturer distribution by gender.
+        """
+        Lecturer distribution by gender.
 
         Data: ['jenis_kelamin', 'jumlah']
         """
@@ -693,7 +735,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_dosen_jenjang(self) -> Optional[Dict[str, Any]]:
-        """Lecturer distribution by academic level.
+        """
+        Lecturer distribution by academic level.
 
         Data: ['jenjang_dosen', 'jumlah_dosen']
         """
@@ -702,7 +745,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_dosen_ikatan(self) -> Optional[Dict[str, Any]]:
-        """Lecturer distribution by employment binding.
+        """
+        Lecturer distribution by employment binding.
 
         Data: ['ikatan_dosen', 'jumlah']
         """
@@ -711,7 +755,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_mahasiswa_bidang(self) -> Optional[Dict[str, Any]]:
-        """Student distribution by field of study.
+        """
+        Student distribution by field of study.
 
         Data: ['bidang', 'jumlah_mhs']
         """
@@ -720,7 +765,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_mahasiswa_jenis_kelamin(self) -> Optional[Dict[str, Any]]:
-        """Student distribution by gender.
+        """
+        Student distribution by gender.
 
         Data: ['jenis_kelamin', 'jumlah_mhs']
         """
@@ -729,7 +775,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_mahasiswa_jenjang(self) -> Optional[Dict[str, Any]]:
-        """Student distribution by educational level.
+        """
+        Student distribution by educational level.
 
         Data: ['nama_jenjang', 'jumlah_mhs']
         """
@@ -738,7 +785,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_mahasiswa_kelompok_lembaga(self) -> Optional[Dict[str, Any]]:
-        """Student distribution by institutional group.
+        """
+        Student distribution by institutional group.
 
         Data: ['kelompok_lembaga', 'jumlah_mhs']
         """
@@ -747,7 +795,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_mahasiswa_status(self) -> Optional[Dict[str, Any]]:
-        """Student distribution by status (active/inactive).
+        """
+        Student distribution by status (active/inactive).
 
         Data: ['status_mahasiswa', 'jumlah']
         """
@@ -756,7 +805,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_pt_bentuk(self) -> Optional[Dict[str, Any]]:
-        """University distribution by institution type.
+        """
+        University distribution by institution type.
 
         Data: ['bentuk_pt', 'jumlah_pt']
         """
@@ -765,7 +815,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_pt_akreditasi(self) -> Optional[Dict[str, Any]]:
-        """University distribution by accreditation.
+        """
+        University distribution by accreditation.
 
         Data: ['akreditasi', 'jumlah_pt']
         """
@@ -774,7 +825,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_pt_kelompok_pembina(self) -> Optional[Dict[str, Any]]:
-        """University distribution by administrative overseer.
+        """
+        University distribution by administrative overseer.
 
         Data: ['kelompok_pembina', 'jumlah_pt']
         """
@@ -783,7 +835,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_pt_provinsi(self) -> Optional[Dict[str, Any]]:
-        """University distribution by province.
+        """
+        University distribution by province.
 
         Data: ['provinsi', 'jumlah_pt']
         """
@@ -792,7 +845,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_prodi_jenjang(self) -> Optional[Dict[str, Any]]:
-        """Study program distribution by level.
+        """
+        Study program distribution by level.
 
         Data: ['jenjang_prodi', 'jumlah_prodi']
         """
@@ -801,7 +855,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_prodi_akreditasi(self) -> Optional[Dict[str, Any]]:
-        """Study program distribution by accreditation.
+        """
+        Study program distribution by accreditation.
 
         Data: ['akreditasi_prodi', 'jumlah_prodi']
         """
@@ -810,7 +865,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_prodi_bidang_ilmu(self) -> Optional[Dict[str, Any]]:
-        """Study program distribution by field of study.
+        """
+        Study program distribution by field of study.
 
         Data: ['bidang_ilmu', 'jumlah_prodi']
         """
@@ -819,7 +875,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_data_prodi_kelompok_pembina(self) -> Optional[Dict[str, Any]]:
-        """Study program distribution by administrative overseer.
+        """
+        Study program distribution by administrative overseer.
 
         Data: ['kelompok_pembina', 'jumlah_prodi']
         """
@@ -829,7 +886,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
     # -- Misc -----------------------------------------------------------------
     @handle_errors
     def get_beranda(self, content_limit: int = 4) -> Optional[Dict[str, Any]]:
-        """Get the homepage summary (latest content and aggregate stats).
+        """
+        Get the homepage summary (latest content and aggregate stats).
 
         Args:
             content_limit: Number of content items to include.
@@ -839,7 +897,8 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_contributor(self) -> Optional[Dict[str, Any]]:
-        """Get the list of project contributors.
+        """
+        Get the list of project contributors.
 
         Data: ['id', 'name', 'role', 'universitas', 'image_data', 'batch', 'linkedin']
         """

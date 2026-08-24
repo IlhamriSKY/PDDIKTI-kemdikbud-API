@@ -1,6 +1,7 @@
 # 📖 Dokumentasi API PDDIKTI Python Wrapper
 
-Dokumentasi lengkap untuk semua method dan endpoint yang tersedia dalam library `pddiktipy`.
+Dokumentasi lengkap untuk semua method dan endpoint yang tersedia dalam library
+`pddiktipy`.
 
 ## 📋 Daftar Isi
 
@@ -19,14 +20,17 @@ Dokumentasi lengkap untuk semua method dan endpoint yang tersedia dalam library 
 
 ### `search_all(keyword: str) -> Optional[Dict[str, Any]]`
 
-**Deskripsi**: Melakukan pencarian di semua kategori (mahasiswa, dosen, PT, prodi) berdasarkan kata kunci.
+**Deskripsi**: Melakukan pencarian di semua kategori (mahasiswa, dosen, PT,
+prodi) berdasarkan kata kunci.
 
 **Parameter**:
+
 - `keyword` (str): Kata kunci untuk pencarian
 
 **Return**: Dictionary berisi hasil pencarian dari semua kategori
 
 **Contoh Penggunaan**:
+
 ```python
 from pddiktipy import api
 
@@ -36,6 +40,7 @@ with api() as client:
 ```
 
 **Response Structure**:
+
 ```python
 [
     'mahasiswa', 
@@ -56,11 +61,13 @@ with api() as client:
 **Deskripsi**: Mencari mahasiswa berdasarkan nama atau NIM.
 
 **Parameter**:
+
 - `keyword` (str): Nama mahasiswa atau NIM untuk pencarian
 
 **Return**: Dictionary berisi data mahasiswa yang ditemukan
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     mahasiswa = client.search_mahasiswa('Ilham Riski Wibowo')
@@ -72,6 +79,7 @@ with api() as client:
 ```
 
 **Response Fields**:
+
 - `id`: ID unik mahasiswa
 - `nama`: Nama lengkap mahasiswa
 - `nim`: Nomor Induk Mahasiswa
@@ -86,11 +94,13 @@ with api() as client:
 **Deskripsi**: Mencari dosen berdasarkan nama atau NIDN.
 
 **Parameter**:
+
 - `keyword` (str): Nama dosen atau NIDN untuk pencarian
 
 **Return**: Dictionary berisi data dosen yang ditemukan
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     dosen = client.search_dosen('Prof. Dr. Ilham')
@@ -101,6 +111,7 @@ with api() as client:
 ```
 
 **Response Fields**:
+
 - `id`: ID unik dosen
 - `nama`: Nama lengkap dosen
 - `nidn`: Nomor Induk Dosen Nasional
@@ -115,11 +126,13 @@ with api() as client:
 **Deskripsi**: Mencari perguruan tinggi berdasarkan nama atau singkatan.
 
 **Parameter**:
+
 - `keyword` (str): Nama atau singkatan perguruan tinggi
 
 **Return**: Dictionary berisi data perguruan tinggi yang ditemukan
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     pt = client.search_pt('Unika Soegijapranata')
@@ -130,6 +143,7 @@ with api() as client:
 ```
 
 **Response Fields**:
+
 - `id`: ID unik perguruan tinggi
 - `kode`: Kode perguruan tinggi
 - `nama`: Nama lengkap perguruan tinggi
@@ -142,11 +156,13 @@ with api() as client:
 **Deskripsi**: Mencari program studi berdasarkan nama.
 
 **Parameter**:
+
 - `keyword` (str): Nama program studi
 
 **Return**: Dictionary berisi data program studi yang ditemukan
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     prodi = client.search_prodi('Teknik Informatika')
@@ -157,6 +173,7 @@ with api() as client:
 ```
 
 **Response Fields**:
+
 - `id`: ID unik program studi
 - `nama`: Nama program studi
 - `jenjang`: Jenjang pendidikan (S1, S2, S3, D3, D4)
@@ -172,11 +189,13 @@ with api() as client:
 **Deskripsi**: Mendapatkan detail lengkap mahasiswa berdasarkan ID.
 
 **Parameter**:
+
 - `mahasiswa_id` (str): ID mahasiswa dari hasil pencarian
 
 **Return**: Dictionary berisi detail lengkap mahasiswa
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     # Dapatkan ID dari pencarian terlebih dahulu
@@ -191,6 +210,7 @@ with api() as client:
 ```
 
 **Response Fields**:
+
 - `nama`: Nama lengkap mahasiswa
 - `nim`: Nomor Induk Mahasiswa
 - `jenis_kelamin`: Jenis kelamin (L/P)
@@ -212,11 +232,13 @@ with api() as client:
 **Deskripsi**: Mendapatkan profil lengkap dosen.
 
 **Parameter**:
+
 - `dosen_id` (str): ID dosen dari hasil pencarian
 
 **Return**: Dictionary berisi profil dosen
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     profile = client.get_dosen_profile(dosen_id)
@@ -226,6 +248,7 @@ with api() as client:
 ```
 
 **Response Fields**:
+
 - `nama_dosen`: Nama lengkap dosen
 - `nidn`: Nomor Induk Dosen Nasional
 - `jabatan_akademik`: Jabatan akademik
@@ -240,11 +263,13 @@ with api() as client:
 **Deskripsi**: Mendapatkan data penelitian yang dilakukan dosen.
 
 **Parameter**:
+
 - `dosen_id` (str): ID dosen
 
 **Return**: Dictionary berisi daftar penelitian dosen
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     penelitian = client.get_dosen_penelitian(dosen_id)
@@ -255,6 +280,7 @@ with api() as client:
 ```
 
 **Response Fields**:
+
 - `judul_kegiatan`: Judul penelitian
 - `tahun_kegiatan`: Tahun pelaksanaan
 - `jenis_kegiatan`: Jenis penelitian
@@ -267,11 +293,13 @@ with api() as client:
 **Deskripsi**: Mendapatkan data pengabdian masyarakat dosen.
 
 **Parameter**:
+
 - `dosen_id` (str): ID dosen
 
 **Return**: Dictionary berisi daftar pengabdian masyarakat
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     pengabdian = client.get_dosen_pengabdian(dosen_id)
@@ -288,6 +316,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan data karya ilmiah dosen.
 
 **Parameter**:
+
 - `dosen_id` (str): ID dosen
 
 **Return**: Dictionary berisi daftar karya ilmiah
@@ -299,6 +328,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan data paten yang dimiliki dosen.
 
 **Parameter**:
+
 - `dosen_id` (str): ID dosen
 
 **Return**: Dictionary berisi daftar paten
@@ -310,6 +340,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan riwayat pendidikan dosen.
 
 **Parameter**:
+
 - `dosen_id` (str): ID dosen
 
 **Return**: Dictionary berisi riwayat pendidikan
@@ -321,6 +352,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan riwayat mengajar dosen.
 
 **Parameter**:
+
 - `dosen_id` (str): ID dosen
 
 **Return**: Dictionary berisi riwayat mengajar
@@ -334,11 +366,13 @@ with api() as client:
 **Deskripsi**: Mendapatkan detail lengkap perguruan tinggi.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi detail perguruan tinggi
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     detail_pt = client.get_detail_pt(pt_id)
@@ -350,6 +384,7 @@ with api() as client:
 ```
 
 **Response Fields**:
+
 - `nama_pt`: Nama perguruan tinggi
 - `alamat`: Alamat lengkap
 - `website`: Website resmi
@@ -363,15 +398,18 @@ with api() as client:
 
 ### `get_prodi_pt(pt_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]`
 
-**Deskripsi**: Mendapatkan daftar program studi di perguruan tinggi untuk tahun tertentu.
+**Deskripsi**: Mendapatkan daftar program studi di perguruan tinggi untuk tahun
+tertentu.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 - `tahun` (Union[int, str]): Tahun akademik (contoh: 20241 atau "20241")
 
 **Return**: Dictionary berisi daftar program studi
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     # Kedua format didukung
@@ -386,6 +424,7 @@ with api() as client:
 ```
 
 **Response Fields**:
+
 - `nama_prodi`: Nama program studi
 - `jenjang_prodi`: Jenjang pendidikan
 - `akreditasi`: Status akreditasi
@@ -398,11 +437,13 @@ with api() as client:
 **Deskripsi**: Mendapatkan logo perguruan tinggi dalam format base64.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: String base64 logo atau None
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     logo = client.get_logo_pt(pt_id)
@@ -418,6 +459,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan rasio mahasiswa terhadap dosen.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi data rasio
@@ -429,6 +471,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan statistik mahasiswa perguruan tinggi.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi statistik mahasiswa
@@ -440,6 +483,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan data rata-rata waktu studi mahasiswa.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi data waktu studi
@@ -451,6 +495,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan sejarah perubahan nama perguruan tinggi.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi sejarah nama
@@ -462,6 +507,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan kisaran biaya kuliah.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi kisaran biaya
@@ -473,6 +519,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan tingkat kelulusan.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi tingkat kelulusan
@@ -484,6 +531,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan jumlah program studi.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi jumlah program studi
@@ -495,6 +543,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan jumlah mahasiswa.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi jumlah mahasiswa
@@ -506,6 +555,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan jumlah dosen.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi jumlah dosen
@@ -517,6 +567,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan nama file sarana dan prasarana.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi nama file sarpras
@@ -528,6 +579,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan data blob sarana dan prasarana.
 
 **Parameter**:
+
 - `pt_id` (str): ID perguruan tinggi
 
 **Return**: Dictionary berisi data blob sarpras
@@ -541,11 +593,13 @@ with api() as client:
 **Deskripsi**: Mendapatkan detail lengkap program studi.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 
 **Return**: Dictionary berisi detail program studi
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     detail = client.get_detail_prodi(prodi_id)
@@ -562,6 +616,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan deskripsi program studi.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 
 **Return**: Dictionary berisi deskripsi program studi
@@ -573,6 +628,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan sejarah perubahan nama program studi.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 
 **Return**: Dictionary berisi sejarah nama
@@ -584,6 +640,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan jumlah mahasiswa dan dosen di program studi.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 
 **Return**: Dictionary berisi jumlah mahasiswa dan dosen
@@ -595,6 +652,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan kisaran biaya kuliah program studi.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 
 **Return**: Dictionary berisi kisaran biaya
@@ -606,6 +664,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan kapasitas daya tampung program studi.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 
 **Return**: Dictionary berisi data daya tampung
@@ -617,6 +676,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan rasio dosen terhadap mahasiswa.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 
 **Return**: Dictionary berisi data rasio
@@ -628,6 +688,7 @@ with api() as client:
 **Deskripsi**: Mendapatkan tingkat kelulusan program studi.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 
 **Return**: Dictionary berisi tingkat kelulusan
@@ -639,17 +700,19 @@ with api() as client:
 **Deskripsi**: Mendapatkan logo program studi dalam format base64.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 
 **Return**: String base64 logo atau None
 
 ---
 
-### `get_homebase_prodi(prodi_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]`
+### `get_homebase_prodi(prodi_id: str, tahun: Union[int, str])`
 
 **Deskripsi**: Mendapatkan rasio homebase program studi.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 - `tahun` (Union[int, str]): Tahun akademik
 
@@ -657,11 +720,12 @@ with api() as client:
 
 ---
 
-### `get_penghitung_ratio_prodi(prodi_id: str, tahun: Union[int, str]) -> Optional[Dict[str, Any]]`
+### `get_penghitung_ratio_prodi(prodi_id: str, tahun: Union[int, str])`
 
 **Deskripsi**: Mendapatkan penghitung rasio program studi.
 
 **Parameter**:
+
 - `prodi_id` (str): ID program studi
 - `tahun` (Union[int, str]): Tahun akademik
 
@@ -674,80 +738,103 @@ with api() as client:
 ### Count Methods
 
 #### `get_dosen_count_active() -> Optional[Dict[str, Any]]`
+
 Mendapatkan jumlah dosen aktif secara nasional.
 
 #### `get_mahasiswa_count_active() -> Optional[Dict[str, Any]]`
+
 Mendapatkan jumlah mahasiswa aktif secara nasional.
 
 #### `get_prodi_count() -> Optional[Dict[str, Any]]`
+
 Mendapatkan jumlah program studi secara nasional.
 
 #### `get_pt_count() -> Optional[Dict[str, Any]]`
+
 Mendapatkan jumlah perguruan tinggi secara nasional.
 
 ### Visualisasi Data Dosen
 
 #### `get_data_dosen_keaktifan() -> Optional[Dict[str, Any]]`
+
 Visualisasi data keaktifan dosen.
 
 #### `get_data_dosen_bidang() -> Optional[Dict[str, Any]]`
+
 Visualisasi data dosen berdasarkan bidang studi.
 
 #### `get_data_dosen_jenis_kelamin() -> Optional[Dict[str, Any]]`
+
 Visualisasi distribusi jenis kelamin dosen.
 
 #### `get_data_dosen_jenjang() -> Optional[Dict[str, Any]]`
+
 Visualisasi data dosen berdasarkan jenjang pendidikan.
 
 #### `get_data_dosen_ikatan() -> Optional[Dict[str, Any]]`
+
 Visualisasi data dosen berdasarkan ikatan kerja.
 
 ### Visualisasi Data Mahasiswa
 
 #### `get_data_mahasiswa_bidang() -> Optional[Dict[str, Any]]`
+
 Visualisasi data mahasiswa berdasarkan bidang studi.
 
 #### `get_data_mahasiswa_jenis_kelamin() -> Optional[Dict[str, Any]]`
+
 Visualisasi distribusi jenis kelamin mahasiswa.
 
 #### `get_data_mahasiswa_jenjang() -> Optional[Dict[str, Any]]`
+
 Visualisasi data mahasiswa berdasarkan jenjang pendidikan.
 
 #### `get_data_mahasiswa_kelompok_lembaga() -> Optional[Dict[str, Any]]`
+
 Visualisasi data mahasiswa berdasarkan kelompok lembaga.
 
 #### `get_data_mahasiswa_status() -> Optional[Dict[str, Any]]`
+
 Visualisasi data mahasiswa berdasarkan status.
 
 ### Visualisasi Data Perguruan Tinggi
 
 #### `get_data_pt_bentuk() -> Optional[Dict[str, Any]]`
+
 Visualisasi data perguruan tinggi berdasarkan bentuk.
 
 #### `get_data_pt_akreditasi() -> Optional[Dict[str, Any]]`
+
 Visualisasi data perguruan tinggi berdasarkan akreditasi.
 
 #### `get_data_pt_kelompok_pembina() -> Optional[Dict[str, Any]]`
+
 Visualisasi data perguruan tinggi berdasarkan kelompok pembina.
 
 #### `get_data_pt_provinsi() -> Optional[Dict[str, Any]]`
+
 Visualisasi data perguruan tinggi berdasarkan provinsi.
 
 ### Visualisasi Data Program Studi
 
 #### `get_data_prodi_jenjang() -> Optional[Dict[str, Any]]`
+
 Visualisasi data program studi berdasarkan jenjang.
 
 #### `get_data_prodi_akreditasi() -> Optional[Dict[str, Any]]`
+
 Visualisasi data program studi berdasarkan akreditasi.
 
 #### `get_data_prodi_bidang_ilmu() -> Optional[Dict[str, Any]]`
+
 Visualisasi data program studi berdasarkan bidang ilmu.
 
 #### `get_data_prodi_kelompok_pembina() -> Optional[Dict[str, Any]]`
+
 Visualisasi data program studi berdasarkan kelompok pembina.
 
 **Contoh Penggunaan Statistik**:
+
 ```python
 with api() as client:
     # Statistik nasional
@@ -773,6 +860,7 @@ with api() as client:
 **Return**: Dictionary berisi daftar kontributor
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     contributors = client.get_contributor()
@@ -789,6 +877,7 @@ with api() as client:
 **Return**: Dictionary berisi daftar berita
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     news = client.get_news()
@@ -807,6 +896,7 @@ with api() as client:
 **Return**: Dictionary berisi daftar bidang ilmu
 
 **Contoh Penggunaan**:
+
 ```python
 with api() as client:
     bidang_ilmu = client.get_bidang_ilmu_prodi()
@@ -821,6 +911,7 @@ with api() as client:
 ### Context Manager Support
 
 **Penggunaan Recommended**:
+
 ```python
 from pddiktipy import api
 
@@ -833,12 +924,14 @@ with api() as client:
 ### Error Handling
 
 Semua method menggunakan decorator `@handle_errors` yang menangani:
+
 - Network errors
 - API timeouts
 - Invalid responses
 - Validation errors
 
 **Contoh Error Handling**:
+
 ```python
 from pddiktipy import api
 from pddiktipy.exceptions import ValidationError, APIConnectionError
@@ -855,6 +948,7 @@ except APIConnectionError as e:
 ### Parameter Flexibility
 
 **Support untuk Multiple Types**:
+
 ```python
 with api() as client:
     # Kedua format ini didukung
@@ -870,6 +964,7 @@ with api() as client:
 ## 📋 Best Practices
 
 ### 1. Gunakan Context Manager
+
 ```python
 # ✅ Recommended
 with api() as client:
@@ -882,6 +977,7 @@ result = client.search_all('keyword')
 ```
 
 ### 2. Handle Errors dengan Proper
+
 ```python
 try:
     with api() as client:
@@ -896,6 +992,7 @@ except Exception as e:
 ```
 
 ### 3. Batch Processing untuk Multiple Queries
+
 ```python
 with api() as client:
     keywords = ['Unika Soegijapranata', 'ITB', 'UGM']
@@ -911,6 +1008,7 @@ with api() as client:
 ```
 
 ### 4. Validasi Data Response
+
 ```python
 with api() as client:
     result = client.search_mahasiswa('Ilham')

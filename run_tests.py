@@ -3,7 +3,7 @@ PDDIKTI API Test Runner
 Runs all tests in the tests folder with clean output
 """
 
-import subprocess
+import subprocess  # nosec B404 - fixed argv, no shell, no external input
 import sys
 from pathlib import Path
 
@@ -36,7 +36,8 @@ def main():
         print("Running tests...")
         print("-" * 60)
 
-        result = subprocess.run(cmd, check=False)
+        # nosec B603 - argv is built above from sys.executable and a repo path
+        result = subprocess.run(cmd, check=False)  # nosec B603
 
         print("-" * 60)
         if result.returncode == 0:

@@ -163,7 +163,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         for loader, ua in loaders:
             try:
                 jar = loader(domain_name="kemdiktisaintek.go.id")
-            except Exception:  # pylint: disable=broad-exception-caught
+            except Exception:  # nosec B112  # pylint: disable=broad-exception-caught
                 # browser_cookie3 backends raise anything from OSError to their
                 # own BrowserCookieError; any failure just means "try the next".
                 continue
@@ -207,7 +207,8 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
             return None
 
     def get_ip(self) -> Optional[str]:
-        """Return the caller's public IP, cached for an hour.
+        """
+        Return the caller's public IP, cached for an hour.
 
         Falls back to the last known (or a hard-coded) IP when the lookup fails;
         the value is only used for the upstream's ``X-User-IP`` header.
@@ -291,7 +292,8 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         response.raise_for_status()
 
     def response(self, endpoint: str, timeout: int = 30) -> Optional[dict]:
-        """GET the endpoint and return the decoded JSON.
+        """
+        GET the endpoint and return the decoded JSON.
 
         Raises APITimeoutError, APIConnectionError, APIRateLimitError, or
         APIResponseError depending on the failure.
