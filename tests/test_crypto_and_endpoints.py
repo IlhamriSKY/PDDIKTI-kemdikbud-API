@@ -4,6 +4,11 @@ Covers the AES-256-CBC round trip and the endpoint URLs that changed when
 upstream moved from api-pddikti.kemdiktisaintek.go.id to the same-origin
 /api path. No network required.
 """
+# Fixture injection and white-box endpoint checks are the point here:
+# pylint: disable=missing-function-docstring,missing-class-docstring
+# pylint: disable=redefined-outer-name,protected-access,too-few-public-methods
+# pylint: disable=import-outside-toplevel
+
 import pytest
 
 from pddiktipy.api import api
@@ -57,12 +62,21 @@ def test_cloudflare_403_raises_actionable_error(monkeypatch):
 
     class FakeResp:
         status_code = 403
-        headers = {"content-type": "text/html; charset=UTF-8", "cf-mitigated": "challenge"}
-        def json(self): return {}
-        def raise_for_status(self): pass
+        headers = {
+            "content-type": "text/html; charset=UTF-8",
+            "cf-mitigated": "challenge",
+        }
+
+        def json(self):
+            return {}
+
+        def raise_for_status(self):
+            pass
 
     class FakeSession:
-        def get(self, *a, **k): return FakeResp()
+        def get(self, *args, **kwargs):
+            del args, kwargs
+            return FakeResp()
 
     with api(session=FakeSession()) as c:
         monkeypatch.setattr(c.H, "get_ip", lambda: "1.2.3.4")
@@ -73,7 +87,9 @@ def test_cloudflare_403_raises_actionable_error(monkeypatch):
 
 def test_changed_endpoint_paths(client):
     """The three paths that broke when upstream migrated."""
-    assert client._build_endpoint("pencarian/enc/all", "undip").endswith("/pencarian/enc/all/undip")
+    assert client._build_endpoint("pencarian/enc/all", "undip").endswith(
+        "/pencarian/enc/all/undip"
+    )
     assert client._build_endpoint("pt/detail", "abc123").endswith("/pt/detail/abc123")
     assert client._content("announcements", 2, 5, "").startswith(
         "https://pddikti.kemdiktisaintek.go.id/api/content/announcements?"
@@ -115,9 +131,12 @@ def test_decrypt_rejects_bad_input(client):
 
 
 def test_decrypt_returns_parsed_json(client):
-    import base64, json
+    import base64
+    import json
+
     from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-    from pddiktipy.helper import AES_KEY, AES_IV
+
+    from pddiktipy.helper import AES_IV, AES_KEY
 
     payload = json.dumps({"mahasiswa": [{"nama": "Budi"}]}).encode()
     pad = 16 - (len(payload) % 16)

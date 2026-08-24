@@ -9,9 +9,10 @@ Fixtures provided:
 - Common path setup for module imports
 """
 
-import pytest
-import sys
 import os
+import sys
+
+import pytest
 
 # Add parent directory to path for importing the API
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
@@ -19,7 +20,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 @pytest.fixture(scope="session")
 def api_client():
     """Provide API client instance for tests"""
-    from pddiktipy.api import api
+    from pddiktipy.api import api  # pylint: disable=import-outside-toplevel
     client = api()
     yield client
     client.close()
@@ -34,7 +35,7 @@ def sample_keywords():
     """Provide sample keywords for testing"""
     return {
         'student': 'Ilham',
-        'lecturer': 'Ridwan', 
+        'lecturer': 'Ridwan',
         'university': 'Unika',
         'program': 'Sistem Informasi'
     }

@@ -3,8 +3,8 @@ PDDIKTI API Test Runner
 Runs all tests in the tests folder with clean output
 """
 
-import sys
 import subprocess
+import sys
 from pathlib import Path
 
 
@@ -18,36 +18,36 @@ def main():
     print("Lecturer: Ridwan Sanjaya")
     print("University: Universitas Katolik Soegijapranata")
     print("=" * 60)
-    
+
     # Get current directory
     current_dir = Path(__file__).parent
     tests_dir = current_dir / "tests"
-    
+
     try:
         # Run pytest with clean output
         cmd = [
-            sys.executable, "-m", "pytest", 
+            sys.executable, "-m", "pytest",
             str(tests_dir),
-            "-v", 
+            "-v",
             "--tb=short",
             "--disable-warnings"
         ]
-        
+
         print("Running tests...")
         print("-" * 60)
-        
-        result = subprocess.run(cmd)
-        
+
+        result = subprocess.run(cmd, check=False)
+
         print("-" * 60)
         if result.returncode == 0:
             print("SUCCESS: All tests passed!")
             print("Framework is optimized and ready for production use!")
         else:
             print(f"FAILURE: Tests failed with exit code {result.returncode}")
-            
+
         return result.returncode
-        
-    except Exception as e:
+
+    except OSError as e:
         print(f"ERROR: Failed to run tests - {e}")
         return 1
 
