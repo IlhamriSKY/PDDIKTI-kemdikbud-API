@@ -13,8 +13,8 @@ Note: This data is used for automated testing only and respects privacy guidelin
 
 # Test University Data - Universitas Katolik Soegijapranata
 # Verified working university ID from PDDIKTI database
-UNIVERSITY_ID = "6m7kg4twGiZAdNiUDMC9Q6KaGqUBqNU9_fLWD8DaSxMF-cIjwu8A7K6lWYKzaJXGBDQHsQ=="
-UNIVERSITY_NAME = "Universitas Katolik Soegijapranata"
+UNIVERSITY_ID = "93l6-dByItlJxkrUHy0xX_9NMD4nqCTQvMQlWmdkTtsm1jkBvpsOIFNxqX6KGO2RRrkDeQ=="
+UNIVERSITY_NAME = "Universitas Diponegoro"
 
 # Test Lecturer Data - Real academic staff profile
 # Verified working lecturer ID from PDDIKTI database
@@ -28,10 +28,9 @@ STUDENT_ID = "zQpt4pGGyVuhVoglK-qW4_C9iM-y-8vcO5EVX04cycXvwpx4Tvi8FbeyI5MbUrakrD
 STUDENT_NAME = "Ilham Riski Wibowo"
 STUDENT_UNIVERSITY = "Universitas Katolik Soegijapranata"
 
-# Test Program Data - Uses university ID as fallback for program-specific tests
-# Note: Some program methods may require specific program IDs which may not be publicly accessible
-PROGRAM_ID = "6m7kg4twGiZAdNiUDMC9Q6KaGqUBqNU9_fLWD8DaSxMF-cIjwu8A7K6lWYKzaJXGBDQHsQ=="
-PROGRAM_NAME = "Sistem Informasi"
+# Test Program Data - a real study program (id_sms) of UNIVERSITY_ID
+PROGRAM_ID = "kkzaGHBPgZix4Ih8L8idOu0BKq1r8DcXiIIyIim8wZF2J_d4u0Ek99gHho79nLa_1qBkgQ=="
+PROGRAM_NAME = "Administrasi Bisnis (S2)"
 
 # Test Parameters - Valid values for API method testing
 VALID_SEMESTER = "20241"  # Format: YYYYS (Year + Semester number)

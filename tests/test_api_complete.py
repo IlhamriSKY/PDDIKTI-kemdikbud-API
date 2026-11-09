@@ -283,18 +283,12 @@ class TestPDDIKTIAPIComplete(unittest.TestCase):
             print(f"⚠️ University facilities file endpoint error: {str(e)} - This is expected")
 
     def test_get_sarpras_blob_pt(self):
-        """Test university facilities blob data."""
-        try:
-            result = self.api_client.get_sarpras_blob_pt(self.test_data.UNIVERSITY_ID)
-            if result is None:
-                print(
-                    "⚠️ University facilities blob endpoint unavailable (server issue) - "
-                    "This is expected"
-                )
-            else:
-                print("✓ University facilities blob retrieval successful")
-        except Exception as e:
-            print(f"⚠️ University facilities blob endpoint error: {str(e)} - This is expected")
+        """A facility photo is fetched by the id_blob from the file list."""
+        files = self.api_client.get_sarpras_file_name_pt(self.test_data.UNIVERSITY_ID)
+        if not files or not files.get("data"):
+            self.skipTest("University has no facility photos")
+        result = self.api_client.get_sarpras_blob_pt(files["data"][0]["id_blob"])
+        self.assertIsInstance(result, str, "Facility photo should come back as base64")
 
     # =================== PROGRAM DETAIL TESTS ===================
     def test_get_detail_prodi(self):
@@ -370,8 +364,8 @@ class TestPDDIKTIAPIComplete(unittest.TestCase):
         print("✓ Program graduation rate retrieval successful")
 
     def test_get_logo_prodi(self):
-        """Test program logo (uses PT ID)."""
-        result = self.api_client.get_logo_prodi(self.test_data.UNIVERSITY_ID)
+        """Test program logo (takes the study program ID)."""
+        result = self.api_client.get_logo_prodi(self.test_data.PROGRAM_ID)
         self.assertIsNotNone(result, "Program logo should return data")
         print("✓ Program logo retrieval successful")
 
@@ -429,115 +423,35 @@ class TestPDDIKTIAPIComplete(unittest.TestCase):
         self.assertIsNotNone(result, "University count should return data")
         print("✓ University count retrieval successful")
 
-    def test_get_data_dosen_keaktifan(self):
-        """Test lecturer activity data statistics."""
-        result = self.api_client.get_data_dosen_keaktifan()
-        self.assertIsNotNone(result, "Lecturer activity data should return data")
-        print("✓ Lecturer activity data retrieval successful")
+    REMOVED_UPSTREAM_METHODS = (
+        "get_dosen_count",
+        "get_mahasiswa_count",
+        "get_data_dosen_keaktifan",
+        "get_data_dosen_bidang",
+        "get_data_dosen_jenis_kelamin",
+        "get_data_dosen_jenjang",
+        "get_data_dosen_ikatan",
+        "get_data_mahasiswa_bidang",
+        "get_data_mahasiswa_jenis_kelamin",
+        "get_data_mahasiswa_jenjang",
+        "get_data_mahasiswa_kelompok_lembaga",
+        "get_data_mahasiswa_status",
+        "get_data_pt_bentuk",
+        "get_data_pt_akreditasi",
+        "get_data_pt_kelompok_pembina",
+        "get_data_pt_provinsi",
+        "get_data_prodi_jenjang",
+        "get_data_prodi_akreditasi",
+        "get_data_prodi_bidang_ilmu",
+        "get_data_prodi_kelompok_pembina",
+    )
 
-    def test_get_data_dosen_bidang(self):
-        """Test lecturer field data statistics."""
-        result = self.api_client.get_data_dosen_bidang()
-        self.assertIsNotNone(result, "Lecturer field data should return data")
-        print("✓ Lecturer field data retrieval successful")
+    def test_removed_upstream_methods_are_deprecated(self):
+        """Endpoints PDDIKTI removed (/visualisasi, total counts): warn and return None."""
+        for name in self.REMOVED_UPSTREAM_METHODS:
+            with self.subTest(method=name), self.assertWarns(DeprecationWarning):
+                self.assertIsNone(getattr(self.api_client, name)())
 
-    def test_get_data_dosen_jenis_kelamin(self):
-        """Test lecturer gender data statistics."""
-        result = self.api_client.get_data_dosen_jenis_kelamin()
-        self.assertIsNotNone(result, "Lecturer gender data should return data")
-        print("✓ Lecturer gender data retrieval successful")
-
-    def test_get_data_dosen_jenjang(self):
-        """Test lecturer education level data statistics."""
-        result = self.api_client.get_data_dosen_jenjang()
-        self.assertIsNotNone(result, "Lecturer education level data should return data")
-        print("✓ Lecturer education level data retrieval successful")
-
-    def test_get_data_dosen_ikatan(self):
-        """Test lecturer employment type data statistics."""
-        result = self.api_client.get_data_dosen_ikatan()
-        self.assertIsNotNone(result, "Lecturer employment data should return data")
-        print("✓ Lecturer employment data retrieval successful")
-
-    def test_get_data_mahasiswa_bidang(self):
-        """Test student field data statistics."""
-        result = self.api_client.get_data_mahasiswa_bidang()
-        self.assertIsNotNone(result, "Student field data should return data")
-        print("✓ Student field data retrieval successful")
-
-    def test_get_data_mahasiswa_jenis_kelamin(self):
-        """Test student gender data statistics."""
-        result = self.api_client.get_data_mahasiswa_jenis_kelamin()
-        self.assertIsNotNone(result, "Student gender data should return data")
-        print("✓ Student gender data retrieval successful")
-
-    def test_get_data_mahasiswa_jenjang(self):
-        """Test student education level data statistics."""
-        result = self.api_client.get_data_mahasiswa_jenjang()
-        self.assertIsNotNone(result, "Student education level data should return data")
-        print("✓ Student education level data retrieval successful")
-
-    def test_get_data_mahasiswa_kelompok_lembaga(self):
-        """Test student institution group data statistics."""
-        result = self.api_client.get_data_mahasiswa_kelompok_lembaga()
-        self.assertIsNotNone(result, "Student institution group data should return data")
-        print("✓ Student institution group data retrieval successful")
-
-    def test_get_data_mahasiswa_status(self):
-        """Test student status data statistics."""
-        result = self.api_client.get_data_mahasiswa_status()
-        self.assertIsNotNone(result, "Student status data should return data")
-        print("✓ Student status data retrieval successful")
-
-    def test_get_data_pt_bentuk(self):
-        """Test university type data statistics."""
-        result = self.api_client.get_data_pt_bentuk()
-        self.assertIsNotNone(result, "University type data should return data")
-        print("✓ University type data retrieval successful")
-
-    def test_get_data_pt_akreditasi(self):
-        """Test university accreditation data statistics."""
-        result = self.api_client.get_data_pt_akreditasi()
-        self.assertIsNotNone(result, "University accreditation data should return data")
-        print("✓ University accreditation data retrieval successful")
-
-    def test_get_data_pt_kelompok_pembina(self):
-        """Test university supervisor group data statistics."""
-        result = self.api_client.get_data_pt_kelompok_pembina()
-        self.assertIsNotNone(result, "University supervisor group data should return data")
-        print("✓ University supervisor group data retrieval successful")
-
-    def test_get_data_pt_provinsi(self):
-        """Test university province data statistics."""
-        result = self.api_client.get_data_pt_provinsi()
-        self.assertIsNotNone(result, "University province data should return data")
-        print("✓ University province data retrieval successful")
-
-    def test_get_data_prodi_jenjang(self):
-        """Test program education level data statistics."""
-        result = self.api_client.get_data_prodi_jenjang()
-        self.assertIsNotNone(result, "Program education level data should return data")
-        print("✓ Program education level data retrieval successful")
-
-    def test_get_data_prodi_akreditasi(self):
-        """Test program accreditation data statistics."""
-        result = self.api_client.get_data_prodi_akreditasi()
-        self.assertIsNotNone(result, "Program accreditation data should return data")
-        print("✓ Program accreditation data retrieval successful")
-
-    def test_get_data_prodi_bidang_ilmu(self):
-        """Test program field of science data statistics."""
-        result = self.api_client.get_data_prodi_bidang_ilmu()
-        self.assertIsNotNone(result, "Program field data should return data")
-        print("✓ Program field data retrieval successful")
-
-    def test_get_data_prodi_kelompok_pembina(self):
-        """Test program supervisor group data statistics."""
-        result = self.api_client.get_data_prodi_kelompok_pembina()
-        self.assertIsNotNone(result, "Program supervisor group data should return data")
-        print("✓ Program supervisor group data retrieval successful")
-
-    # =================== GENERAL DATA TESTS ===================
     def test_get_contributor(self):
         """Test contributor information retrieval."""
         result = self.api_client.get_contributor()
@@ -554,6 +468,19 @@ class TestPDDIKTIAPIComplete(unittest.TestCase):
                 print("✓ News data retrieval successful")
         except Exception as e:
             print(f"⚠️ News endpoint error: {str(e)} - This is expected")
+
+    def test_get_prodi_by_bidang_ilmu(self):
+        """Programs in one field of science."""
+        result = self.api_client.get_prodi_by_bidang_ilmu("Teknik")
+        self.assertTrue(result and result["data"], "Field should list programs")
+        self.assertIn("nama_prodi", result["data"][0])
+
+    def test_get_mahasiswa_by_nim(self):
+        """Exact NIM lookup round-trips from a student's own detail record."""
+        detail = self.api_client.get_detail_mhs(self.test_data.STUDENT_ID)["data"]
+        result = self.api_client.get_mahasiswa_by_nim(detail["nim"], detail["id_sms"])
+        self.assertEqual(result["data"]["nim"], detail["nim"])
+        self.assertIsNone(self.api_client.get_mahasiswa_by_nim("000000", detail["id_sms"]))
 
     def test_get_bidang_ilmu_prodi(self):
         """Test field of science for programs retrieval."""

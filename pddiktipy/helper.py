@@ -5,6 +5,7 @@ import binascii
 import json
 import logging
 import time
+import warnings
 from typing import Any, Optional, Union
 
 import requests
@@ -35,7 +36,7 @@ CLOUDFLARE_HELP = (
 STATUS_MESSAGES = {
     401: "Authentication failed",
     403: "Access forbidden",
-    404: "Endpoint not found",
+    404: "Not found (unknown endpoint or no matching record)",
 }
 
 # Base64-obfuscated upstream endpoints, decoded at call time.
@@ -44,6 +45,11 @@ HOST = "cGRkaWt0aS5rZW1kaWt0aXNhaW50ZWsuZ28uaWQ="
 ORIGIN = "aHR0cHM6Ly9wZGRpa3RpLmtlbWRpa3Rpc2FpbnRlay5nby5pZA=="
 REFERER = "aHR0cHM6Ly9wZGRpa3RpLmtlbWRpa3Rpc2FpbnRlay5nby5pZC8="
 FALLBACK_IP = "MTAzLjQ3LjEzMi4yOQ=="
+
+_LEGACY_ID_WARNING = (
+    "encrypt_id/decrypt_id use the legacy ID scheme; upstream IDs changed format. "
+    "Pass IDs from search results through unchanged."
+)
 
 # How long a looked-up public IP stays valid.
 IP_CACHE_SECONDS = 3600
@@ -56,6 +62,8 @@ DEFAULT_USER_AGENT = (
 # AES-256-CBC key/IV used by the upstream for its `*/enc/*` payloads and entity IDs.
 AES_KEY = "ecHyOABV9jgO2/+dzE49cfexQpr/H4SiAYWrHLD7PQ0="
 AES_IV = "Gu3qsglYJhOOm0eXf6aN2w=="
+_AES_KEY_BYTES = base64.b64decode(AES_KEY)
+_AES_IV_BYTES = base64.b64decode(AES_IV)
 
 
 class helper:  # pylint: disable=invalid-name  # public API name since v1
@@ -123,7 +131,10 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
                 total=3,
                 backoff_factor=1,
                 status_forcelist=[429, 500, 502, 503, 504],
-                allowed_methods=["HEAD", "GET", "OPTIONS"]
+                allowed_methods=["HEAD", "GET", "OPTIONS"],
+                # Hand the final 429/5xx back so _raise_for_status can map it to a
+                # typed error instead of a generic "Max retries exceeded".
+                raise_on_status=False,
             )
 
             adapter = HTTPAdapter(max_retries=retry_strategy)
@@ -182,7 +193,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         cf_clearance is bound to the UA that solved the challenge, so a mismatch
         invalidates it. On Windows we read the installed version from the
         registry; elsewhere we return None and let the default UA apply.
-        ponytail: Windows-only version detection; other OSes fall back to default UA.
+        shortcut: Windows-only version detection; add macOS/Linux if users need it.
         """
         try:
             import winreg  # pylint: disable=import-outside-toplevel
@@ -286,8 +297,10 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
             )
         response.raise_for_status()
 
-    def response(self, endpoint: str, timeout: int = 30) -> Optional[dict]:
-        """GET the endpoint and return the decoded JSON.
+    def response(
+        self, endpoint: str, timeout: int = 30, json_body: Optional[dict] = None
+    ) -> Optional[dict]:
+        """GET the endpoint (or POST ``json_body`` to it) and return the decoded JSON.
 
         Raises APITimeoutError, APIConnectionError, APIRateLimitError, or
         APIResponseError depending on the failure.
@@ -297,9 +310,14 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
 
         try:
             self.logger.debug("Making request to: %s", endpoint)
-            response = self.session.get(
-                endpoint, headers=self.get_headers(), timeout=timeout
-            )
+            if json_body is None:
+                response = self.session.get(
+                    endpoint, headers=self.get_headers(), timeout=timeout
+                )
+            else:
+                response = self.session.post(
+                    endpoint, headers=self.get_headers(), json=json_body, timeout=timeout
+                )
             self._raise_for_status(response, endpoint)
             try:
                 json_data = response.json()
@@ -328,7 +346,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         return base64.b64encode(image_content).decode('utf-8')
 
     def fetch_image_as_base64(self, url: str, timeout: int = 30) -> Optional[str]:
-        """Fetch an image URL and return it base64-encoded."""
+        """Fetch an image URL and return it base64-encoded, or None when it has none."""
         if not url:
             raise ValidationError("Image URL cannot be empty")
 
@@ -337,7 +355,9 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
             response = self.session.get(
                 url, headers=self.get_headers(), timeout=timeout
             )
-            response.raise_for_status()
+            self._raise_for_status(response, url)
+            if not response.content:  # upstream answers 204 when there is no logo
+                return None
 
             content_type = response.headers.get("content-type", "")
             if not content_type.startswith("image/"):
@@ -378,15 +398,15 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
             self.logger.debug("Session closed successfully")
 
     def decodes(self, string: str) -> str:
-        """Decodes the value."""
+        """Decode one of the base64-obfuscated upstream constants."""
         return base64.b64decode(string).decode('utf-8')
 
     def endpoint(self) -> str:
-        """Returns the API base URL: the caller's override, or the official upstream."""
+        """Return the API base URL: the caller's override, or the official upstream."""
         return self.base_url or self.decodes(BASE_URL)
 
     def decrypt(self, encrypted: str) -> Any:
-        """Decrypts an AES-256-CBC payload returned by the `*/enc/*` endpoints.
+        """Decrypt an AES-256-CBC payload returned by the `*/enc/*` endpoints.
 
         Upstream wraps these as {"status": ..., "data": "<base64 ciphertext>"}.
         Returns the parsed JSON when the plaintext is JSON, else the raw string.
@@ -404,10 +424,7 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         if not ciphertext or len(ciphertext) % 16 != 0:
             raise ValidationError("Ciphertext length is not a multiple of the AES block size")
 
-        decryptor = Cipher(
-            algorithms.AES(base64.b64decode(AES_KEY)),
-            modes.CBC(base64.b64decode(AES_IV)),
-        ).decryptor()
+        decryptor = Cipher(algorithms.AES(_AES_KEY_BYTES), modes.CBC(_AES_IV_BYTES)).decryptor()
         plaintext = decryptor.update(ciphertext) + decryptor.finalize()
 
         padding = plaintext[-1]
@@ -421,11 +438,13 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
             return plaintext.decode("utf-8", errors="replace")
 
     def encrypt_id(self, plain_id: str) -> str:
-        """Encrypts a plaintext entity ID into the base64 form the upstream expects.
+        """Encrypt a plaintext ID with the legacy AES-256-CBC scheme.
 
-        Only needed when you hold a raw ID; IDs returned by the search endpoints
-        are already encrypted and should be passed through unchanged.
+        Deprecated: upstream entity IDs now use a different, URL-safe format that
+        this scheme does not produce. Pass the IDs returned by the search
+        endpoints through unchanged instead.
         """
+        warnings.warn(_LEGACY_ID_WARNING, DeprecationWarning, stacklevel=2)
         if not plain_id:
             raise ValidationError("Cannot encrypt empty ID")
 
@@ -433,17 +452,18 @@ class helper:  # pylint: disable=invalid-name  # public API name since v1
         padding = 16 - (len(data) % 16)
         data += bytes([padding]) * padding
 
-        encryptor = Cipher(
-            algorithms.AES(base64.b64decode(AES_KEY)),
-            modes.CBC(base64.b64decode(AES_IV)),
-        ).encryptor()
+        encryptor = Cipher(algorithms.AES(_AES_KEY_BYTES), modes.CBC(_AES_IV_BYTES)).encryptor()
         return base64.b64encode(encryptor.update(data) + encryptor.finalize()).decode()
 
     def decrypt_id(self, encrypted_id: str) -> str:
-        """Decrypts an encrypted entity ID back to its plaintext form."""
+        """Decrypt an ID produced by :meth:`encrypt_id` (legacy scheme, deprecated).
+
+        Current upstream IDs cannot be decrypted with it and raise ValidationError.
+        """
+        warnings.warn(_LEGACY_ID_WARNING, DeprecationWarning, stacklevel=2)
         plaintext = self.decrypt(encrypted_id)
         return plaintext if isinstance(plaintext, str) else json.dumps(plaintext)
 
     def with_version(self, version: str) -> str:
-        """Appends a version to the decoded URL."""
+        """Return the API base URL with ``version`` (e.g. ``"/v2"``) appended."""
         return self.endpoint() + version

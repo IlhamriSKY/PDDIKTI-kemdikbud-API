@@ -188,6 +188,26 @@ with api() as client:
 
 ## 👨‍🎓 Data Mahasiswa
 
+### `get_mahasiswa_by_nim(nim: str, prodi_id: str) -> Optional[Dict[str, Any]]`
+
+**Deskripsi**: Mencari satu mahasiswa secara persis berdasarkan NIM di sebuah
+program studi (sama seperti halaman "Pencarian Spesifik Mahasiswa").
+
+**Parameter**:
+
+- `nim` (str): Nomor Induk Mahasiswa
+- `prodi_id` (str): ID program studi (`id` dari `search_prodi()`)
+
+**Return**: Dictionary data mahasiswa, atau None jika tidak ditemukan
+
+```python
+with api() as client:
+    prodi = client.search_prodi("teknik geologi diponegoro")["data"][0]
+    print(client.get_mahasiswa_by_nim("L2L008038", prodi["id"]))
+```
+
+---
+
 ### `get_detail_mhs(mahasiswa_id: str) -> Optional[Dict[str, Any]]`
 
 **Deskripsi**: Mendapatkan detail lengkap mahasiswa berdasarkan ID.
@@ -578,15 +598,16 @@ with api() as client:
 
 ---
 
-### `get_sarpras_blob_pt(pt_id: str) -> Optional[Dict[str, Any]]`
+### `get_sarpras_blob_pt(pt_id: str) -> Optional[str]`
 
-**Deskripsi**: Mendapatkan data blob sarana dan prasarana.
+**Deskripsi**: Mendapatkan satu foto sarana dan prasarana.
 
 **Parameter**:
 
-- `pt_id` (str): ID perguruan tinggi
+- `pt_id` (str): `id_blob` dari `get_sarpras_file_name_pt()` (bukan ID
+  perguruan tinggi; nama parameter dipertahankan demi kompatibilitas)
 
-**Return**: Dictionary berisi data blob sarpras
+**Return**: String base64 foto, atau None
 
 ---
 
@@ -741,6 +762,10 @@ with api() as client:
 
 ### Count Methods
 
+> **Deprecated:** `get_dosen_count()` dan `get_mahasiswa_count()` (total aktif +
+> nonaktif) dihapus upstream (404) dan kini selalu mengembalikan `None`.
+> Gunakan versi `*_count_active()`.
+
 #### `get_dosen_count_active() -> Optional[Dict[str, Any]]`
 
 Mendapatkan jumlah dosen aktif secara nasional.
@@ -756,6 +781,11 @@ Mendapatkan jumlah program studi secara nasional.
 #### `get_pt_count() -> Optional[Dict[str, Any]]`
 
 Mendapatkan jumlah perguruan tinggi secara nasional.
+
+> **Deprecated:** PDDIKTI telah menghapus seluruh endpoint `/visualisasi/*`
+> (semuanya kini 404). Semua method `get_data_*` di bawah ini hanya memunculkan
+> `DeprecationWarning` dan mengembalikan `None` tanpa request, dan akan dihapus
+> di v3.
 
 ### Visualisasi Data Dosen
 
@@ -907,6 +937,19 @@ with api() as client:
     if bidang_ilmu:
         print("Bidang Ilmu Tersedia:", bidang_ilmu)
 ```
+
+---
+
+### `get_prodi_by_bidang_ilmu(bidang: str) -> Optional[Dict[str, Any]]`
+
+**Deskripsi**: Mendapatkan daftar program studi dalam satu bidang ilmu,
+lengkap dengan total mahasiswa dan persentase kelulusan.
+
+**Parameter**:
+
+- `bidang` (str): Nama bidang dari `get_bidang_ilmu_prodi()`, mis. `"Teknik"`
+
+**Return**: Dictionary berisi daftar program studi
 
 ---
 
