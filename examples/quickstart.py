@@ -23,7 +23,7 @@ def main() -> None:
     with api(auto_cookie=True) as client:
         # Aggregate counts
         print("Universities:", client.get_pt_count())
-        print("Students    :", client.get_mahasiswa_count())
+        print("Students    :", client.get_mahasiswa_count_active())
 
         # Combined search (payload is AES-decrypted transparently)
         results = client.search_all("Universitas Diponegoro")

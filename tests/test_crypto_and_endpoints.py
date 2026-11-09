@@ -102,8 +102,12 @@ def test_content_pagination_params(client):
 
 
 def test_filter_search_endpoints(client):
-    q = client._filter_query(20, 40, {"provinsi": "Jawa Tengah"})
-    assert "limit=20" in q and "offset=40" in q and "provinsi=Jawa%20Tengah" in q
+    q = client._filter_query(20, 40, None, {"provinsi": "Jawa Tengah"})
+    # offset 40 at 20 per page is page 3; upstream ignores `offset`
+    assert "limit=20" in q and "page=3" in q and "provinsi=Jawa%20Tengah" in q
+    assert "page=7" in client._filter_query(20, 40, 7, {})
+    with pytest.raises(ValidationError):
+        client._filter_query(0, 0, None, {})
 
 
 def test_beranda_endpoint(client):
@@ -114,13 +118,15 @@ def test_beranda_endpoint(client):
 
 def test_id_encryption_round_trip(client):
     plain = "0A2B3C4D-5E6F-7890-ABCD-EF1234567890"
-    assert client.H.decrypt_id(client.H.encrypt_id(plain)) == plain
+    with pytest.warns(DeprecationWarning):
+        assert client.H.decrypt_id(client.H.encrypt_id(plain)) == plain
 
 
 def test_encrypt_id_pads_exact_block_multiple(client):
     """A 16-byte input must gain a full padding block, not zero."""
     plain = "0123456789abcdef"
-    assert client.H.decrypt_id(client.H.encrypt_id(plain)) == plain
+    with pytest.warns(DeprecationWarning):
+        assert client.H.decrypt_id(client.H.encrypt_id(plain)) == plain
 
 
 def test_decrypt_rejects_bad_input(client):

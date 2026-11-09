@@ -132,7 +132,7 @@ with api(auto_cookie=True) as client:
 
     # Aggregate statistics
     print(client.get_pt_count())          # number of universities
-    print(client.get_mahasiswa_count())   # number of students
+    print(client.get_mahasiswa_count_active())  # number of active students
 ```
 
 A runnable example lives in [`examples/quickstart.py`](examples/quickstart.py).

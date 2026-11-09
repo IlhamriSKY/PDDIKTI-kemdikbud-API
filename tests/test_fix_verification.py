@@ -44,8 +44,9 @@ class TestGetProdiPTFix(unittest.TestCase):
         print("Getting valid University ID...")
 
         search_result = cls.api_client.search_pt('universitas indonesia')
-        if search_result and len(search_result) > 0:
-            ui_data = search_result[0]
+        universities = (search_result or {}).get('data') or []
+        if universities:
+            ui_data = universities[0]
             cls.valid_university_id = ui_data.get('id')
             cls.university_name = ui_data.get('nama')
             print(f"✅ Found: {cls.university_name}")
@@ -65,6 +66,7 @@ class TestGetProdiPTFix(unittest.TestCase):
 
         # Should return data, not None
         self.assertIsNotNone(result, "Method should return data for valid semester")
+        result = result['data']  # upstream wraps rows as {"status": ..., "data": [...]}
 
         # Should return a list
         self.assertIsInstance(result, list, "Result should be a list of programs")
@@ -89,8 +91,8 @@ class TestGetProdiPTFix(unittest.TestCase):
 
         # Should return data (or None if semester not available, but no error)
         if result is not None:
-            self.assertIsInstance(result, list, "Result should be a list of programs")
-            print(f"✅ SUCCESS! Found {len(result)} programs")
+            self.assertIsInstance(result['data'], list, "Result should be a list of programs")
+            print(f"✅ SUCCESS! Found {len(result['data'])} programs")
         else:
             print("✅ No data for 20242 (expected behavior)")
 
@@ -118,8 +120,8 @@ class TestGetProdiPTFix(unittest.TestCase):
 
         # This might return None if the test data ID is not valid, which is acceptable
         if result is not None:
-            self.assertIsInstance(result, list, "Result should be a list")
-            print(f"✅ Test data works! Found {len(result)} programs")
+            self.assertIsInstance(result['data'], list, "Result should be a list")
+            print(f"✅ Test data works! Found {len(result['data'])} programs")
         else:
             print("⚠️ Test data ID may not be valid (acceptable)")
 

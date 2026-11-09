@@ -8,6 +8,55 @@
 
 All notable changes to this project are documented in this file.
 
+## [2.2.0] - 2026-11-09
+
+### Added
+
+- `get_mahasiswa_by_nim(nim, prodi_id)`: exact student lookup by NIM within a
+  study program (`POST /mahasiswa/nim`, the site's "Pencarian Spesifik
+  Mahasiswa"). Returns `None` when nothing matches.
+- `get_prodi_by_bidang_ilmu(bidang)`: study programs in one field of science,
+  with student totals and graduation percentage.
+- `helper.response()` takes an optional `json_body` to POST.
+
+### Fixed
+
+- `get_sarpras_blob_pt()` always failed: the endpoint takes an `id_blob` from
+  `get_sarpras_file_name_pt()` and returns a JPEG, not JSON. It now returns the
+  photo as base64.
+- A 404 is reported as "Not found (unknown endpoint or no matching record)",
+  since the upstream also uses it for "no such record".
+- `search_pt_filter()` / `search_prodi_filter()` sent `offset`, which the
+  upstream ignores, so every call returned page 1. They now send `page`
+  (an `offset` is converted to its page) and accept a `page=` argument.
+- A 429 or 5xx that outlived the retries surfaced as a generic
+  "Max retries exceeded" instead of `APIRateLimitError` / "Server error";
+  the retry policy now hands the last response back for typed handling.
+- Image endpoints return `None` instead of an empty string when the upstream
+  answers 204 (no logo), and a Cloudflare block there gets the same help text
+  as JSON endpoints.
+- `pytest.ini` used the `[tool:pytest]` header (a `setup.cfg` form), so pytest
+  ignored the whole file.
+- Tests: refreshed the university test ID, made `PROGRAM_ID` a real study
+  program, and stopped `test_fix_verification` treating the response as a list.
+
+### Deprecated
+
+- `get_dosen_count()` / `get_mahasiswa_count()`: `/dosen/count` and
+  `/mahasiswa/count` now 404. Use the `*_count_active()` methods; README and
+  the quickstart example were switched over.
+- The 18 `get_data_*` visualisation methods: PDDIKTI removed `/visualisasi/*`
+  (all 404). They now warn and return `None` without a request.
+- `encrypt_id()` / `decrypt_id()`: upstream entity IDs switched to a new
+  URL-safe, non-deterministic format these cannot produce or read.
+  `decrypt()` for `search_all` payloads still works.
+
+### Changed
+
+- `get_logo_prodi()` docstring: it takes the study program ID, not the
+  university ID. AES key/IV are decoded once at import instead of per call.
+  Removed the unused `_validate_year()`.
+
 ## [2.1.3] - 2026-08-24
 
 ### Fixed

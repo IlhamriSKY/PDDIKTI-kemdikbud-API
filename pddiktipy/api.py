@@ -1,6 +1,7 @@
 """Public client for the PDDIKTI (kemdiktisaintek) API."""
 
 import logging
+import warnings
 from functools import wraps
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -57,6 +58,21 @@ def handle_errors(func: APIMethod) -> APIMethod:
             # Last line of defence: this decorator's whole contract is that an
             # API call returns None rather than raising.
             logger.exception("%s: unexpected error - %s", func_name, e)
+        return None
+
+    return wrapper
+
+
+def _removed_upstream(func: APIMethod) -> APIMethod:
+    """Mark an endpoint the upstream has dropped: warn and return None, no request."""
+    @wraps(func)
+    def wrapper(*_args: Any, **_kwargs: Any) -> APIResponse:
+        warnings.warn(
+            f"{func.__name__}() is deprecated: PDDIKTI removed its endpoint, "
+            "so it always returns None. It will be removed in v3.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return None
 
     return wrapper
@@ -143,20 +159,6 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
             raise ValidationError("Keyword cannot be empty")
         if len(keyword) > max_length:
             raise ValidationError(f"Keyword too long (max {max_length} characters)")
-
-    def _validate_year(self, year: Union[int, str], field_name: str = "Year") -> None:
-        """Ensure a year is a number within 1900-2100."""
-        if year is None:
-            raise ValidationError(f"{field_name} cannot be None")
-        year_str = str(year)
-        if not year_str.strip():
-            raise ValidationError(f"{field_name} cannot be empty")
-        try:
-            year_int = int(year_str)
-            if year_int < 1900 or year_int > 2100:
-                raise ValidationError(f"{field_name} must be between 1900 and 2100")
-        except ValueError as e:
-            raise ValidationError(f"{field_name} must be a valid year number") from e
 
     def _validate_semester(self, semester: Union[int, str], field_name: str = "Semester") -> None:
         """Ensure a semester is in YYYYS format (year 1900-2100, semester 1-2)."""
@@ -258,9 +260,18 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
         endpoint: str = self._build_endpoint("pencarian/prodi", keyword)
         return self.H.response(endpoint)
 
-    def _filter_query(self, limit: int, offset: int, filters: Dict[str, Any]) -> str:
-        """Build a ``limit/offset`` query string plus any extra filter params."""
-        query = f"limit={self.H.parse(limit)}&offset={self.H.parse(offset)}"
+    def _filter_query(
+        self, limit: int, offset: int, page: Optional[int], filters: Dict[str, Any]
+    ) -> str:
+        """Build a ``limit/page`` query string plus any extra filter params.
+
+        The upstream paginates by ``page`` and ignores ``offset``, so an offset is
+        converted to the page that contains it.
+        """
+        if int(limit) < 1:
+            raise ValidationError("limit must be at least 1")
+        page = page if page is not None else int(offset) // int(limit) + 1
+        query = f"limit={self.H.parse(limit)}&page={self.H.parse(page)}"
         for key, value in filters.items():
             if value is not None:
                 query += f"&{key}={self.H.parse(value)}"
@@ -268,29 +279,31 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def search_pt_filter(
-        self, limit: int = 10, offset: int = 0, **filters: Any
+        self, limit: int = 10, offset: int = 0, page: Optional[int] = None, **filters: Any
     ) -> Optional[Dict[str, Any]]:
         """Filtered, paginated university search.
 
         - ``limit``: Maximum number of results.
-        - ``offset``: Number of results to skip.
+        - ``offset``: Number of results to skip, rounded down to a whole page.
+        - ``page``: 1-based page number; takes precedence over ``offset``.
         - ``**filters``: Any extra upstream filter parameters, passed as query args.
         """
-        query = self._filter_query(limit, offset, filters)
+        query = self._filter_query(limit, offset, page, filters)
         endpoint = f"{self.api_link}/v2/pt/search/filter?{query}"
         return self.H.response(endpoint)
 
     @handle_errors
     def search_prodi_filter(
-        self, limit: int = 10, offset: int = 0, **filters: Any
+        self, limit: int = 10, offset: int = 0, page: Optional[int] = None, **filters: Any
     ) -> Optional[Dict[str, Any]]:
         """Filtered, paginated study-program search.
 
         - ``limit``: Maximum number of results.
-        - ``offset``: Number of results to skip.
+        - ``offset``: Number of results to skip, rounded down to a whole page.
+        - ``page``: 1-based page number; takes precedence over ``offset``.
         - ``**filters``: Any extra upstream filter parameters, passed as query args.
         """
-        query = self._filter_query(limit, offset, filters)
+        query = self._filter_query(limit, offset, page, filters)
         endpoint = f"{self.api_link}/v2/prodi/search/filter?{query}"
         return self.H.response(endpoint)
 
@@ -306,6 +319,26 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
         self._validate_id(mahasiswa_id, "Mahasiswa ID")
         endpoint = self._build_endpoint("detail/mhs", mahasiswa_id)
         return self.H.response(endpoint)
+
+    @handle_errors
+    def get_mahasiswa_by_nim(self, nim: str, prodi_id: str) -> Optional[Dict[str, Any]]:
+        """Look up one student by exact NIM within a study program.
+
+        - ``nim``: Student number (NIM).
+        - ``prodi_id``: Study program ID, i.e. the ``id`` from :meth:`search_prodi`.
+
+        Returns None when no student matches (the upstream answers 404).
+
+        Data: ['id', 'nama_pt', 'kode_pt', 'kode_prodi', 'prodi', 'nama', 'nim',
+        'jenis_daftar', 'id_pt', 'id_sms', 'jenis_kelamin', 'jenjang',
+        'status_saat_ini', 'tanggal_masuk']
+        """
+        self._validate_keyword(nim, max_length=30)
+        self._validate_id(prodi_id, "Prodi ID")
+        return self.H.response(
+            f"{self.api_link}/mahasiswa/nim",
+            json_body={"nim": nim.strip(), "id_sms": prodi_id},
+        )
 
     # -- Lecturers ------------------------------------------------------------
     @handle_errors
@@ -498,15 +531,24 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_sarpras_file_name_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get a university's facility (sarpras) file names by ID."""
+        """Get a university's facility (sarpras) photo list by ID.
+
+        Data: ['id_blob', 'file_name']; pass ``id_blob`` to :meth:`get_sarpras_blob_pt`.
+        """
         endpoint = f"{self.api_link}/pt/sarpras-file-name/{self.H.parse(pt_id)}"
         return self.H.response(endpoint)
 
     @handle_errors
-    def get_sarpras_blob_pt(self, pt_id: str) -> Optional[Dict[str, Any]]:
-        """Get a university's facility (sarpras) blob data by ID."""
-        endpoint = f"{self.api_link}/pt/sarpras-blob/{self.H.parse(pt_id)}"
-        return self.H.response(endpoint)
+    def get_sarpras_blob_pt(self, pt_id: str) -> Optional[str]:
+        """Get one facility (sarpras) photo as a base64 string.
+
+        - ``pt_id``: The ``id_blob`` of a file listed by
+          :meth:`get_sarpras_file_name_pt`, despite the name; a university ID
+          gets nothing. The name is kept for backwards compatibility.
+        """
+        self._validate_id(pt_id, "Sarpras blob ID")
+        url = f"{self.api_link}/pt/sarpras-blob/{self.H.parse(pt_id)}"
+        return self.H.fetch_image_as_base64(url)
 
     # -- Study programs -------------------------------------------------------
     @handle_errors
@@ -587,7 +629,11 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
 
     @handle_errors
     def get_logo_prodi(self, pt_id: str) -> Optional[str]:
-        """Get a study program's university logo by ID as a base64 string."""
+        """Get the university logo shown for a study program, as a base64 string.
+
+        - ``pt_id``: The study program ID (``id_sms``), despite the name; a
+          university ID gets no logo. The name is kept for backwards compatibility.
+        """
         url = f"{self.H.endpoint()}/prodi/logo-pt/{self.H.parse(pt_id)}"
         return self.H.fetch_image_as_base64(url)
 
@@ -660,168 +706,168 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
         endpoint = f"{self.api_link}/pt/count"
         return self.H.response(endpoint)
 
-    # -- Visualizations -------------------------------------------------------
-    @handle_errors
+    # -- Visualizations (removed upstream; kept so old callers get None + a warning)
+    @_removed_upstream
     def get_data_dosen_keaktifan(self) -> Optional[Dict[str, Any]]:
         """Lecturer activeness distribution.
 
         Data: ['status_keaktifan', 'jumlah_dosen']
-        """
-        endpoint = f"{self.api_link}/visualisasi/dosen-keaktifan"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_dosen_bidang(self) -> Optional[Dict[str, Any]]:
         """Lecturer distribution by field of study.
 
         Data: ['bidang', 'jumlah_dosen']
-        """
-        endpoint = f"{self.api_link}/visualisasi/dosen-bidang"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_dosen_jenis_kelamin(self) -> Optional[Dict[str, Any]]:
         """Lecturer distribution by gender.
 
         Data: ['jenis_kelamin', 'jumlah']
-        """
-        endpoint = f"{self.api_link}/visualisasi/dosen-jenis-kelamin"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_dosen_jenjang(self) -> Optional[Dict[str, Any]]:
         """Lecturer distribution by academic level.
 
         Data: ['jenjang_dosen', 'jumlah_dosen']
-        """
-        endpoint = f"{self.api_link}/visualisasi/dosen-jenjang"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_dosen_ikatan(self) -> Optional[Dict[str, Any]]:
         """Lecturer distribution by employment binding.
 
         Data: ['ikatan_dosen', 'jumlah']
-        """
-        endpoint = f"{self.api_link}/visualisasi/dosen-ikatan"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_mahasiswa_bidang(self) -> Optional[Dict[str, Any]]:
         """Student distribution by field of study.
 
         Data: ['bidang', 'jumlah_mhs']
-        """
-        endpoint = f"{self.api_link}/visualisasi/mahasiswa-bidang"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_mahasiswa_jenis_kelamin(self) -> Optional[Dict[str, Any]]:
         """Student distribution by gender.
 
         Data: ['jenis_kelamin', 'jumlah_mhs']
-        """
-        endpoint = f"{self.api_link}/visualisasi/mahasiswa-jenis-kelamin"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_mahasiswa_jenjang(self) -> Optional[Dict[str, Any]]:
         """Student distribution by educational level.
 
         Data: ['nama_jenjang', 'jumlah_mhs']
-        """
-        endpoint = f"{self.api_link}/visualisasi/mahasiswa-jenjang"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_mahasiswa_kelompok_lembaga(self) -> Optional[Dict[str, Any]]:
         """Student distribution by institutional group.
 
         Data: ['kelompok_lembaga', 'jumlah_mhs']
-        """
-        endpoint = f"{self.api_link}/visualisasi/mahasiswa-kelompok-lembaga"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_mahasiswa_status(self) -> Optional[Dict[str, Any]]:
         """Student distribution by status (active/inactive).
 
         Data: ['status_mahasiswa', 'jumlah']
-        """
-        endpoint = f"{self.api_link}/visualisasi/mahasiswa-status"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_pt_bentuk(self) -> Optional[Dict[str, Any]]:
         """University distribution by institution type.
 
         Data: ['bentuk_pt', 'jumlah_pt']
-        """
-        endpoint = f"{self.api_link}/visualisasi/pt-bentuk"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_pt_akreditasi(self) -> Optional[Dict[str, Any]]:
         """University distribution by accreditation.
 
         Data: ['akreditasi', 'jumlah_pt']
-        """
-        endpoint = f"{self.api_link}/visualisasi/pt-akreditasi"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_pt_kelompok_pembina(self) -> Optional[Dict[str, Any]]:
         """University distribution by administrative overseer.
 
         Data: ['kelompok_pembina', 'jumlah_pt']
-        """
-        endpoint = f"{self.api_link}/visualisasi/pt-kelompok-pembina"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_pt_provinsi(self) -> Optional[Dict[str, Any]]:
         """University distribution by province.
 
         Data: ['provinsi', 'jumlah_pt']
-        """
-        endpoint = f"{self.api_link}/visualisasi/pt-provinsi"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_prodi_jenjang(self) -> Optional[Dict[str, Any]]:
         """Study program distribution by level.
 
         Data: ['jenjang_prodi', 'jumlah_prodi']
-        """
-        endpoint = f"{self.api_link}/visualisasi/prodi-jenjang"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_prodi_akreditasi(self) -> Optional[Dict[str, Any]]:
         """Study program distribution by accreditation.
 
         Data: ['akreditasi_prodi', 'jumlah_prodi']
-        """
-        endpoint = f"{self.api_link}/visualisasi/prodi-akreditasi"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_prodi_bidang_ilmu(self) -> Optional[Dict[str, Any]]:
         """Study program distribution by field of study.
 
         Data: ['bidang_ilmu', 'jumlah_prodi']
-        """
-        endpoint = f"{self.api_link}/visualisasi/prodi-bidang-ilmu"
-        return self.H.response(endpoint)
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None.
+        """
+
+    @_removed_upstream
     def get_data_prodi_kelompok_pembina(self) -> Optional[Dict[str, Any]]:
         """Study program distribution by administrative overseer.
 
         Data: ['kelompok_pembina', 'jumlah_prodi']
+
+        Deprecated: removed upstream; always returns None.
         """
-        endpoint = f"{self.api_link}/visualisasi/prodi-kelompok-pembina"
-        return self.H.response(endpoint)
 
     # -- Misc -----------------------------------------------------------------
     @handle_errors
@@ -891,20 +937,35 @@ class api:  # pylint: disable=invalid-name,too-many-public-methods
         endpoint = f"{self.api_link}/pt/locations"
         return self.H.response(endpoint)
 
-    @handle_errors
+    @_removed_upstream
     def get_dosen_count(self) -> Optional[Dict[str, Any]]:
-        """Get the total number of lecturers (active and inactive)."""
-        endpoint = f"{self.api_link}/dosen/count"
-        return self.H.response(endpoint)
+        """Get the total number of lecturers (active and inactive).
 
-    @handle_errors
+        Deprecated: removed upstream; always returns None. Use
+        :meth:`get_dosen_count_active`.
+        """
+
+    @_removed_upstream
     def get_mahasiswa_count(self) -> Optional[Dict[str, Any]]:
-        """Get the total number of students (active and inactive)."""
-        endpoint = f"{self.api_link}/mahasiswa/count"
-        return self.H.response(endpoint)
+        """Get the total number of students (active and inactive).
+
+        Deprecated: removed upstream; always returns None. Use
+        :meth:`get_mahasiswa_count_active`.
+        """
 
     @handle_errors
     def get_bidang_ilmu_prodi(self) -> Optional[Dict[str, Any]]:
         """Get the list of study-program fields of science."""
         endpoint = f"{self.api_link}/prodi/bidang-ilmu"
         return self.H.response(endpoint)
+
+    @handle_errors
+    def get_prodi_by_bidang_ilmu(self, bidang: str) -> Optional[Dict[str, Any]]:
+        """Get the study programs in one field of science, e.g. ``"Teknik"``.
+
+        - ``bidang``: A field name as listed by :meth:`get_bidang_ilmu_prodi`.
+
+        Data: ['nama_prodi', 'total_mahasiswa', 'persentase_kelulusan']
+        """
+        self._validate_keyword(bidang)
+        return self.H.response(self._build_endpoint("prodi/bidang-ilmu", bidang))
